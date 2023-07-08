@@ -1,0 +1,254 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2023-03-30 13:10:30.963414",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "manufacturer",
+  "metal_type",
+  "type_abbr",
+  "metal_touch",
+  "metal_purity",
+  "metal_color",
+  "color_abbr",
+  "employee",
+  "operation",
+  "department",
+  "dep_abbr",
+  "is_tree_reqd",
+  "check_color",
+  "tree_number",
+  "tree_wax_wt",
+  "computed_gold_wt",
+  "column_break_6ug6u",
+  "flask_size",
+  "used_gold_count",
+  "issue_metal",
+  "operation_issue",
+  "receive_metal",
+  "operation_receive",
+  "pending_metal",
+  "section_break_rr9oa",
+  "main_slip_operation",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Operation",
+   "options": "Department Operation",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.is_tree_reqd",
+   "fieldname": "tree_number",
+   "fieldtype": "Link",
+   "label": "Tree Number",
+   "options": "Tree Number",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.is_tree_reqd",
+   "fieldname": "tree_wax_wt",
+   "fieldtype": "Float",
+   "label": "Tree Wax Wt"
+  },
+  {
+   "depends_on": "eval:doc.is_tree_reqd",
+   "fieldname": "computed_gold_wt",
+   "fieldtype": "Float",
+   "label": "Computed Gold Wt",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.operation == 'Casting'",
+   "fieldname": "flask_size",
+   "fieldtype": "Data",
+   "label": "Flask Size"
+  },
+  {
+   "fieldname": "used_gold_count",
+   "fieldtype": "Data",
+   "label": "Used Gold Count"
+  },
+  {
+   "fieldname": "column_break_6ug6u",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_rr9oa",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "metal_purity",
+   "fieldtype": "Link",
+   "label": "Metal Purity",
+   "options": "Attribute Value",
+   "reqd": 1
+  },
+  {
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "label": "Metal Type",
+   "options": "Attribute Value",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.check_color",
+   "fieldname": "metal_color",
+   "fieldtype": "Link",
+   "label": "Metal Color",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "main_slip_operation",
+   "fieldtype": "Table",
+   "label": "Main Slip Operation",
+   "options": "Main Slip Operation"
+  },
+  {
+   "fieldname": "operation_issue",
+   "fieldtype": "Float",
+   "label": "Manufacturing Operation Issue"
+  },
+  {
+   "default": "0",
+   "fetch_from": "operation.tree_no_reqd",
+   "fieldname": "is_tree_reqd",
+   "fieldtype": "Check",
+   "label": "Is Tree Required",
+   "read_only": 1
+  },
+  {
+   "fieldname": "metal_touch",
+   "fieldtype": "Link",
+   "label": "Metal Touch",
+   "options": "Attribute Value",
+   "reqd": 1
+  },
+  {
+   "fieldname": "manufacturer",
+   "fieldtype": "Link",
+   "label": "Manufacturer",
+   "options": "Manufacturer"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": ".dep_abbr.-.type_abbr.-.metal_touch.-.metal_purity.-.#####\n.dep_abbr.-.type_abbr.-.metal_touch.-.metal_purity.-.color_abbr.-.#####"
+  },
+  {
+   "fetch_from": "operation.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "dep_abbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Abbr",
+   "read_only": 1
+  },
+  {
+   "fieldname": "type_abbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "type_abbr",
+   "read_only": 1
+  },
+  {
+   "fieldname": "color_abbr",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "color_abbr",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "operation.check_colour_in_main_slip",
+   "fieldname": "check_color",
+   "fieldtype": "Check",
+   "label": "Check Color"
+  },
+  {
+   "fieldname": "operation_receive",
+   "fieldtype": "Float",
+   "label": "Manufacturing Operation Receive"
+  },
+  {
+   "fieldname": "issue_metal",
+   "fieldtype": "Float",
+   "label": "Issue Gold"
+  },
+  {
+   "fieldname": "receive_metal",
+   "fieldtype": "Float",
+   "label": "Receive Gold"
+  },
+  {
+   "fieldname": "pending_metal",
+   "fieldtype": "Float",
+   "label": "Pending Gold"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Main Slip",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-22 02:02:35.061924",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Main Slip",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "employee",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

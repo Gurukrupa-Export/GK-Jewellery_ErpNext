@@ -1,0 +1,155 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-03-29 16:11:22.088507",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_order",
+  "docname",
+  "item_code",
+  "mould_no",
+  "delivery_date",
+  "estimated_delivery_date",
+  "manufacturing_end_date",
+  "column_break_p3gkl",
+  "pending_qty",
+  "manufacturing_order_qty",
+  "qty_per_manufacturing_order",
+  "supplier",
+  "subcontracting",
+  "produced_qty",
+  "order_form_date",
+  "diamond_quality"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Sales Order",
+   "options": "Sales Order",
+   "read_only": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "mould_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Mould No",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "pending_qty",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Pending Qty",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "subcontracting",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Subcontracting"
+  },
+  {
+   "fieldname": "docname",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Docname",
+   "options": "Sales Order Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "produced_qty",
+   "fieldtype": "Int",
+   "label": "Produced Qty",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sales_order.delivery_date",
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery Date"
+  },
+  {
+   "fieldname": "column_break_p3gkl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "order_form_date",
+   "fieldtype": "Date",
+   "label": "Order Form Date"
+  },
+  {
+   "fieldname": "diamond_quality",
+   "fieldtype": "Link",
+   "label": "Diamond Quality",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "item_code.product_supplier",
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier Name",
+   "options": "Supplier"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "estimated_delivery_date",
+   "fieldtype": "Date",
+   "label": "Estimated Delivery Date"
+  },
+  {
+   "fieldname": "manufacturing_end_date",
+   "fieldtype": "Date",
+   "label": "Manufacturing End Date"
+  },
+  {
+   "columns": 1,
+   "fieldname": "manufacturing_order_qty",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Manufacturing Order Qty"
+  },
+  {
+   "columns": 1,
+   "default": "1",
+   "fieldname": "qty_per_manufacturing_order",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Qty Per Manufacturing Order",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-05-11 13:35:35.260063",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Manufacturing Plan Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

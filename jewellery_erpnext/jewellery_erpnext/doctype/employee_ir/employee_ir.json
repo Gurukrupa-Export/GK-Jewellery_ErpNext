@@ -1,0 +1,207 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "EMP-IR-.#####",
+ "creation": "2023-03-30 12:10:03.470947",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "date_time",
+  "manufacturer",
+  "type",
+  "subcontracting",
+  "operation",
+  "department",
+  "next_operation",
+  "is_main_slip_required",
+  "previous_operation",
+  "employee",
+  "main_slip",
+  "sub_contractor_name",
+  "wastage",
+  "making",
+  "handling",
+  "show_manufacturing_operation",
+  "get_operations",
+  "employee_ir_operations",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Employee IR",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type",
+   "options": "Issue\nReceive"
+  },
+  {
+   "depends_on": "eval:doc.subcontracting == \"No\"",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Employee IR",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.type==\"Issue\"",
+   "fieldname": "next_operation",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Next Operation",
+   "options": "Department Operation"
+  },
+  {
+   "default": "Now",
+   "fieldname": "date_time",
+   "fieldtype": "Datetime",
+   "label": "Date / Time"
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Link",
+   "label": "Operation",
+   "options": "Department Operation"
+  },
+  {
+   "fieldname": "subcontracting",
+   "fieldtype": "Select",
+   "label": "Subcontracting",
+   "options": "No\nYes"
+  },
+  {
+   "depends_on": "eval:doc.subcontracting == \"Yes\"",
+   "fieldname": "sub_contractor_name",
+   "fieldtype": "Link",
+   "label": "Sub contractor Name",
+   "options": "Supplier"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.subcontracting == \"Yes\"",
+   "fieldname": "wastage",
+   "fieldtype": "Check",
+   "label": "Wastage"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.subcontracting == \"Yes\"",
+   "fieldname": "making",
+   "fieldtype": "Check",
+   "label": "Making"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.subcontracting == \"Yes\"",
+   "fieldname": "handling",
+   "fieldtype": "Check",
+   "label": "Handling"
+  },
+  {
+   "default": "0",
+   "fieldname": "show_manufacturing_operation",
+   "fieldtype": "Check",
+   "label": "Show Manufacturing Operation from Last Operation"
+  },
+  {
+   "fieldname": "get_operations",
+   "fieldtype": "Button",
+   "label": "Get Manufacturing Operations"
+  },
+  {
+   "fieldname": "employee_ir_operations",
+   "fieldtype": "Table",
+   "label": "Employee IR Operations",
+   "options": "Employee IR Operation"
+  },
+  {
+   "fieldname": "previous_operation",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Previous Operation",
+   "options": "Department Operation"
+  },
+  {
+   "fetch_from": "operation.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "manufacturer",
+   "fieldtype": "Link",
+   "label": "Manufacturer",
+   "options": "Manufacturer"
+  },
+  {
+   "default": "0",
+   "fetch_from": "operation.is_main_slip_required",
+   "fieldname": "is_main_slip_required",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Main Slip Required"
+  },
+  {
+   "depends_on": "eval:doc.is_main_slip_required",
+   "fieldname": "main_slip",
+   "fieldtype": "Link",
+   "label": "Main Slip No",
+   "mandatory_depends_on": "eval:doc.is_main_slip_required",
+   "no_copy": 1,
+   "options": "Main Slip"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-06-29 00:43:23.328708",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Employee IR",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

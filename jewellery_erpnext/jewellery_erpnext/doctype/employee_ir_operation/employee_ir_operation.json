@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-05-03 15:21:46.465307",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "manufacturing_work_order",
+  "manufacturing_operation",
+  "gross_wt",
+  "column_break_uz0qw",
+  "received_gross_wt",
+  "gold_loss"
+ ],
+ "fields": [
+  {
+   "fieldname": "manufacturing_operation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Manufacturing Operation",
+   "options": "Manufacturing Operation"
+  },
+  {
+   "fieldname": "gross_wt",
+   "fieldtype": "Float",
+   "label": "Gross Wt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "received_gross_wt",
+   "fieldtype": "Float",
+   "label": "Received Gross Wt"
+  },
+  {
+   "fieldname": "gold_loss",
+   "fieldtype": "Float",
+   "label": "Gold Loss"
+  },
+  {
+   "fetch_from": "manufacturing_operation.manufacturing_work_order",
+   "fetch_if_empty": 1,
+   "fieldname": "manufacturing_work_order",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Manufacturing Work Order",
+   "options": "Manufacturing Work Order"
+  },
+  {
+   "fieldname": "column_break_uz0qw",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-07-03 16:24:28.614030",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Employee IR Operation",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

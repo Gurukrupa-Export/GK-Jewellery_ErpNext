@@ -1,0 +1,321 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "MWO-.abbr.-.item_code.-.seq.-.metal_purity.-.color.-.##",
+ "creation": "2023-04-25 17:52:04.405708",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "abbr",
+  "manufacturing_order",
+  "seq",
+  "customer",
+  "project",
+  "item_code",
+  "serial_no",
+  "item_category",
+  "setting_type",
+  "metal_touch",
+  "metal_purity",
+  "start_datetime",
+  "qty",
+  "metal_type",
+  "column_break_prlpk",
+  "amended_from",
+  "branch",
+  "posting_date",
+  "delivery_date",
+  "manufacturing_plan",
+  "master_bom",
+  "serial_id_bom",
+  "item_sub_category",
+  "order_type",
+  "metal_color",
+  "color",
+  "diamond_grade",
+  "order_remarks",
+  "estimated_delivery_date",
+  "manufacturing_end_date",
+  "department",
+  "metal_weight",
+  "manufacturer",
+  "auto_created"
+ ],
+ "fields": [
+  {
+   "fetch_from": "manufacturing_order.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "seq",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Seq",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "manufacturing_order.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer Code",
+   "options": "Customer"
+  },
+  {
+   "fetch_from": "manufacturing_order.project",
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fetch_from": "manufacturing_order.item_code",
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Design ID",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "manufacturing_order.serial_no",
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "label": "Serial ID",
+   "options": "Serial No"
+  },
+  {
+   "fetch_from": "manufacturing_order.item_category",
+   "fieldname": "item_category",
+   "fieldtype": "Link",
+   "label": "Item Category",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "manufacturing_order.setting_type",
+   "fieldname": "setting_type",
+   "fieldtype": "Link",
+   "label": "Setting Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "manufacturing_order.metal_purity",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_purity",
+   "fieldtype": "Link",
+   "label": "Metal Purity",
+   "options": "Attribute Value",
+   "read_only_depends_on": "eval:doc.auto_created"
+  },
+  {
+   "fieldname": "start_datetime",
+   "fieldtype": "Datetime",
+   "label": "Start Time"
+  },
+  {
+   "fetch_from": "manufacturing_order.qty",
+   "fieldname": "qty",
+   "fieldtype": "Int",
+   "label": "Qty"
+  },
+  {
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "label": "Metal Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "column_break_prlpk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Manufacturing Work Order",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "manufacturing_order.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "manufacturing_order.delivery_date",
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "label": "Delivery Date"
+  },
+  {
+   "fetch_from": "manufacturing_order.manufacturing_plan",
+   "fieldname": "manufacturing_plan",
+   "fieldtype": "Link",
+   "label": "Manufacturing Plan ID",
+   "options": "Manufacturing Plan"
+  },
+  {
+   "fetch_from": "manufacturing_order.master_bom",
+   "fieldname": "master_bom",
+   "fieldtype": "Link",
+   "label": "Design ID BOM",
+   "options": "BOM"
+  },
+  {
+   "fetch_from": "manufacturing_order.serial_id_bom",
+   "fieldname": "serial_id_bom",
+   "fieldtype": "Link",
+   "label": "Serial ID BOM",
+   "options": "BOM"
+  },
+  {
+   "fetch_from": "manufacturing_order.item_sub_category",
+   "fieldname": "item_sub_category",
+   "fieldtype": "Link",
+   "label": "Item Sub Category",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "manufacturing_order.order_type",
+   "fieldname": "order_type",
+   "fieldtype": "Data",
+   "label": "Order Type"
+  },
+  {
+   "fetch_from": "manufacturing_order.metal_color",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_color",
+   "fieldtype": "Link",
+   "label": "Metal Color",
+   "options": "Attribute Value",
+   "read_only_depends_on": "eval:doc.auto_created"
+  },
+  {
+   "fetch_from": "manufacturing_order.diamond_grade",
+   "fieldname": "diamond_grade",
+   "fieldtype": "Link",
+   "label": "Diamond Grade",
+   "options": "Attribute Value"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fetch_from": "master_bom.total_metal_weight",
+   "fieldname": "metal_weight",
+   "fieldtype": "Float",
+   "label": "Metal Weight"
+  },
+  {
+   "fetch_from": "manufacturing_order.manufacturer",
+   "fieldname": "manufacturer",
+   "fieldtype": "Link",
+   "label": "Manufacturer",
+   "options": "Manufacturer"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_created",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Auto Created",
+   "no_copy": 1
+  },
+  {
+   "fetch_from": "manufacturing_order.order_remarks",
+   "fieldname": "order_remarks",
+   "fieldtype": "Small Text",
+   "label": "Manufacturing Order Remarks"
+  },
+  {
+   "fieldname": "manufacturing_order",
+   "fieldtype": "Link",
+   "label": "Parent Manufacturing Order",
+   "options": "Parent Manufacturing Order"
+  },
+  {
+   "fetch_from": "company.abbr",
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "label": "Abbr",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "manufacturing_order.estimated_delivery_date",
+   "fieldname": "estimated_delivery_date",
+   "fieldtype": "Date",
+   "label": "Estimated Delivery Date"
+  },
+  {
+   "fetch_from": "manufacturing_order.manufacturing_end_date",
+   "fieldname": "manufacturing_end_date",
+   "fieldtype": "Date",
+   "label": "Manufacturing End Date"
+  },
+  {
+   "fetch_from": "manufacturing_order.metal_touch",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_touch",
+   "fieldtype": "Link",
+   "label": "Metal Touch",
+   "options": "Attribute Value",
+   "read_only_depends_on": "eval:doc.auto_created"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "color",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "Manufacturing Operation",
+   "link_fieldname": "manufacturing_work_order"
+  }
+ ],
+ "modified": "2023-07-07 00:45:09.697621",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Manufacturing Work Order",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
