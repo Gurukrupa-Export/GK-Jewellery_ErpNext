@@ -83,6 +83,9 @@ doc_events = {
 	"Mould":{
 		"autoname": "jewellery_erpnext.jewellery_erpnext.doc_events.mould.autoname",
 		"validate": "jewellery_erpnext.jewellery_erpnext.doc_events.mould.validate",
+	},
+    "Warehouse": {
+        "validate": "jewellery_erpnext.jewellery_erpnext.doc_events.warehouse.validate"
 	}
 
 }
@@ -94,7 +97,7 @@ override_whitelisted_methods = {
 fixtures = [
 	{
 		"dt": "Custom Field", 
-		"filters": [["dt", "in", ["Stock Entry"]], ["is_system_generated",'=',0]]
+		"filters": [["dt", "in", ["Stock Entry", "Warehouse"]], ["is_system_generated",'=',0]]
 	}
 ]
 

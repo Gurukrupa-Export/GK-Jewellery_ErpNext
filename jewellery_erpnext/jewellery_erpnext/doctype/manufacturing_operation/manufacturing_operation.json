@@ -10,16 +10,16 @@
  "field_order": [
   "company",
   "abbr",
-  "type",
   "manufacturing_work_order",
   "main_slip_no",
   "department",
-  "previous_operation",
   "operation",
   "column_break_7",
   "status",
+  "type",
   "employee",
   "manufacturer",
+  "previous_operation",
   "section_break_10",
   "department_issue_id",
   "department_ir_status",
@@ -52,6 +52,8 @@
   "diamond_pcs",
   "gemstone_pcs",
   "section_break_26",
+  "stock_entry_details",
+  "section_break_dvel5",
   "cad_numbering_file",
   "support_cam_file",
   "column_break_29",
@@ -151,6 +153,7 @@
    "fieldname": "gross_wt",
    "fieldtype": "Float",
    "label": "Gross Wt",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -171,12 +174,14 @@
    "fieldname": "start_time",
    "fieldtype": "Datetime",
    "label": "Start Time",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "finish_time",
    "fieldtype": "Datetime",
    "label": "Finish Time",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -184,6 +189,7 @@
    "fieldname": "time_taken",
    "fieldtype": "Time",
    "label": "Time Taken",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -297,24 +303,28 @@
    "fieldname": "diamond_wt",
    "fieldtype": "Float",
    "label": "Diamond Wt (cts)",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "gemstone_wt",
    "fieldtype": "Float",
    "label": "Gemstone Wt (cts)",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "other_wt",
    "fieldtype": "Float",
    "label": "Other Wt",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "net_wt",
    "fieldtype": "Float",
    "label": "Net wt",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -328,40 +338,55 @@
   {
    "fieldname": "received_gross_wt",
    "fieldtype": "Float",
-   "label": "Received Gross Wt"
+   "label": "Received Gross Wt",
+   "no_copy": 1
   },
   {
    "fieldname": "received_net_wt",
    "fieldtype": "Float",
-   "label": "Received Net Wt"
+   "label": "Received Net Wt",
+   "no_copy": 1
   },
   {
    "fieldname": "loss_wt",
    "fieldtype": "Float",
-   "label": "Loss Wt"
+   "label": "Loss Wt",
+   "no_copy": 1
   },
   {
    "fieldname": "diamond_pcs",
    "fieldtype": "Float",
    "label": "Diamond Pcs",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "gemstone_pcs",
    "fieldtype": "Float",
    "label": "Gemstone Pcs",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "diamond_wt_in_gram",
    "fieldtype": "Float",
    "label": "Diamond Wt(in gram)",
+   "no_copy": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "stock_entry_details",
+   "fieldtype": "HTML",
+   "label": "Stock Entry Details"
+  },
+  {
+   "fieldname": "section_break_dvel5",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-06 02:19:22.717005",
+ "modified": "2023-07-19 00:41:38.576805",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Operation",

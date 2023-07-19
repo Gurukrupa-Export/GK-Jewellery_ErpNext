@@ -37,17 +37,24 @@ frappe.ui.form.on('Employee IR', {
 			"department": frm.doc.department
 		}
 		if (frm.doc.type == "Issue") {
+			query_filters["status"] = ["in", ["Not Started"]]
 			query_filters["operation"] = ["is", "not set"]
 			query_filters["employee"] = ["is", "not set"]
+		}
+		else {
+			query_filters["status"] = ["in", ["On Hold", "WIP", "QC"]]
+			query_filters["operation"] = frm.doc.operation
+			if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
 		}
 		erpnext.utils.map_current_doc({
 			method: "jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_manufacturing_operations",
 			source_doctype: "Manufacturing Operation",
 			target: frm,
 			setters: {
-				manufacturing_work_order: undefined,
 				company: frm.doc.company || undefined,
-				department: frm.doc.department
+				department: frm.doc.department,
+				manufacturer: frm.doc.manufacturer || undefined,
+				manufacturing_work_order: undefined,
 			},
 			get_query_filters: query_filters,
 			size: "large"

@@ -25,3 +25,11 @@ class ManufacturingOperation(Document):
 	def set_active_department_in_work_order(self):
 		if self.status == "WIP":
 			frappe.set_value("Manufacturing Work Order", self.manufacturing_work_order, "department", self.department)
+
+@frappe.whitelist()
+def get_linked_stock_entries(docname):
+	target_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "department_wip")
+	filters = {"manufacturing_operation":docname, "docstatus":1, "t_warehouse": target_wh}
+
+	data = frappe.db.get_list("Stock Entry Detail", filters=filters,fields="*", debug=1)
+	return frappe.render_template("jewellery_erpnext/jewellery_erpnext/doctype/manufacturing_operation/stock_entry_details.html", {"data":data})

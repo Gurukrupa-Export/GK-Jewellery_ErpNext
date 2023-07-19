@@ -31,7 +31,7 @@ class MainSlip(Document):
 	def validate_metal_properties(self):
 		for row in self.main_slip_operation:
 			mwo = frappe.db.get_value("Manufacturing Work Order", row.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_color"], as_dict=1)
-			if mwo.metal_type != self.metal_type or mwo.metal_touch != self.metal_touch or mwo.metal_purity != self.metal_purity or mwo.metal_color != self.metal_color:
+			if mwo.metal_type != self.metal_type or mwo.metal_touch != self.metal_touch or mwo.metal_purity != self.metal_purity or (self.check_color and mwo.metal_color != self.metal_color):
 				frappe.throw(f"Metal properties in Manufacturing Work Order: {row.manufacturing_work_order} do not match the main slip")
 
 	def before_insert(self):
@@ -42,6 +42,8 @@ def create_material_request(doc):
 	mr = frappe.new_doc("Material Request")
 	mr.material_request_type = "Material Transfer"
 	item = get_item_from_attribute(doc.metal_type, doc.metal_touch, doc.metal_purity, doc.metal_color)
+	if not item:
+		return
 	mr.schedule_date = frappe.utils.nowdate()
 	mr.main_slip = doc.name
 	mr.department = doc.department

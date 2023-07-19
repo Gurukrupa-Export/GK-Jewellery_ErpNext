@@ -4,7 +4,7 @@
 import frappe
 import json
 from frappe import _
-from frappe.utils import flt
+from frappe.utils import flt, cint
 from frappe.model.mapper import get_mapped_doc
 from frappe.model.document import Document
 from jewellery_erpnext.jewellery_erpnext.doctype.main_slip.main_slip import get_main_slip_item, get_item_from_attribute
@@ -57,10 +57,11 @@ class EmployeeIR(Document):
 
 	#for receive
 	def on_submit_receive(self, cancel=False):
+		precision = cint(frappe.db.get_single_value("System Settings", "float_precision"))
 		for row in self.employee_ir_operations:
 			if not cancel:
 				create_operation_for_next_op(row.manufacturing_operation)
-				difference_wt = flt(row.gross_wt) - flt(row.received_gross_wt)
+				difference_wt = flt(row.gross_wt, precision) - flt(row.received_gross_wt, precision)
 				create_stock_entry(self, row, difference_wt)
 
 			# gross_wt = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation, "employee":self.employee}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
@@ -110,10 +111,21 @@ def get_manufacturing_operations(source_name, target_doc=None):
 	return target_doc
 
 def create_stock_entry(doc, row, difference_wt=0):
-	settings = frappe.db.get_value("Jewellery Settings","Jewellery Settings", ["employee_wip", "department_wip"], as_dict=1)
+	department_wh = frappe.get_value("Warehouse", {"department": doc.department})
+	employee_wh = frappe.get_value("Warehouse", {"employee": doc.employee})
+	if not department_wh:
+		frappe.throw(_(f"Please set warhouse for department {doc.department}"))
+	if not employee_wh:
+		frappe.throw(_(f"Please set warhouse for department {doc.employee}"))
 	stock_entries = frappe.db.sql(f"""select se.name from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name 
 			       where sed.manufacturing_operation = '{row.manufacturing_operation}' and 
-				   {"sed.s_warehouse" if doc.type == "Issue" else "sed.t_warehouse"} = '{settings.department_wip}' 
+				   {"sed.t_warehouse" if doc.type == "Issue" else "sed.s_warehouse"} = '{department_wh}' 
+				   and sed.to_department = '{doc.department}'""", as_dict=1, debug=1)
+	if doc.type == "Issue" and not stock_entries:
+		prev_mfg_operation = get_previous_operation(row.manufacturing_operation)
+		stock_entries = frappe.db.sql(f"""select se.name from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name 
+			       where sed.manufacturing_operation = '{prev_mfg_operation}' and 
+				   sed.t_warehouse = '{department_wh}' and sed.employee is not NULL
 				   and sed.to_department = '{doc.department}'""", as_dict=1)
 	item = None
 	metal_item = None
@@ -124,23 +136,24 @@ def create_stock_entry(doc, row, difference_wt=0):
 		mwo = frappe.db.get_value("Manufacturing Work Order", row.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_color"], as_dict=1)
 		metal_item = get_item_from_attribute(mwo.metal_type, mwo.metal_touch, mwo.metal_purity, mwo.metal_color)
 		existing_items = frappe.get_all("Stock Entry Detail",{"parent": ['in',stock_entries]}, pluck='item_code')
-		if metal_item not in existing_items and difference_wt != 0:
-			frappe.throw(_("Stock Entry for metal not found. Unable to add/subtract weight difference"))
+		if (metal_item not in existing_items) and difference_wt != 0:
+			frappe.throw(_(f"Stock Entry for metal not found. Unable to add/subtract weight difference({difference_wt})"))
+	
 	for stock_entry in stock_entries:
 		existing_doc = frappe.get_doc("Stock Entry", stock_entry)
 		stock_entry = frappe.copy_doc(existing_doc)
 		for child in stock_entry.items:
 			if doc.type == "Issue":
-				child.s_warehouse = settings.department_wip
-				child.t_warehouse = settings.employee_wip
+				child.s_warehouse = department_wh
+				child.t_warehouse = employee_wh
 				child.to_employee = doc.employee
 				child.employee = None
 				child.department_operation = doc.operation
 				child.main_slip = None
 				child.to_main_slip = doc.main_slip if item == child.item_code else None
 			else:
-				child.s_warehouse = settings.employee_wip
-				child.t_warehouse = settings.department_wip
+				child.s_warehouse = employee_wh
+				child.t_warehouse = department_wh
 				child.to_employee = None
 				child.employee = doc.employee
 				child.to_main_slip = None
@@ -159,3 +172,10 @@ def create_stock_entry(doc, row, difference_wt=0):
 		stock_entry.manufacturing_operation = row.manufacturing_operation
 		stock_entry.save()
 		stock_entry.submit()
+
+
+def get_previous_operation(manufacturing_operation):
+	mfg_operation = frappe.db.get_value("Manufacturing Operation", manufacturing_operation, ["previous_operation", "manufacturing_work_order"], as_dict=1)
+	if not mfg_operation.previous_operation:
+		return None
+	return frappe.db.get_value("Manufacturing Operation", {"operation": mfg_operation.previous_operation, "manufacturing_work_order": mfg_operation.manufacturing_work_order})

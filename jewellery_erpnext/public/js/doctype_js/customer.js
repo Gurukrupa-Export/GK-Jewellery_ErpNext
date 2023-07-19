@@ -6,7 +6,7 @@ frappe.ui.form.on('Customer', {
                             ['diamond_grade_3','Diamond Grade'],
                             ['diamond_grade_4','Diamond Grade']];
         set_filters_on_child_table_fields(frm, child_fields, "diamond_grades");
-        let metal_fields = [['metal_touch','Metal Touch']]
+        let metal_fields = [['metal_touch','Metal Touch'],["metal_type", "Metal Type"]]
         set_filters_on_child_table_fields(frm, metal_fields, "metal_criteria");
         frm.set_query("metal_purity", "metal_criteria", function(doc, cdt, cdn) {
             var d = locals[cdt][cdn]
@@ -36,12 +36,14 @@ frappe.ui.form.on('Customer', {
 	},
 	validate(frm) {
 	    var touch = []
+        var type = []
 	    $.each(frm.doc.metal_criteria || [], function(i,d) {
-	        if (in_list(touch,d.metal_touch)) {
+	        if (in_list(touch,d.metal_touch) && in_list(type,d.metal_type)) {
 	            frappe.throw("Metal Touch must be Unique")
 	        }
 	        else {
-	            purity.push(d.metal_touch)
+	            touch.push(d.metal_touch)
+	            type.push(d.metal_type)
 	        }
 	    })
 	}

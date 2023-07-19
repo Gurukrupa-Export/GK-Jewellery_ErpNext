@@ -16,7 +16,7 @@ def validate(self, method):
 		-> Then it checks if the stock_entry_type is "Manufacture" and work_order and bom_no are present, 
 				then it gets the tag_no from the BOM and assigns it to the first item in the items list that is a finished_item.
 	"""
-
+	allow_zero_valuation(self)
 	if self.stock_entry_type == "Manufacture" and self.work_order and self.bom_no:
 		if serial_no:=frappe.db.get_value("BOM",self.get("bom_no"),"tag_no"):
 			for item in self.items:
@@ -63,7 +63,7 @@ def validate_metal_properties(doc):
 			frappe.throw(_("Only metals are allowed in Main Slip."))
 		if item_template != "M" or not (main_slip or mwo):
 			continue
-		attribute_det = frappe.db.get_values("Item Variant Attribute",{"parent":"M-G-75.6-Y", "attribute":["in",["Metal Type", "Metal Touch", "Metal Purity", "Metal Colour"]]}, ['attribute', 'attribute_value'], as_dict=1)
+		attribute_det = frappe.db.get_values("Item Variant Attribute",{"parent": row.item_code, "attribute":["in",["Metal Type", "Metal Touch", "Metal Purity", "Metal Colour"]]}, ['attribute', 'attribute_value'], as_dict=1)
 		item_det = { row.attribute: row.attribute_value for row in attribute_det}
 		if main_slip:
 			ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_color", "check_color"], as_dict=1)
@@ -127,6 +127,11 @@ def validate_items(self):
 	for i in self.items:
 		if not frappe.db.exists('BOM Item', {'parent': self.bom_no, 'item_code': i.get('item_code')}):
 			return frappe.throw(f"Item {i.get('item_code')} Not Present In BOM {self.bom_no}")
+
+def allow_zero_valuation(self):
+	for row in self.items:
+		if row.inventory_type == "Customer Goods":
+			row.allow_zero_valuation_rate = 1
 
 def update_material_request_status(self):
 	try:

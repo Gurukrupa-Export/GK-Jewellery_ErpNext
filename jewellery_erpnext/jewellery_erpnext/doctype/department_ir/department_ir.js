@@ -39,6 +39,9 @@ frappe.ui.form.on('Department IR', {
 	},
 	receive_against(frm) {
 		if (frm.doc.receive_against) {
+			frappe.db.get_value("Department IR", frm.doc.receive_against, ["current_department", "next_department"], (r)=>{
+				frm.set_value({"previous_department": r.current_department, "current_department": r.next_department})
+			})
 			frappe.call({
 				method: "jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir.get_manufacturing_operations_from_department_ir",
 				args: {
@@ -66,7 +69,9 @@ frappe.ui.form.on('Department IR', {
 			"company": frm.doc.company
 		}
 		if (frm.doc.type == "Issue") {
-			query_filters["department_ir_status"] = ["!=", "In-Transit"]
+			query_filters["department_ir_status"] = ["not in", ["In-Transit","Revert"]]
+			query_filters["status"] = ["in",["Not Started", "Finished"]]
+			query_filters["employee"] = ["is","not set"]
 		}
 		else {
 			query_filters["department_ir_status"] = "In-Transit"
