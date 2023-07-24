@@ -7,33 +7,34 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "index",
   "company",
-  "item",
+  "department",
+  "column_break_etz53",
+  "branch",
+  "salesman_name",
+  "section_break_oi3uq",
+  "customer_code",
   "order_date",
-  "due_days",
   "delivery_date",
-  "estimated_duedate",
+  "project",
+  "parcel_place",
   "system_due_date",
   "data_5",
-  "customer_code",
   "po_number",
   "order_type",
-  "salesman_name",
-  "branch",
-  "project",
+  "due_days",
+  "diamond_quality",
+  "service_type",
+  "item",
   "section_break_10",
   "cad_order_form",
-  "qty",
-  "parcel_place",
-  "service_type",
-  "diamond_quality",
+  "design_by",
   "column_break_2",
   "cad_order_form_detail",
-  "index",
+  "design_type",
   "test",
   "amended_from",
-  "design_by",
-  "design_type",
   "section_break_9",
   "tag_no",
   "design_id",
@@ -44,29 +45,17 @@
   "reference_serial_no_2",
   "reference_design_id_3",
   "reference_serial_no_3",
-  "column_break_16",
-  "design_image_1",
-  "image_preview_1",
-  "column_break_33",
-  "design_image_2",
-  "image_preview_2",
-  "column_break_36",
-  "design_image_3",
-  "image_preview_3",
-  "column_break_39",
-  "design_image_4",
-  "image_preview_4",
-  "column_break_42",
-  "design_image_5",
-  "image_preview_5",
   "section_break_19",
   "category",
   "subcategory",
   "setting_type",
   "sub_setting_type1",
   "sub_setting_type2",
-  "metal_purity",
+  "column_break_ubbqi",
+  "qty",
+  "metal_type",
   "metal_touch",
+  "metal_purity",
   "metal_colour",
   "section_break_25",
   "gold_target",
@@ -80,22 +69,6 @@
   "height",
   "breadth",
   "section_break_45",
-  "gemstone_type1",
-  "column_break_48",
-  "gemstone_type2",
-  "column_break_50",
-  "gemstone_type3",
-  "column_break_52",
-  "gemstone_type4",
-  "section_break_50",
-  "gemstone_type5",
-  "column_break_53",
-  "gemstone_type6",
-  "column_break_55",
-  "gemstone_type7",
-  "column_break_57",
-  "gemstone_type8",
-  "section_break_55",
   "stone_changeable",
   "column_break_37",
   "screw_type",
@@ -137,6 +110,39 @@
   "column_break_69",
   "nakshi_from",
   "nakshi_weight",
+  "section_break_vfurz",
+  "navratna",
+  "section_break_oykzd",
+  "gemstone_type1",
+  "column_break_gnclg",
+  "gemstone_type2",
+  "column_break_bnncs",
+  "gemstone_type3",
+  "column_break_rd84a",
+  "gemstone_type4",
+  "section_break_j5lf7",
+  "gemstone_type5",
+  "column_break_uoaks",
+  "gemstone_type6",
+  "column_break_zzgem",
+  "gemstone_type7",
+  "column_break_pxowt",
+  "gemstone_type8",
+  "section_break_xbmnv",
+  "design_image_1",
+  "image_preview_1",
+  "column_break_phme6",
+  "design_image_2",
+  "image_preview_2",
+  "column_break_lvxgh",
+  "design_image_3",
+  "image_preview_3",
+  "column_break_uxuj0",
+  "design_image_4",
+  "image_preview_4",
+  "column_break_qz2qa",
+  "design_image_5",
+  "image_preview_5",
   "section_break_72",
   "form_remarks",
   "remarks",
@@ -199,8 +205,8 @@
    "fetch_from": "cad_order_form.salesman_name",
    "fieldname": "salesman_name",
    "fieldtype": "Link",
-   "label": "Salesman Name",
-   "options": "Employee",
+   "label": "Sales Person",
+   "options": "Sales Person",
    "read_only": 1
   },
   {
@@ -313,10 +319,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_16",
-   "fieldtype": "Column Break"
-  },
-  {
    "depends_on": "eval:((doc.design_type==\"New Design\")||(doc.design_type==\"Combine\")||(doc.design_type==\"Is Matching\"))",
    "fetch_from": "cad_order_form_detail.design_image_1",
    "fieldname": "design_image_1",
@@ -325,16 +327,11 @@
    "read_only": 1
   },
   {
-   "fetch_from": "cad_order_form_detail.design_image_1",
    "fieldname": "image_preview_1",
    "fieldtype": "Image",
    "label": "Image Preview 1",
    "options": "design_image_1",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_33",
-   "fieldtype": "Section Break"
   },
   {
    "fetch_from": "cad_order_form_detail.design_image2",
@@ -344,16 +341,11 @@
    "read_only": 1
   },
   {
-   "fetch_from": "cad_order_form_detail.design_image2",
    "fieldname": "image_preview_2",
    "fieldtype": "Image",
    "label": "Image Preview 2",
    "options": "design_image_2",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_36",
-   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "cad_order_form_detail.design_image3",
@@ -363,16 +355,11 @@
    "read_only": 1
   },
   {
-   "fetch_from": "cad_order_form_detail.design_image3",
    "fieldname": "image_preview_3",
    "fieldtype": "Image",
    "label": "Image Preview 3",
    "options": "design_image_3",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_39",
-   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "cad_order_form_detail.design_image4",
@@ -382,16 +369,11 @@
    "read_only": 1
   },
   {
-   "fetch_from": "cad_order_form_detail.design_image4",
    "fieldname": "image_preview_4",
    "fieldtype": "Image",
    "label": "Image Preview 4",
    "options": "design_image_4",
    "read_only": 1
-  },
-  {
-   "fieldname": "column_break_42",
-   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "cad_order_form_detail.design_image_5",
@@ -401,7 +383,6 @@
    "read_only": 1
   },
   {
-   "fetch_from": "cad_order_form_detail.design_image_5",
    "fieldname": "image_preview_5",
    "fieldtype": "Image",
    "label": "Image Preview 5",
@@ -512,38 +493,6 @@
   },
   {
    "fieldname": "section_break_45",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_48",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_50",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_52",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_break_50",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_53",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_55",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_57",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_break_55",
    "fieldtype": "Section Break"
   },
   {
@@ -811,6 +760,7 @@
   },
   {
    "depends_on": "eval: in_list(['Combine'], doc.design_type)",
+   "fetch_from": "cad_order_form_detail.reference_design_id_2",
    "fieldname": "reference_design_id_2",
    "fieldtype": "Link",
    "label": "Reference Design ID 2",
@@ -819,6 +769,7 @@
   },
   {
    "depends_on": "eval: in_list(['Combine'], doc.design_type)",
+   "fetch_from": "cad_order_form_detail.reference_design_id_3",
    "fieldname": "reference_design_id_3",
    "fieldtype": "Link",
    "label": "Reference Design ID 3",
@@ -827,7 +778,7 @@
   },
   {
    "depends_on": "eval:((doc.design_type==\"Combine\")||(doc.design_type==\"Is Matching\"))",
-   "fetch_from": "cad_order_form_detail.reference_tagid",
+   "fetch_from": "cad_order_form_detail.reference_serial_no_2",
    "fieldname": "reference_serial_no_1",
    "fieldtype": "Link",
    "label": "Reference Serial No 1",
@@ -836,6 +787,7 @@
   },
   {
    "depends_on": "eval: in_list(['Combine'], doc.design_type)",
+   "fetch_from": "cad_order_form_detail.reference_serial_no_2",
    "fieldname": "reference_serial_no_2",
    "fieldtype": "Link",
    "label": "Reference Serial No 2",
@@ -844,6 +796,7 @@
   },
   {
    "depends_on": "eval: in_list(['Combine'], doc.design_type)",
+   "fetch_from": "cad_order_form_detail.reference_serial_no_3",
    "fieldname": "reference_serial_no_3",
    "fieldtype": "Link",
    "label": "Reference Serial No 3",
@@ -851,16 +804,10 @@
    "read_only": 1
   },
   {
-   "fieldname": "estimated_duedate",
-   "fieldtype": "Date",
-   "label": "Estimated Due Date",
-   "read_only": 1
-  },
-  {
    "fieldname": "parcel_place",
-   "fieldtype": "Link",
-   "label": "Parcel Place",
-   "options": "Parcel Place List",
+   "fieldtype": "Table MultiSelect",
+   "label": "Shipping Territory",
+   "options": "Territory Multi Select",
    "read_only": 1
   },
   {
@@ -871,12 +818,14 @@
    "read_only": 1
   },
   {
+   "fetch_from": "cad_order_form_detail.qty",
    "fieldname": "qty",
    "fieldtype": "Int",
    "label": "No. of Pcs",
    "read_only": 1
   },
   {
+   "fetch_from": "cad_order_form_detail.sub_setting_type1",
    "fieldname": "sub_setting_type1",
    "fieldtype": "Link",
    "label": "Sub Setting Type1",
@@ -884,6 +833,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "cad_order_form_detail.sub_setting_type2",
    "fieldname": "sub_setting_type2",
    "fieldtype": "Link",
    "label": "Sub Setting Type2",
@@ -1010,30 +960,31 @@
    "fetch_from": "cad_order_form_detail.gemstone_type1",
    "fieldname": "gemstone_type1",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type1",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
    "fetch_from": "cad_order_form_detail.gemstone_type2",
    "fieldname": "gemstone_type2",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type2",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
    "fetch_from": "cad_order_form_detail.gemstone_type3",
    "fieldname": "gemstone_type3",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type3",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
    "fetch_from": "cad_order_form_detail.gemstone_type4",
    "fieldname": "gemstone_type4",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type4",
    "options": "Attribute Value"
   },
@@ -1041,47 +992,137 @@
    "fetch_from": "cad_order_form_detail.gemstone_type5",
    "fieldname": "gemstone_type5",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type5",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
    "fetch_from": "cad_order_form_detail.gemstone_type6",
    "fieldname": "gemstone_type6",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type6",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
    "fetch_from": "cad_order_form_detail.gemstone_type7",
    "fieldname": "gemstone_type7",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type7",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
    "fetch_from": "cad_order_form_detail.gemstone_type8",
    "fieldname": "gemstone_type8",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type8",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
-   "fetch_from": "cad_order_form_detail.purity",
+   "fetch_from": "cad_order_form_detail.metal_purity",
    "fieldname": "metal_purity",
    "fieldtype": "Link",
    "label": "Metal Purity",
    "options": "Attribute Value",
    "read_only": 1
+  },
+  {
+   "fetch_from": "cad_order_form.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "column_break_etz53",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_oi3uq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_xbmnv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_phme6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lvxgh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_uxuj0",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qz2qa",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_oykzd",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_gnclg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bnncs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_rd84a",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_j5lf7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_uoaks",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_zzgem",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_pxowt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "cad_order_form_detail.metal_type",
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "label": "Metal Type",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ubbqi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fetch_from": "cad_order_form_detail.navratna",
+   "fieldname": "navratna",
+   "fieldtype": "Check",
+   "label": "Navratna"
+  },
+  {
+   "fieldname": "section_break_vfurz",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-18 00:15:43.665743",
+ "modified": "2023-07-24 15:34:51.547396",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order",

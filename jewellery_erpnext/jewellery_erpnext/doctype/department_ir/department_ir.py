@@ -207,3 +207,10 @@ def get_previous_operation(manufacturing_operation):
 	if not mfg_operation.previous_operation:
 		return None
 	return frappe.db.get_value("Manufacturing Operation", {"operation": mfg_operation.previous_operation, "manufacturing_work_order": mfg_operation.manufacturing_work_order})
+
+
+# Updated Code
+@frappe.whitelist()
+def get_default_cu_de():
+	db_data = frappe.db.sql(f"""SELECT department  from tabEmployee te  WHERE user_id = '{frappe.session.user}'""")
+	return db_data

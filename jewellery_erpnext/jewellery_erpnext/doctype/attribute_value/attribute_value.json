@@ -12,15 +12,21 @@
   "is_category",
   "is_diamond_grade",
   "is_finding_type",
+  "is_god",
   "column_break_7",
   "is_stone_shape",
   "is_collection",
   "is_finding_size",
+  "is_age_group",
+  "is_occasion",
+  "is_temple",
   "column_break_11",
   "is_metal_purity",
   "is_diamond_sieve_size_range",
   "is_sub_setting_type",
   "is_subcategory",
+  "is_animal",
+  "is_bird",
   "parent_attribute_value",
   "section_break_24",
   "sieve_size_name",
@@ -337,11 +343,46 @@
    "fieldtype": "Link",
    "label": "Metal Touch",
    "options": "Attribute Value"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_age_group",
+   "fieldtype": "Check",
+   "label": "Is Age Group"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_occasion",
+   "fieldtype": "Check",
+   "label": "Is Occasion"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_animal",
+   "fieldtype": "Check",
+   "label": "Is Animal"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_god",
+   "fieldtype": "Check",
+   "label": "Is God"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_temple",
+   "fieldtype": "Check",
+   "label": "Is Temple"
+  },
+  {
+   "fieldname": "is_bird",
+   "fieldtype": "Data",
+   "label": "Is Bird"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-22 12:07:36.488239",
+ "modified": "2023-07-24 09:47:22.534302",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Attribute Value",

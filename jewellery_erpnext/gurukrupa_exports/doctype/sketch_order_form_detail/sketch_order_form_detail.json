@@ -11,15 +11,49 @@
   "item_code",
   "tag_id",
   "master_bom_no",
-  "reference_designid",
-  "reference_tagid",
+  "reference_design_code",
+  "reference_serial_no",
   "column_break_8",
-  "project",
+  "delivery_date",
   "category",
   "subcategory",
-  "qty",
-  "delivery_date",
   "estimated_duedate",
+  "section_break_21",
+  "reference_designid",
+  "reference_tagid",
+  "column_break_2ffuz",
+  "reference_design_id_2",
+  "reference_serial_no_2",
+  "column_break_nof5b",
+  "reference_design_id_3",
+  "reference_serial_no_3",
+  "section_break_sbwbp",
+  "qty",
+  "setting_type",
+  "subsetting_type",
+  "sub_setting_type2",
+  "navratna",
+  "column_break_15",
+  "gold_target",
+  "diamond_target",
+  "product_size",
+  "budget",
+  "section_break_33",
+  "gemstone_type1",
+  "column_break_35",
+  "gemstone_type2",
+  "column_break_37",
+  "gemstone_type3",
+  "column_break_39",
+  "gemstone_type4",
+  "section_break_vu76v",
+  "gemstone_type5",
+  "column_break_43",
+  "gemstone_type6",
+  "column_break_45",
+  "gemstone_type7",
+  "column_break_47",
+  "gemstone_type8",
   "section_break_13",
   "design_image",
   "image_preview",
@@ -38,31 +72,6 @@
   "column_break_14",
   "design_image4",
   "image_preview4",
-  "section_break_21",
-  "setting_type",
-  "subsetting_type",
-  "sub_setting_type2",
-  "column_break_15",
-  "gold_target",
-  "diamond_target",
-  "product_size",
-  "budget",
-  "section_break_33",
-  "gemstone_type1",
-  "column_break_35",
-  "gemstone_type2",
-  "column_break_37",
-  "gemstone_type3",
-  "column_break_39",
-  "gemstone_type4",
-  "column_break_41",
-  "gemstone_type5",
-  "column_break_43",
-  "gemstone_type6",
-  "column_break_45",
-  "gemstone_type7",
-  "column_break_47",
-  "gemstone_type8",
   "section_break_49",
   "remarks"
  ],
@@ -74,10 +83,10 @@
    "options": "\nNew Creation\nModification\nIs Combine\nIs Matching"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Modification\"))",
+   "depends_on": "eval: ((doc.design_type==\"Modification\")||(doc.design_type==\"Is Combine\"))",
    "fieldname": "tag__design_id",
    "fieldtype": "Link",
-   "label": "Design ID",
+   "label": "Design Code",
    "options": "Item"
   },
   {
@@ -89,7 +98,7 @@
    "label": "Item Code"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Modification\"))",
+   "depends_on": "eval: ((doc.design_type==\"Modification\")||(doc.design_type==\"Is Combine\"))\r\n",
    "fetch_from": "tag__design_id.tag_no",
    "fieldname": "tag_id",
    "fieldtype": "Link",
@@ -105,10 +114,10 @@
    "options": "BOM"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
    "fieldname": "reference_designid",
    "fieldtype": "Link",
-   "label": "Reference Design ID",
+   "label": "Reference Design ID 1",
    "options": "Item"
   },
   {
@@ -236,6 +245,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
    "fieldname": "section_break_21",
    "fieldtype": "Section Break"
   },
@@ -328,10 +338,6 @@
    "options": "Attribute Value"
   },
   {
-   "fieldname": "column_break_41",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "gemstone_type5",
    "fieldtype": "Link",
    "label": "Gemstone Type5",
@@ -378,12 +384,6 @@
    "label": "Order Remarks"
   },
   {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
    "depends_on": "eval:((doc.design_type==\"Is Matching\")||(doc.design_type==\"New Creation\"))",
    "fetch_from": "tag__design_id.image",
    "fetch_if_empty": 1,
@@ -398,8 +398,73 @@
    "options": "design_image"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
    "fieldname": "reference_tagid",
+   "fieldtype": "Link",
+   "label": "Reference Serial No 1",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "section_break_vu76v",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "navratna",
+   "fieldtype": "Check",
+   "label": "Navratna"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
+   "fieldname": "column_break_2ffuz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
+   "fieldname": "reference_design_id_2",
+   "fieldtype": "Link",
+   "label": "Reference Design ID 2",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
+   "fieldname": "reference_serial_no_2",
+   "fieldtype": "Link",
+   "label": "Reference Serial No 2",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "column_break_nof5b",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
+   "fieldname": "reference_design_id_3",
+   "fieldtype": "Link",
+   "label": "Reference Design ID 3",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Is Combine'",
+   "fieldname": "reference_serial_no_3",
+   "fieldtype": "Link",
+   "label": "Reference Serial No 3",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "section_break_sbwbp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "fieldname": "reference_design_code",
+   "fieldtype": "Link",
+   "label": "Reference Design Code",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "fieldname": "reference_serial_no",
    "fieldtype": "Link",
    "label": "Reference Serial No",
    "options": "Serial No"
@@ -409,7 +474,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-15 17:54:50.361579",
+ "modified": "2023-07-24 15:56:32.124850",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form Detail",

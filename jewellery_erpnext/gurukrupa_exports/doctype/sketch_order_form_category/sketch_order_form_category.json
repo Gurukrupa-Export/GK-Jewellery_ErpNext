@@ -17,6 +17,15 @@
   "project",
   "design_image",
   "image_preview",
+  "section_break_u71qy",
+  "reference_design_id_1",
+  "reference_serial_no_1",
+  "column_break_cck8y",
+  "reference_design_id_2",
+  "reference_serial_no_2",
+  "column_break_qgnbv",
+  "reference_design_id_3",
+  "reference_serial_no_3",
   "section_break_10",
   "design_image1",
   "image_preview1",
@@ -68,17 +77,17 @@
    "options": "\nNew Creation\nModification\nIs Combine\nIs Matching"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Modification\"))",
+   "depends_on": "eval: ((doc.design_type==\"Mod\")||(doc.design_type==\"Fusion\"))\r\n",
    "fieldname": "tag__design_id",
    "fieldtype": "Link",
    "label": "Design ID",
    "options": "Item"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fieldname": "reference_tagid",
    "fieldtype": "Link",
-   "label": "Reference Tag ID",
+   "label": "Reference Serial No",
    "options": "Serial No"
   },
   {
@@ -325,7 +334,7 @@
    "options": "Project"
   },
   {
-   "depends_on": "eval:(doc.design_type==\"Modification\")",
+   "depends_on": "eval: ((doc.design_type==\"Mod\")||(doc.design_type==\"Fusion\"))\r\n",
    "fetch_from": "tag__design_id.tag_no",
    "fieldname": "tag_id",
    "fieldtype": "Link",
@@ -339,7 +348,7 @@
    "options": "Attribute Value"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\")||(doc.design_type==\"New Creation\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\")||(doc.design_type==\"New Creation\"))",
    "fetch_from": "tag__design_id.image",
    "fetch_if_empty": 1,
    "fieldname": "design_image",
@@ -356,17 +365,72 @@
    "options": "design_image"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fieldname": "reference_designid",
    "fieldtype": "Link",
    "label": "Reference Design ID",
    "options": "Item"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Fusion'",
+   "fieldname": "section_break_u71qy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Fusion'",
+   "fieldname": "reference_design_id_1",
+   "fieldtype": "Link",
+   "label": "Reference Design ID 1",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_cck8y",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Fusion'",
+   "fieldname": "reference_serial_no_1",
+   "fieldtype": "Link",
+   "label": "Reference Serial No 1",
+   "options": "Serial No"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Fusion'",
+   "fieldname": "reference_design_id_2",
+   "fieldtype": "Link",
+   "label": "Reference Design ID 2",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Fusion'",
+   "fieldname": "reference_serial_no_2",
+   "fieldtype": "Link",
+   "label": "Reference Serial No 2",
+   "options": "Serial No"
+  },
+  {
+   "fieldname": "column_break_qgnbv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Fusion'",
+   "fieldname": "reference_design_id_3",
+   "fieldtype": "Link",
+   "label": "Reference Design ID 3",
+   "options": "Item"
+  },
+  {
+   "depends_on": "eval: doc.design_type == 'Fusion'",
+   "fieldname": "reference_serial_no_3",
+   "fieldtype": "Link",
+   "label": "Reference Serial No 3",
+   "options": "Serial No"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-15 16:52:05.605354",
+ "modified": "2023-07-24 12:38:45.659706",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form Category",

@@ -1,0 +1,35 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{age_group}",
+ "creation": "2023-07-22 17:22:59.100054",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "age_group"
+ ],
+ "fields": [
+  {
+   "fieldname": "age_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Occasion",
+   "options": "Attribute Value"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-07-22 17:22:59.100054",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Occasion",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
