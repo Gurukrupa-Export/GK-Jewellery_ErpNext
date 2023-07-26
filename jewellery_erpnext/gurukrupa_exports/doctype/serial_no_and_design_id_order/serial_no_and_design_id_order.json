@@ -263,7 +263,7 @@
    "fetch_from": "serial_and_design_id_order_form_detail.item",
    "fieldname": "item",
    "fieldtype": "Link",
-   "label": "Design ID",
+   "label": "Design Code",
    "options": "Item"
   },
   {
@@ -1006,7 +1006,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-09 01:45:24.374153",
+ "modified": "2023-07-25 11:43:11.849611",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Serial No and Design ID Order",

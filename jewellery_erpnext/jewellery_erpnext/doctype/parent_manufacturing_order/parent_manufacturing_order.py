@@ -78,15 +78,25 @@ def get_item_code(sales_order_item):
 
 @frappe.whitelist()
 def make_manufacturing_order(source_doc, row):
+	# print(type(frappe.db.get_value("Parcel Place MultiSelect",{"parent":row.sales_order,},"parcel_place")))
+	print([frappe.db.get_value("Service Type 2",{"parent":row.sales_order},"service_type1")])
 	doc = frappe.new_doc("Parent Manufacturing Order")
 	doc.company = source_doc.company
 	doc.sales_order = row.sales_order
 	doc.sales_order_item = row.docname
 	doc.item_code = row.item_code
+	doc.branch = frappe.db.get_value("Sales Order Item",{"parent":row.sales_order,"item_code":row.item_code},"branch")
+	doc.order_form_id = frappe.db.get_value("Sales Order Item",{"parent":row.sales_order,"item_code":row.item_code},"order_form_id")
+	doc.order_form_date = frappe.db.get_value("Sales Order Item",{"parent":row.sales_order,"item_code":row.item_code},"order_form_date")
+	# recheck this
+	doc.service_type = frappe.db.get_value("Service Type 2",{"parent":row.sales_order},"service_type1")
+	doc.parcel_place = frappe.db.get_value("Parcel Place MultiSelect",{"parent":row.sales_order,},"parcel_place")
+	# 
 	doc.manufacturing_plan = source_doc.name
 	doc.manufacturer = frappe.db.get_value("Manufacturer",{"company":source_doc.company}, "name", order_by="creation asc")
 	doc.qty = row.qty_per_manufacturing_order
 	doc.rowname = row.name
+	
 	doc.save()
 	diamond_grade = frappe.db.get_value("Customer Diamond Grade",{"diamond_quality": doc.diamond_quality, "parent": doc.customer},"diamond_grade_1")
 	doc.db_set("diamond_grade",diamond_grade)
@@ -111,6 +121,10 @@ def create_manufacturing_work_order(self):
 					}
 				}
 			   })
+		doc.branch = row.branch
+		doc.order_form_id = doc.order_form_id
+		doc.order_form_date = doc.order_form_date
+		doc.order_form_id = doc.order_form_id
 		doc.metal_touch = row.metal_touch
 		doc.metal_type = row.metal_type
 		doc.metal_purity = row.metal_purity

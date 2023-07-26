@@ -73,13 +73,22 @@ def make_quotation(source_name, target_doc=None):
 			"company": "company",
 			"party_name": "customer_code",
 			"order_type": "order_type",
-			"diamond_quality": "diamond_quality"
+			"diamond_quality": "diamond_quality",
+			"salesman_name":"salesman_name",
+			"po_number":"po_number",
+			"parcel_place": "parcel_place",
+
 		}
 		for target_field, source_field in field_map.items():
+			print(source.get(source_field))
 			quotation.set(target_field,source.get(source_field))
 		service_types = frappe.db.get_values("Service Type 2", {"parent": source.name},"service_type1")
 		for service_type in service_types:
 			quotation.append("service_type",{"service_type1": service_type})
+
+		parcel_places = frappe.db.get_values("Parcel Place MultiSelect", {"parent": source.name},"parcel_place")
+		for parcel_place in parcel_places:
+			quotation.append("parcel_place",{"parcel_place": parcel_place})
 
 	if isinstance(target_doc, str):
 		target_doc = json.loads(target_doc)
@@ -109,7 +118,9 @@ def make_quotation(source_name, target_doc=None):
 		"salesman_name": cad_order.get("salesman_name"),
 		"order_form_date": cad_order.get("order_date"),
 		"po_no": cad_order.get("po_number"),
-		"parcel_place": cad_order.get("parcel_place")
+		"parcel_place": cad_order.get("parcel_place"),
+		"bom":cad_order.get("bom"),
+		"serial_no_bom":cad_order.get("serial_no_bom"),
 	})
 	set_missing_values(cad_order, target_doc)
 

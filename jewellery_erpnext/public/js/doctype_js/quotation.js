@@ -191,9 +191,13 @@ frappe.ui.form.on('Quotation Item', {
             frappe.throw("Please save document to edit the BOM.")
         }
         if (!row.quotation_bom) {
-            frappe.throw("Default BOM not exists for item {}".format(row.item_code))
+            frappe.throw("Default BOM does not exist for item " + row.item_code);
         }
-        // if(row.quotation_bom){
+        
+        // if (!row.quotation_bom) {
+        //     frappe.throw("Default BOM not exists for item {}".format(row.item_code))
+        // }
+        // // if(row.quotation_bom){
         //   window.open('/app/bom/'+row.quotation_bom)
         // }
         var metal_data = [];

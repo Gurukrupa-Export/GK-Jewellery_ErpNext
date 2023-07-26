@@ -753,7 +753,7 @@
   {
    "fieldname": "item",
    "fieldtype": "Link",
-   "label": "Item",
+   "label": "Design Code",
    "no_copy": 1,
    "options": "Item",
    "read_only": 1
@@ -807,7 +807,7 @@
    "fieldname": "parcel_place",
    "fieldtype": "Table MultiSelect",
    "label": "Shipping Territory",
-   "options": "Territory Multi Select",
+   "options": "Parcel Place MultiSelect",
    "read_only": 1
   },
   {
@@ -1122,7 +1122,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-24 15:34:51.547396",
+ "modified": "2023-07-25 14:11:41.374821",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order",

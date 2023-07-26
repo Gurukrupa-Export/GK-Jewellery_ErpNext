@@ -12,6 +12,7 @@
   "modification",
   "column_break_3",
   "tag_no",
+  "serial_no_bom",
   "diamond_quality",
   "delivery_date",
   "column_break_4",
@@ -134,7 +135,7 @@
   {
    "fieldname": "bom",
    "fieldtype": "Link",
-   "label": "BOM",
+   "label": "Design Code BOM",
    "options": "BOM"
   },
   {
@@ -850,12 +851,18 @@
    "fieldname": "navratna",
    "fieldtype": "Check",
    "label": "Navratna"
+  },
+  {
+   "fieldname": "serial_no_bom",
+   "fieldtype": "Link",
+   "label": "Serial No BOM",
+   "options": "BOM"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-24 14:00:39.538562",
+ "modified": "2023-07-25 11:56:44.166296",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Serial No and Design ID Order Form Detail",
