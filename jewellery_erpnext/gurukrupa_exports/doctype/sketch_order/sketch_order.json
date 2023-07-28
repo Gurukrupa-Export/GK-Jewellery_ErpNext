@@ -7,6 +7,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "details_tab",
+  "section_break_eenmc",
   "company",
   "department",
   "column_break_5lc9u",
@@ -117,7 +119,6 @@
   "design_image4",
   "image_preview4",
   "section_break_y4y2c",
-  "design_attributes",
   "section_break_53",
   "remark",
   "section_break_47",
@@ -129,7 +130,9 @@
   "section_break_30",
   "final_sketch_approval",
   "section_break_43",
-  "final_sketch_approval_cmo"
+  "final_sketch_approval_cmo",
+  "design_attribute_tab",
+  "design_attributes"
  ],
  "fields": [
   {
@@ -876,12 +879,26 @@
    "fieldtype": "Table",
    "label": "Design Attributes",
    "options": "Design Attributes"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "design_attribute_tab",
+   "fieldtype": "Tab Break",
+   "label": "Design Attribute"
+  },
+  {
+   "fieldname": "section_break_eenmc",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-24 17:28:45.302083",
+ "modified": "2023-07-27 13:54:28.992533",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order",

@@ -42,6 +42,9 @@ def create_item_from_cad_order(source_name, target_doc=None):
 		},target_doc, post_process
 	)
 	doc.save()
+	print(doc.name)
+	frappe.db.set_value('Item',doc.name,'order_from','CAD Order')
+	frappe.db.set_value('Item',doc.name,'order_from_no',source_name)
 	return doc.name
 
 @frappe.whitelist()
