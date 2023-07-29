@@ -18,11 +18,7 @@ class SketchOrderForm(Document):
 		self.validate_category_subcaegory()
 
 	def validate_category_subcaegory(self):
-		if self.design_by == "Customer Design":
-			tablename = "order_details"
-		else:
-			tablename = "category"
-
+		tablename = "order_details"
 		for row in self.get(tablename):
 			if row.subcategory:
 				parent = frappe.db.get_value("Attribute Value", row.subcategory, "parent_attribute_value")
@@ -31,12 +27,9 @@ class SketchOrderForm(Document):
 
 
 def create_sketch_order(self):
-	if self.design_by == "Customer Design":
+	if self.design_by in ["Customer Design", "Concept by Designer"]:
 		order_details = self.order_details
 		doctype = "Sketch Order Form Detail"
-	elif self.design_by == "Concept by Designer":
-		order_details = self.category
-		doctype = "Sketch Order Form Category"
 	else:
 		return
 	doclist = []

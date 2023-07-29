@@ -8,43 +8,32 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
+  "department",
   "column_break_oylo6",
   "branch",
-  "project",
+  "salesman_name",
   "section_break_2",
+  "customer_code",
   "order_date",
-  "delivery_days",
   "delivery_date",
   "estimated_duedate",
-  "customer_code",
+  "project",
   "column_break_4",
-  "po_number",
+  "po_no",
   "order_type",
-  "salesman_name",
+  "delivery_days",
   "design_by",
+  "section_break_14",
+  "order_details",
+  "section_break_mwkqx",
+  "remarks",
   "section_break_1",
   "concept_image",
   "image_preview",
-  "column_break_12",
-  "section_break_14",
-  "category",
-  "section_break_16",
-  "basic_details",
-  "market",
-  "age",
-  "gender",
-  "function",
-  "column_break_23",
   "setting_type",
   "concept_type",
-  "nature",
-  "setting_style",
-  "animal",
-  "god",
-  "temple",
+  "design_attributes",
   "colour_stone",
-  "birds",
-  "shape",
   "section_break13",
   "creativity_type",
   "stepping",
@@ -56,13 +45,40 @@
   "gold_ball",
   "flows",
   "nagas",
-  "section_break_5",
-  "order_details",
   "section_break_9",
-  "remarks",
+  "territories_tab",
+  "india",
+  "india_states",
+  "column_break_cibey",
+  "usa",
+  "usa_states",
   "amended_from"
  ],
  "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company Name",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_oylo6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
   {
    "fieldname": "section_break_2",
    "fieldtype": "Section Break"
@@ -98,16 +114,16 @@
   {
    "fieldname": "customer_code",
    "fieldtype": "Link",
-   "label": "Customer Code",
-   "mandatory_depends_on": "eval:(doc.order_type=='Customer Order')",
-   "options": "Customer"
+   "label": "Customer Name",
+   "options": "Customer",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "po_number",
+   "fieldname": "po_no",
    "fieldtype": "Data",
    "label": "Customer PO Number"
   },
@@ -121,8 +137,8 @@
   {
    "fieldname": "salesman_name",
    "fieldtype": "Link",
-   "label": "Salesman Name",
-   "options": "Employee",
+   "label": "Sales Person",
+   "options": "Sales Person",
    "reqd": 1
   },
   {
@@ -151,57 +167,8 @@
    "options": "concept_image"
   },
   {
-   "fieldname": "column_break_12",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:doc.design_by=='Concept by Designer'",
    "fieldname": "section_break_14",
    "fieldtype": "Section Break"
-  },
-  {
-   "depends_on": "eval:((doc.design_by == 'Concept by Designer') &&\n(doc.order_date != null) &&\n(doc.delivery_days != null) && \n(doc.delivery_date != null) && \n(doc.customer_code != null) && \n(doc.order_type != null) && \n(doc.salesman_name != null))",
-   "fieldname": "category",
-   "fieldtype": "Table",
-   "label": "Order Details - Concept by Designer",
-   "options": "Sketch Order Form Category"
-  },
-  {
-   "depends_on": "eval:doc.design_by=='Concept by Designer'",
-   "fieldname": "section_break_16",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "basic_details",
-   "fieldtype": "Heading",
-   "label": "Basic Details"
-  },
-  {
-   "fieldname": "market",
-   "fieldtype": "Select",
-   "label": "Market",
-   "options": "\nChennai\nBangalore\nHyderabad\nCoimbatore\nKerala"
-  },
-  {
-   "fieldname": "age",
-   "fieldtype": "Data",
-   "label": "Age"
-  },
-  {
-   "fieldname": "gender",
-   "fieldtype": "Select",
-   "label": "Gender",
-   "options": "\nMale\nFemale"
-  },
-  {
-   "fieldname": "function",
-   "fieldtype": "Select",
-   "label": "Function",
-   "options": "\nBirthday\nFestive Gift\nAnniversary\nMothers Day\nWedding\nEngagement\nValentine\nWomens Day"
-  },
-  {
-   "fieldname": "column_break_23",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "setting_type",
@@ -212,133 +179,101 @@
   },
   {
    "fieldname": "concept_type",
-   "fieldtype": "Heading",
-   "label": "Concept Type"
-  },
-  {
-   "fieldname": "nature",
-   "fieldtype": "Data",
-   "label": "Nature"
-  },
-  {
-   "fieldname": "setting_style",
-   "fieldtype": "Data",
-   "label": "Setting Style"
-  },
-  {
-   "fieldname": "animal",
-   "fieldtype": "Data",
-   "label": "Animal"
-  },
-  {
-   "fieldname": "god",
-   "fieldtype": "Data",
-   "label": "God"
-  },
-  {
-   "fieldname": "temple",
-   "fieldtype": "Data",
-   "label": "Temple"
+   "fieldtype": "Tab Break",
+   "label": "Concept",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "fieldname": "colour_stone",
    "fieldtype": "Table",
    "hidden": 1,
    "label": "Gemstone Type",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'",
    "options": "Sketch Order Form Color Stone"
-  },
-  {
-   "fieldname": "birds",
-   "fieldtype": "Data",
-   "label": "Birds"
-  },
-  {
-   "fieldname": "shape",
-   "fieldtype": "Data",
-   "label": "Shape"
   },
   {
    "depends_on": "eval:(doc.design_by == 'Concept by Designer')",
    "fieldname": "section_break13",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "fieldname": "creativity_type",
-   "fieldtype": "Heading",
-   "label": "Creativity Type"
+   "fieldtype": "Tab Break",
+   "label": "Creativity",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "stepping",
    "fieldtype": "Check",
-   "label": "Stepping"
+   "label": "Stepping",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "fusion",
    "fieldtype": "Check",
-   "label": "Fusion"
+   "label": "Fusion",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "drops",
    "fieldtype": "Check",
-   "label": "Drops"
+   "label": "Drops",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "coin",
    "fieldtype": "Check",
-   "label": "Coin"
+   "label": "Coin",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "fieldname": "column_break_19",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "gold_wire",
    "fieldtype": "Check",
-   "label": "Gold Wire (dat)"
+   "label": "Gold Wire (dat)",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "gold_ball",
    "fieldtype": "Check",
-   "label": "Gold Ball"
+   "label": "Gold Ball",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "flows",
    "fieldtype": "Check",
-   "label": "Flows"
+   "label": "Flows",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "default": "0",
    "fieldname": "nagas",
    "fieldtype": "Check",
-   "label": "Nagas"
+   "label": "Nagas",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
-   "depends_on": "eval:doc.order_type!='Repair'",
-   "fieldname": "section_break_5",
-   "fieldtype": "Section Break"
-  },
-  {
-   "depends_on": "eval:((doc.design_by == 'Customer Design') &&\n(doc.order_date != null) &&\n(doc.delivery_days != null) && \n(doc.delivery_date != null) && \n(doc.customer_code != null) && \n(doc.order_type != null) && \n(doc.salesman_name != null))",
+   "depends_on": "eval:((doc.order_date != null) &&\n(doc.delivery_days != null) && \n(doc.delivery_date != null) && \n(doc.customer_code != null) && \n(doc.order_type != null) && \n(doc.salesman_name != null))",
    "fieldname": "order_details",
    "fieldtype": "Table",
-   "label": "Order Details - Customer Design",
+   "label": "Order Details",
    "options": "Sketch Order Form Detail"
   },
   {
    "fieldname": "section_break_9",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "remarks",
-   "fieldtype": "Text",
-   "label": "Remarks"
   },
   {
    "fieldname": "amended_from",
@@ -350,33 +285,71 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_oylo6",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "project",
+   "fieldname": "department",
    "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Branch"
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "label": "Company Name",
-   "options": "Company",
+   "label": "Department",
+   "options": "Department",
    "reqd": 1
+  },
+  {
+   "fieldname": "territories_tab",
+   "fieldtype": "Tab Break",
+   "label": "Territories",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "india",
+   "fieldtype": "Check",
+   "label": "INDIA",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "fieldname": "india_states",
+   "fieldtype": "Table MultiSelect",
+   "label": "States",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'",
+   "options": "Territory Multi Select"
+  },
+  {
+   "fieldname": "column_break_cibey",
+   "fieldtype": "Column Break",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "usa",
+   "fieldtype": "Check",
+   "label": "USA",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "fieldname": "usa_states",
+   "fieldtype": "Select",
+   "label": "States",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'",
+   "options": "\nUSA"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "section_break_mwkqx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "design_attributes",
+   "fieldtype": "Table",
+   "label": "Design Attributes",
+   "options": "Design Attributes"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-17 23:50:01.210525",
+ "modified": "2023-07-28 21:00:04.912700",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form",

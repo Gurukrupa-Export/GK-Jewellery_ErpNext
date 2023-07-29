@@ -20,7 +20,7 @@
   "delivery_date",
   "est_delivery_date",
   "column_break_ng98u",
-  "po_number",
+  "po_no",
   "order_type",
   "delivery_days",
   "project",
@@ -59,6 +59,30 @@
   "gold_target",
   "diamond_target",
   "budget",
+  "section_break_34",
+  "market",
+  "age",
+  "gender",
+  "function",
+  "section_break_35",
+  "nature",
+  "setting_style",
+  "animal",
+  "god",
+  "temple",
+  "birds",
+  "shape",
+  "section_break_71",
+  "creativity_type",
+  "stepping",
+  "fusion",
+  "drops",
+  "coin",
+  "column_break_77",
+  "gold_wire",
+  "gold_ball",
+  "flows",
+  "nagas",
   "section_break_7xz6a",
   "navratna",
   "section_break_82",
@@ -108,17 +132,7 @@
   "section_break_43",
   "final_sketch_approval_cmo",
   "design_attribute_tab",
-  "design_attributes",
-  "tab_break_xneuz",
-  "stepping",
-  "fusion",
-  "drops",
-  "coin",
-  "column_break_77",
-  "gold_wire",
-  "gold_ball",
-  "flows",
-  "nagas"
+  "design_attributes"
  ],
  "fields": [
   {
@@ -149,8 +163,8 @@
    "read_only": 1
   },
   {
-   "fetch_from": "sketch_order_form.po_number",
-   "fieldname": "po_number",
+   "fetch_from": "sketch_order_form.po_no",
+   "fieldname": "po_no",
    "fieldtype": "Data",
    "label": "Customer PO Number",
    "read_only": 1
@@ -270,11 +284,11 @@
    "fieldname": "design_type",
    "fieldtype": "Select",
    "label": "Design Type",
-   "options": "\nNew Creation\nModification\nIs Combine\nIs Matching",
+   "options": "New Design\nMod\nFusion\nSimilar",
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Modification\"))",
+   "depends_on": "eval:((doc.design_type==\"Mod\"))",
    "fetch_from": "sketch_order_form_detail.tag__design_id",
    "fieldname": "tag__design_id",
    "fieldtype": "Link",
@@ -283,7 +297,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:(doc.design_type==\"Modification\")",
+   "depends_on": "eval:(doc.design_type==\"Mod\")",
    "fetch_from": "sketch_order_form_detail.item_code",
    "fieldname": "item_code",
    "fieldtype": "Data",
@@ -292,7 +306,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fetch_from": "sketch_order_form_detail.master_bom_no",
    "fieldname": "master_bom_no",
    "fieldtype": "Link",
@@ -301,7 +315,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fetch_from": "sketch_order_form_detail.reference_designid",
    "fieldname": "reference_designid",
    "fieldtype": "Link",
@@ -310,7 +324,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fetch_from": "sketch_order_form_detail.reference_tagid",
    "fieldname": "reference_tagid",
    "fieldtype": "Link",
@@ -320,7 +334,7 @@
   },
   {
    "fieldname": "column_break_32",
-   "fieldtype": "Section Break"
+   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "sketch_order_form_detail.category",
@@ -337,6 +351,10 @@
    "label": "Sub Category",
    "options": "Attribute Value",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_34",
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "design_image1",
@@ -392,6 +410,10 @@
    "fieldtype": "Image",
    "label": "Image Preview4",
    "options": "design_image4"
+  },
+  {
+   "fieldname": "section_break_35",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "setting_type",
@@ -606,6 +628,86 @@
    "read_only": 1
   },
   {
+   "fieldname": "market",
+   "fieldtype": "Select",
+   "label": "Market",
+   "options": "\nChennai\nBangalore\nHyderabad\nCoimbatore\nKerala",
+   "read_only": 1
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "\nMale\nFemale",
+   "read_only": 1
+  },
+  {
+   "fieldname": "function",
+   "fieldtype": "Select",
+   "label": "Function",
+   "options": "\nBirthday\nFestive Gift\nAnniversary\nMothers Day\nWedding\nEngagement\nValentine\nWomens Day",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nature",
+   "fieldtype": "Data",
+   "label": "Nature",
+   "read_only": 1
+  },
+  {
+   "fieldname": "setting_style",
+   "fieldtype": "Data",
+   "label": "Setting Style",
+   "read_only": 1
+  },
+  {
+   "fieldname": "animal",
+   "fieldtype": "Data",
+   "label": "Animal",
+   "read_only": 1
+  },
+  {
+   "fieldname": "god",
+   "fieldtype": "Data",
+   "label": "God",
+   "read_only": 1
+  },
+  {
+   "fieldname": "temple",
+   "fieldtype": "Data",
+   "label": "Temple",
+   "read_only": 1
+  },
+  {
+   "fieldname": "birds",
+   "fieldtype": "Data",
+   "label": "Birds",
+   "read_only": 1
+  },
+  {
+   "fieldname": "shape",
+   "fieldtype": "Data",
+   "label": "Shape",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.design_by=='Concept by Designer'",
+   "fieldname": "section_break_71",
+   "fieldtype": "Section Break",
+   "read_only": 1
+  },
+  {
+   "fieldname": "creativity_type",
+   "fieldtype": "Heading",
+   "label": "Creativity Type"
+  },
+  {
    "default": "0",
    "fieldname": "stepping",
    "fieldtype": "Check",
@@ -662,7 +764,7 @@
    "default": "0",
    "fieldname": "nagas",
    "fieldtype": "Check",
-   "label": "Nakshi",
+   "label": "Nagas",
    "read_only": 1
   },
   {
@@ -670,7 +772,7 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Modification\"))",
+   "depends_on": "eval:((doc.design_type==\"Mod\"))",
    "fieldname": "tag_id",
    "fieldtype": "Link",
    "label": "Master Serial No",
@@ -791,17 +893,12 @@
   {
    "fieldname": "section_break_eenmc",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "tab_break_xneuz",
-   "fieldtype": "Tab Break",
-   "label": "Creativity"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-28 22:10:57.794311",
+ "modified": "2023-07-27 13:54:28.992533",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order",
