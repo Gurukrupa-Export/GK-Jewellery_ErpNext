@@ -83,6 +83,7 @@ def make_manufacturing_order(source_doc, row):
 	doc.sales_order = row.sales_order
 	doc.sales_order_item = row.docname
 	doc.item_code = row.item_code
+	doc.service_type = frappe.get_all("Service Type 2", {"parent": row.sales_order}, ["service_type1"]) or []
 	doc.manufacturing_plan = source_doc.name
 	doc.manufacturer = frappe.db.get_value("Manufacturer",{"company":source_doc.company}, "name", order_by="creation asc")
 	doc.qty = row.qty_per_manufacturing_order

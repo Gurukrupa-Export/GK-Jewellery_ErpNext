@@ -158,9 +158,10 @@
   },
   {
    "fieldname": "setting_type",
-   "fieldtype": "Data",
+   "fieldtype": "Table",
    "hidden": 1,
-   "label": "Setting Type"
+   "label": "Setting Type",
+   "options": "Sketch Order Form Setting Type"
   },
   {
    "fieldname": "concept_type",
@@ -170,10 +171,11 @@
   },
   {
    "fieldname": "colour_stone",
-   "fieldtype": "Data",
+   "fieldtype": "Table",
    "hidden": 1,
    "label": "Gemstone Type",
-   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'",
+   "options": "Sketch Order Form Color Stone"
   },
   {
    "depends_on": "eval:(doc.design_by == 'Concept by Designer')",
@@ -249,7 +251,7 @@
    "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
-   "depends_on": "eval:((doc.order_date != null) &&\n(doc.delivery_days != null) && \n(doc.delivery_date != null) && \n(doc.customer_code != null) && \n(doc.order_type != null) && \n(doc.salesman_name != null))",
+   "depends_on": "eval:((doc.order_date != null) &&\n(doc.due_days != null) && \n(doc.delivery_date != null) && \n(doc.customer_code != null) && \n(doc.order_type != null) && \n(doc.salesman_name != null))",
    "fieldname": "order_details",
    "fieldtype": "Table",
    "label": "Order Details",
@@ -310,7 +312,7 @@
   {
    "fieldname": "usa_states",
    "fieldtype": "Select",
-   "label": "US States",
+   "label": "States",
    "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'",
    "options": "\nUSA"
   },
@@ -344,7 +346,7 @@
    "link_fieldname": "sketch_order_form"
   }
  ],
- "modified": "2023-07-29 14:21:59.275744",
+ "modified": "2023-07-29 12:54:04.104402",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form",

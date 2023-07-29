@@ -115,14 +115,6 @@ frappe.ui.form.on('Serial No and Design Code Order Form', {
 				}
 			};
 		})
-		frm.set_query("parcel_place", function (doc) {
-			return {
-				query: "jewellery_erpnext.query.get_parcel_place",
-				filters: {
-					"customer_code": doc.customer_code
-				}
-			}
-		})
 		if (frm.doc.order_details) {
 			frm.doc.order_details.forEach(function (d) {
 				show_attribute_fields_for_subcategory(frm, d.doctype, d.name, d);

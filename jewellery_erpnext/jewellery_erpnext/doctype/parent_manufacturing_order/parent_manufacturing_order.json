@@ -23,7 +23,6 @@
   "rowname",
   "amended_from",
   "column_break_lhbfx",
-  "branch",
   "posting_date",
   "delivery_date",
   "order_type",
@@ -45,6 +44,8 @@
   "section_break_royco",
   "order_remarks",
   "order_details_tab",
+  "branch",
+  "order_form_type",
   "order_form_id",
   "sales_order",
   "column_break_0hg6a",
@@ -52,7 +53,6 @@
   "order_form_date",
   "service_type",
   "column_break_acoov",
-  "parcel_place",
   "po_no",
   "salesman_name"
  ],
@@ -73,6 +73,7 @@
    "fetch_from": "sales_order.company",
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Company",
    "options": "Company",
    "read_only": 1
@@ -96,14 +97,14 @@
    "fetch_from": "sales_order_item.item_code",
    "fieldname": "item_code",
    "fieldtype": "Link",
-   "label": "Design ID",
+   "label": "Design Code",
    "options": "Item"
   },
   {
    "fetch_from": "sales_order_item.serial_no",
    "fieldname": "serial_no",
    "fieldtype": "Link",
-   "label": "Serial ID",
+   "label": "Serial No",
    "options": "Serial No"
   },
   {
@@ -227,7 +228,9 @@
   {
    "fieldname": "manufacturer",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Manufacturer",
+   "mandatory_depends_on": "eval:!doc.__islocal",
    "options": "Manufacturer"
   },
   {
@@ -243,7 +246,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "sales_order.metal_purity",
+   "fetch_from": "sales_order_item.metal_purity",
    "fetch_if_empty": 1,
    "fieldname": "metal_purity",
    "fieldtype": "Link",
@@ -251,7 +254,7 @@
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "sales_order.metal_color",
+   "fetch_from": "sales_order_item.metal_color",
    "fetch_if_empty": 1,
    "fieldname": "metal_color",
    "fieldtype": "Link",
@@ -273,10 +276,11 @@
    "label": "Order Details"
   },
   {
+   "fetch_from": "sales_order_item.order_form_id",
    "fieldname": "order_form_id",
-   "fieldtype": "Link",
+   "fieldtype": "Dynamic Link",
    "label": "Order Form Id",
-   "options": "CAD Order"
+   "options": "order_form_type"
   },
   {
    "fieldname": "sales_order",
@@ -297,27 +301,20 @@
    "options": "Quotation"
   },
   {
+   "fetch_from": "sales_order_item.order_form_date",
    "fieldname": "order_form_date",
    "fieldtype": "Date",
    "label": "Order form date"
   },
   {
-   "fetch_from": "sales_order.service_type",
    "fieldname": "service_type",
-   "fieldtype": "Link",
+   "fieldtype": "Table MultiSelect",
    "label": "Service Type",
-   "options": "Service Type"
+   "options": "Service Type 2"
   },
   {
    "fieldname": "column_break_acoov",
    "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "sales_order.parcel_type",
-   "fieldname": "parcel_place",
-   "fieldtype": "Link",
-   "label": "Parcel Place",
-   "options": "Parcel Place List"
   },
   {
    "fetch_from": "sales_order.po_no",
@@ -326,14 +323,17 @@
    "label": "Customer PO No"
   },
   {
+   "fetch_from": "sales_order.salesman_name",
    "fieldname": "salesman_name",
-   "fieldtype": "Data",
-   "label": "Salesman Name"
+   "fieldtype": "Link",
+   "label": "Sales Person",
+   "options": "Sales Person"
   },
   {
    "fetch_from": "company.abbr",
    "fieldname": "abbr",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Abbr",
    "read_only": 1
   },
@@ -349,11 +349,18 @@
    "label": "Manufacturing End Date"
   },
   {
-   "fetch_from": "sales_order_item.is_free_item",
+   "fetch_from": "sales_order_item.metal_purity",
    "fieldname": "metal_touch",
    "fieldtype": "Link",
    "label": "Metal Touch",
    "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "sales_order_item.order_form_type",
+   "fieldname": "order_form_type",
+   "fieldtype": "Link",
+   "label": "Order Form Type",
+   "options": "DocType"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -368,7 +375,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-05-11 15:58:44.342868",
+ "modified": "2023-07-29 18:58:09.027118",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",
