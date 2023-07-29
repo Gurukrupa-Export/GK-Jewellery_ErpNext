@@ -8,6 +8,10 @@ frappe.ui.form.on('CAD Order', {
 	subcategory(frm) {
 		hide_all_subcategory_attribute_fields(frm)
 		show_attribute_fields_for_subcategory(frm)
+	},
+	est_delivery_date(frm) {
+		validate_dates(frm, frm.doc, "est_delivery_date")
+		frm.set_value('est_due_days', frappe.datetime.get_day_diff(frm.doc.est_delivery_date, frm.doc.order_date));
 	}
 });
 
@@ -40,4 +44,11 @@ function hide_all_subcategory_attribute_fields(frm) {
 		"certificate_place", "breadth", "width", "back_belt", "back_belt_length" ];
 		frm.toggle_display(fields, 0)
 		frm.refresh_fields()
+}
+
+function validate_dates(frm, doc, dateField) {
+    let order_date = frm.doc.order_date
+    if (doc[dateField] < order_date) {
+        frappe.model.set_value(doc.doctype, doc.name, dateField, frappe.datetime.add_days(order_date,1))
+    }
 }

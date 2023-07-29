@@ -76,14 +76,14 @@ frappe.ui.form.on('CAD Order Form', {
 		let design_fields = [["design_id", "tag_no"], ["reference_designid", "reference_serial_no_1"],
 		["reference_design_id_2", "reference_serial_no_2"], ["reference_design_id_3", "reference_serial_no_3"]]
 		set_filter_for_design_n_serial(frm, design_fields)
-		frm.set_query("parcel_place", function (doc) {
-			return {
-				query: "jewellery_erpnext.query.get_parcel_place",
-				filters: {
-					"customer_code": doc.customer_code
-				}
-			}
-		})
+		// frm.set_query("parcel_place", function (doc) {
+		// 	return {
+		// 		query: "jewellery_erpnext.query.get_parcel_place",
+		// 		filters: {
+		// 			"customer_code": doc.customer_code
+		// 		}
+		// 	}
+		// })
 		frm.set_query('sub_setting_type1', 'order_details', function (doc, cdt, cdn) {
 			let d = locals[cdt][cdn];
 			return {

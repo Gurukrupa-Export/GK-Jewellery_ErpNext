@@ -22,7 +22,8 @@
   "column_break_ng98u",
   "po_no",
   "order_type",
-  "delivery_days",
+  "due_days",
+  "est_due_days",
   "project",
   "section_break_2",
   "design_by",
@@ -142,16 +143,9 @@
   {
    "fetch_from": "sketch_order_form.order_date",
    "fieldname": "order_date",
-   "fieldtype": "Data",
+   "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Order Date",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "sketch_order_form.delivery_days",
-   "fieldname": "delivery_days",
-   "fieldtype": "Data",
-   "label": "Delivery Days",
    "read_only": 1
   },
   {
@@ -579,7 +573,7 @@
    "permlevel": 1
   },
   {
-   "depends_on": "eval:(!in_list(['Unassigned','Assigned','On Hold','On Hold - Assigned'], doc.workflow_state))",
+   "depends_on": "eval:(!in_list(['Unassigned','On Hold'], doc.workflow_state))",
    "fieldname": "section_break_28",
    "fieldtype": "Section Break"
   },
@@ -868,7 +862,8 @@
   {
    "fieldname": "est_delivery_date",
    "fieldtype": "Date",
-   "label": "Est. Delivery Date"
+   "label": "Est. Delivery Date",
+   "mandatory_depends_on": "eval:!doc.__islocal"
   },
   {
    "fieldname": "section_break_y4y2c",
@@ -893,12 +888,25 @@
   {
    "fieldname": "section_break_eenmc",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "est_due_days",
+   "fieldtype": "Int",
+   "label": "Est. Due Days",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "sketch_order_form.delivery_days",
+   "fieldname": "due_days",
+   "fieldtype": "Int",
+   "label": "Due Days",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-27 13:54:28.992533",
+ "modified": "2023-07-29 12:57:55.505878",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order",

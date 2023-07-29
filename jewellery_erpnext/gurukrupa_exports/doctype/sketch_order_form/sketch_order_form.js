@@ -32,7 +32,7 @@ frappe.ui.form.on('Sketch Order Form', {
     delivery_date: function(frm){
         validate_dates(frm, frm.doc, "delivery_date")
 		set_dates_in_table(frm, "order_details", "delivery_date");
-        set_delivery_days_from_delivery_date_and_order_date(frm); 
+        set_due_days_from_delivery_date_and_order_date(frm); 
     },
     
     estimated_duedate: function(frm){
@@ -40,8 +40,8 @@ frappe.ui.form.on('Sketch Order Form', {
         set_dates_in_table(frm, "order_details", "estimated_duedate");
     },
 
-    delivery_days: function(frm){ 
-        set_delivery_date_from_order_date_and_delivery_days(frm); 
+    due_days: function(frm){ 
+        set_delivery_date_from_order_date_and_due_days(frm); 
     }, 
 
     validate: function(frm){ 
@@ -147,12 +147,12 @@ function fetch_item_from_serial(doc, fieldname, itemfield) {
 	}
 }
 
-function set_delivery_days_from_delivery_date_and_order_date(frm){
-    frm.set_value('delivery_days', frappe.datetime.get_day_diff(frm.doc.delivery_date, frm.doc.order_date));
+function set_due_days_from_delivery_date_and_order_date(frm){
+    frm.set_value('due_days', frappe.datetime.get_day_diff(frm.doc.delivery_date, frm.doc.order_date));
 }
 
-function set_delivery_date_from_order_date_and_delivery_days(frm){
-    frm.set_value('delivery_date', frappe.datetime.add_days(frm.doc.order_date, frm.doc.delivery_days));
+function set_delivery_date_from_order_date_and_due_days(frm){
+    frm.set_value('delivery_date', frappe.datetime.add_days(frm.doc.order_date, frm.doc.due_days));
 }
 
 function validate_delivery_date_with_order_date(frm) {

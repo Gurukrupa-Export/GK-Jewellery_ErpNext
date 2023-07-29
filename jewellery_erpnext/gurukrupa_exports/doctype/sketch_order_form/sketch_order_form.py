@@ -58,6 +58,7 @@ def make_sketch_order(doctype, source_name, parent_doc=None, target_doc=None):
 	def set_fields_from_parent(source, target, parent = parent_doc):
 		target.company = parent.company
 		target.remark = parent.remarks
+		target.design_attributes = parent.design_attributes
 		if parent_doc.design_by == "Concept by Designer":
 			fields = ["market", "age", "gender", "function", "concept_type", "nature",
   						"setting_style", "animal", "god", "temple", "birds", "shape","creativity_type", 

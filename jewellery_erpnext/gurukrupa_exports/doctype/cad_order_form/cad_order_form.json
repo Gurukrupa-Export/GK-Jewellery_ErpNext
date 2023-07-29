@@ -119,7 +119,7 @@
    "fieldname": "parcel_place",
    "fieldtype": "Table MultiSelect",
    "label": "Shipping Territory",
-   "options": "Parcel Place MultiSelect",
+   "options": "Territory Multi Select",
    "reqd": 1
   },
   {
@@ -188,7 +188,7 @@
    "link_fieldname": "cad_order_form"
   }
  ],
- "modified": "2023-07-25 14:01:57.108912",
+ "modified": "2023-07-29 11:35:42.474611",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order Form",

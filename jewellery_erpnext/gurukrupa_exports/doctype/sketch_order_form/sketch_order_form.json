@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "ORD/M/.#####",
+ "autoname": "S/ORD/.#####",
  "creation": "2022-05-06 15:16:43.721055",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -16,12 +16,11 @@
   "customer_code",
   "order_date",
   "delivery_date",
-  "estimated_duedate",
   "project",
   "column_break_4",
   "po_no",
   "order_type",
-  "delivery_days",
+  "due_days",
   "design_by",
   "section_break_14",
   "order_details",
@@ -93,23 +92,10 @@
    "reqd": 1
   },
   {
-   "fieldname": "delivery_days",
-   "fieldtype": "Data",
-   "label": "Delivery Days",
-   "reqd": 1
-  },
-  {
    "fieldname": "delivery_date",
    "fieldtype": "Date",
    "label": "Delivery Date",
    "reqd": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "estimated_duedate",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Estimated Due Date"
   },
   {
    "fieldname": "customer_code",
@@ -344,12 +330,23 @@
    "fieldtype": "Table",
    "label": "Design Attributes",
    "options": "Design Attributes"
+  },
+  {
+   "fieldname": "due_days",
+   "fieldtype": "Int",
+   "label": "Due Days",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2023-07-28 21:00:04.912700",
+ "links": [
+  {
+   "link_doctype": "Sketch Order",
+   "link_fieldname": "sketch_order_form"
+  }
+ ],
+ "modified": "2023-07-29 12:54:04.104402",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form",

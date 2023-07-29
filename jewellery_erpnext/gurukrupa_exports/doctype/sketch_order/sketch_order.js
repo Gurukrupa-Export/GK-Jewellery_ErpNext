@@ -31,7 +31,7 @@ frappe.ui.form.on('Sketch Order', {
 			if (!d.count_1) {
 				frappe.throw(__("Row #{0}: Assigned Qty is cannot be 0",[d.idx]))
 			}
-			if (!in_list(['Unassigned','Assigned','On Hold','On Hold - Assigned'], frm.doc.workflow_state)) {
+			if (!in_list(['Unassigned','On Hold'], frm.doc.workflow_state)) {
 				if (flt(d.count_1) != flt(d.rs_count)) {
 					frappe.throw("Assigned Qty(Designer Assignment) does not match with accepted & rejected qty in Rough Sketch Approval (HOD)")
 				}
@@ -51,6 +51,10 @@ frappe.ui.form.on('Sketch Order', {
 			})
 			frm.refresh_field("final_sketch_approval")
 		}
+	},
+	est_delivery_date(frm) {
+		validate_dates(frm, frm.doc, "est_delivery_date")
+		frm.set_value('est_due_days', frappe.datetime.get_day_diff(frm.doc.est_delivery_date, frm.doc.order_date));
 	}
 })
 
@@ -91,4 +95,11 @@ function set_filters_on_child_table_fields(frm, fields) {
             }
         })
     })
+}
+
+function validate_dates(frm, doc, dateField) {
+    let order_date = frm.doc.order_date
+    if (doc[dateField] < order_date) {
+        frappe.model.set_value(doc.doctype, doc.name, dateField, frappe.datetime.add_days(order_date,1))
+    }
 }
