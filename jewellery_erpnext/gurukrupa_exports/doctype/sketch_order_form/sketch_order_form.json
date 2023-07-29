@@ -158,10 +158,9 @@
   },
   {
    "fieldname": "setting_type",
-   "fieldtype": "Table",
+   "fieldtype": "Data",
    "hidden": 1,
-   "label": "Setting Type",
-   "options": "Sketch Order Form Setting Type"
+   "label": "Setting Type"
   },
   {
    "fieldname": "concept_type",
@@ -171,11 +170,10 @@
   },
   {
    "fieldname": "colour_stone",
-   "fieldtype": "Table",
+   "fieldtype": "Data",
    "hidden": 1,
    "label": "Gemstone Type",
-   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'",
-   "options": "Sketch Order Form Color Stone"
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
   },
   {
    "depends_on": "eval:(doc.design_by == 'Concept by Designer')",
@@ -312,7 +310,7 @@
   {
    "fieldname": "usa_states",
    "fieldtype": "Select",
-   "label": "States",
+   "label": "US States",
    "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'",
    "options": "\nUSA"
   },
@@ -346,7 +344,7 @@
    "link_fieldname": "sketch_order_form"
   }
  ],
- "modified": "2023-07-29 12:54:04.104402",
+ "modified": "2023-07-29 14:21:59.275744",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form",

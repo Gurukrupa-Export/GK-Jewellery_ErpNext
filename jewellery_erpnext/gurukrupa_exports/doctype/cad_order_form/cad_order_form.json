@@ -30,7 +30,25 @@
   "order_details",
   "section_break_24",
   "remarks",
-  "amended_from"
+  "amended_from",
+  "design_attribute_tab",
+  "design_attributes",
+  "creativity_tab",
+  "stepping",
+  "fusion",
+  "drops",
+  "coin",
+  "column_break_jazjr",
+  "gold_wire",
+  "gold_ball",
+  "flows",
+  "nagas",
+  "territories_tab",
+  "india",
+  "india_states",
+  "column_break_anxf6",
+  "usa",
+  "usa_states"
  ],
  "fields": [
   {
@@ -178,6 +196,107 @@
   {
    "fieldname": "column_break_zuipg",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "territories_tab",
+   "fieldtype": "Tab Break",
+   "label": "Territories"
+  },
+  {
+   "fieldname": "creativity_tab",
+   "fieldtype": "Tab Break",
+   "label": "Creativity"
+  },
+  {
+   "default": "0",
+   "fieldname": "india",
+   "fieldtype": "Check",
+   "label": "INDIA"
+  },
+  {
+   "default": "0",
+   "fieldname": "usa",
+   "fieldtype": "Check",
+   "label": "USA"
+  },
+  {
+   "fieldname": "column_break_anxf6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "india_states",
+   "fieldtype": "Table MultiSelect",
+   "label": "States",
+   "options": "Territory Multi Select"
+  },
+  {
+   "fieldname": "usa_states",
+   "fieldtype": "Select",
+   "label": "States",
+   "options": "\nUSA"
+  },
+  {
+   "default": "0",
+   "fieldname": "stepping",
+   "fieldtype": "Check",
+   "label": "Stepping"
+  },
+  {
+   "default": "0",
+   "fieldname": "fusion",
+   "fieldtype": "Check",
+   "label": "Fusion"
+  },
+  {
+   "default": "0",
+   "fieldname": "drops",
+   "fieldtype": "Check",
+   "label": "Drops"
+  },
+  {
+   "default": "0",
+   "fieldname": "coin",
+   "fieldtype": "Check",
+   "label": "Coin"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_wire",
+   "fieldtype": "Check",
+   "label": "Gold Wire"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_ball",
+   "fieldtype": "Check",
+   "label": "Gold Ball"
+  },
+  {
+   "default": "0",
+   "fieldname": "flows",
+   "fieldtype": "Check",
+   "label": "Flows"
+  },
+  {
+   "default": "0",
+   "fieldname": "nagas",
+   "fieldtype": "Check",
+   "label": "Nakshi"
+  },
+  {
+   "fieldname": "column_break_jazjr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "design_attribute_tab",
+   "fieldtype": "Tab Break",
+   "label": "Design Attribute"
+  },
+  {
+   "fieldname": "design_attributes",
+   "fieldtype": "Table",
+   "label": "Design Attributes",
+   "options": "Design Attributes"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -188,7 +307,7 @@
    "link_fieldname": "cad_order_form"
   }
  ],
- "modified": "2023-07-29 11:35:42.474611",
+ "modified": "2023-07-29 17:24:50.540777",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order Form",

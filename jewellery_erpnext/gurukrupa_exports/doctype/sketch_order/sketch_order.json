@@ -22,8 +22,7 @@
   "column_break_ng98u",
   "po_no",
   "order_type",
-  "due_days",
-  "est_due_days",
+  "delivery_days",
   "project",
   "section_break_2",
   "design_by",
@@ -60,30 +59,6 @@
   "gold_target",
   "diamond_target",
   "budget",
-  "section_break_34",
-  "market",
-  "age",
-  "gender",
-  "function",
-  "section_break_35",
-  "nature",
-  "setting_style",
-  "animal",
-  "god",
-  "temple",
-  "birds",
-  "shape",
-  "section_break_71",
-  "creativity_type",
-  "stepping",
-  "fusion",
-  "drops",
-  "coin",
-  "column_break_77",
-  "gold_wire",
-  "gold_ball",
-  "flows",
-  "nagas",
   "section_break_7xz6a",
   "navratna",
   "section_break_82",
@@ -133,7 +108,23 @@
   "section_break_43",
   "final_sketch_approval_cmo",
   "design_attribute_tab",
-  "design_attributes"
+  "design_attributes",
+  "creativity_tab",
+  "stepping",
+  "fusion",
+  "drops",
+  "coin",
+  "column_break_77",
+  "gold_wire",
+  "gold_ball",
+  "flows",
+  "nagas",
+  "territories_tab",
+  "india",
+  "india_states",
+  "column_break_zasix",
+  "usa",
+  "usa_states"
  ],
  "fields": [
   {
@@ -143,7 +134,7 @@
   {
    "fetch_from": "sketch_order_form.order_date",
    "fieldname": "order_date",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Order Date",
    "read_only": 1
@@ -347,10 +338,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_break_34",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "design_image1",
    "fieldtype": "Attach Image",
    "label": "Design Image1"
@@ -404,10 +391,6 @@
    "fieldtype": "Image",
    "label": "Image Preview4",
    "options": "design_image4"
-  },
-  {
-   "fieldname": "section_break_35",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "setting_type",
@@ -573,7 +556,7 @@
    "permlevel": 1
   },
   {
-   "depends_on": "eval:(!in_list(['Unassigned','On Hold'], doc.workflow_state))",
+   "depends_on": "eval:(!in_list(['Unassigned','Assigned','On Hold','On Hold - Assigned'], doc.workflow_state))",
    "fieldname": "section_break_28",
    "fieldtype": "Section Break"
   },
@@ -620,86 +603,6 @@
    "fieldtype": "Text",
    "label": "Remarks",
    "read_only": 1
-  },
-  {
-   "fieldname": "market",
-   "fieldtype": "Select",
-   "label": "Market",
-   "options": "\nChennai\nBangalore\nHyderabad\nCoimbatore\nKerala",
-   "read_only": 1
-  },
-  {
-   "fieldname": "age",
-   "fieldtype": "Data",
-   "label": "Age",
-   "read_only": 1
-  },
-  {
-   "fieldname": "gender",
-   "fieldtype": "Select",
-   "label": "Gender",
-   "options": "\nMale\nFemale",
-   "read_only": 1
-  },
-  {
-   "fieldname": "function",
-   "fieldtype": "Select",
-   "label": "Function",
-   "options": "\nBirthday\nFestive Gift\nAnniversary\nMothers Day\nWedding\nEngagement\nValentine\nWomens Day",
-   "read_only": 1
-  },
-  {
-   "fieldname": "nature",
-   "fieldtype": "Data",
-   "label": "Nature",
-   "read_only": 1
-  },
-  {
-   "fieldname": "setting_style",
-   "fieldtype": "Data",
-   "label": "Setting Style",
-   "read_only": 1
-  },
-  {
-   "fieldname": "animal",
-   "fieldtype": "Data",
-   "label": "Animal",
-   "read_only": 1
-  },
-  {
-   "fieldname": "god",
-   "fieldtype": "Data",
-   "label": "God",
-   "read_only": 1
-  },
-  {
-   "fieldname": "temple",
-   "fieldtype": "Data",
-   "label": "Temple",
-   "read_only": 1
-  },
-  {
-   "fieldname": "birds",
-   "fieldtype": "Data",
-   "label": "Birds",
-   "read_only": 1
-  },
-  {
-   "fieldname": "shape",
-   "fieldtype": "Data",
-   "label": "Shape",
-   "read_only": 1
-  },
-  {
-   "depends_on": "eval:doc.design_by=='Concept by Designer'",
-   "fieldname": "section_break_71",
-   "fieldtype": "Section Break",
-   "read_only": 1
-  },
-  {
-   "fieldname": "creativity_type",
-   "fieldtype": "Heading",
-   "label": "Creativity Type"
   },
   {
    "default": "0",
@@ -808,10 +711,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "column_break_ng98u",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "section_break_q9yyc",
    "fieldtype": "Section Break"
   },
@@ -862,8 +761,7 @@
   {
    "fieldname": "est_delivery_date",
    "fieldtype": "Date",
-   "label": "Est. Delivery Date",
-   "mandatory_depends_on": "eval:!doc.__islocal"
+   "label": "Est. Delivery Date"
   },
   {
    "fieldname": "section_break_y4y2c",
@@ -890,23 +788,59 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "est_due_days",
-   "fieldtype": "Int",
-   "label": "Est. Due Days",
-   "read_only": 1
+   "fieldname": "territories_tab",
+   "fieldtype": "Tab Break",
+   "label": "Territories"
   },
   {
    "fetch_from": "sketch_order_form.delivery_days",
-   "fieldname": "due_days",
-   "fieldtype": "Int",
-   "label": "Due Days",
+   "fieldname": "delivery_days",
+   "fieldtype": "Data",
+   "label": "Delivery Days",
    "read_only": 1
+  },
+  {
+   "fieldname": "creativity_tab",
+   "fieldtype": "Tab Break",
+   "label": "Creativity"
+  },
+  {
+   "default": "0",
+   "fieldname": "india",
+   "fieldtype": "Check",
+   "label": "INDIA"
+  },
+  {
+   "fieldname": "india_states",
+   "fieldtype": "Table MultiSelect",
+   "label": "States",
+   "options": "Territory Multi Select"
+  },
+  {
+   "fieldname": "column_break_zasix",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "usa",
+   "fieldtype": "Check",
+   "label": "USA"
+  },
+  {
+   "fieldname": "usa_states",
+   "fieldtype": "Select",
+   "label": "States",
+   "options": "\nUSA"
+  },
+  {
+   "fieldname": "column_break_ng98u",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-29 12:57:55.505878",
+ "modified": "2023-07-29 17:12:32.122311",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order",
