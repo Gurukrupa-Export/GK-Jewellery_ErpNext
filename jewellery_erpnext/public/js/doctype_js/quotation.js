@@ -35,17 +35,17 @@ frappe.ui.form.on('Quotation', {
                 }
             })
         }, __("Get Items From"))
-        frm.add_custom_button(__("Serial No and Design ID Order"), function(){
+        frm.add_custom_button(__("Serial No and Design Code Order"), function(){
             erpnext.utils.map_current_doc({
-                method: "jewellery_erpnext.gurukrupa_exports.doctype.serial_no_and_design_id_order.serial_no_and_design_id_order.make_quotation",
-                source_doctype: "Serial No and Design ID Order",
+                method: "jewellery_erpnext.gurukrupa_exports.doctype.serial_no_and_design_code_order.serial_no_and_design_code_order.make_quotation",
+                source_doctype: "Serial No and Design Code Order",
                 target: me.frm,
                 setters: [
                     {
-                        label: "Serial No and Design ID Order Form",
+                        label: "Serial No and Design Code Order Form",
                         fieldname: "serial_and_design_id_order_form",
                         fieldtype: "Link",
-                        options: "Serial No and Design ID Order Form"
+                        options: "Serial No and Design Code Order Form"
                     },
                     {
                         label: "Customer",
@@ -191,13 +191,9 @@ frappe.ui.form.on('Quotation Item', {
             frappe.throw("Please save document to edit the BOM.")
         }
         if (!row.quotation_bom) {
-            frappe.throw("Default BOM does not exist for item " + row.item_code);
+            frappe.throw("Default BOM not exists for item {}".format(row.item_code))
         }
-        
-        // if (!row.quotation_bom) {
-        //     frappe.throw("Default BOM not exists for item {}".format(row.item_code))
-        // }
-        // // if(row.quotation_bom){
+        // if(row.quotation_bom){
         //   window.open('/app/bom/'+row.quotation_bom)
         // }
         var metal_data = [];

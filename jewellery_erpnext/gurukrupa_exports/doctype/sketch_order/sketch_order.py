@@ -72,7 +72,7 @@ def create_system_notification(self, subject, context, recipients):
 			notification.insert(ignore_permissions=True)
 
 @frappe.whitelist()
-def create_item_from_sketch_order(source_name, target_doc=None,):
+def create_item_from_sketch_order(source_name, target_doc=None):
 	def post_process(source, target):
 		target.disabled = 1
 		target.is_design_code = 1
@@ -93,16 +93,4 @@ def create_item_from_sketch_order(source_name, target_doc=None,):
 		},target_doc, post_process
 	)
 	doc.save()
-	print(source_name)
-	
-	frappe.db.set_value('Item',doc.name,'order_from','Sketch Order')
-	frappe.db.set_value('Item',doc.name,'order_from_no',frappe.db.get_value('Final Sketch Approval CMO',source_name,'parent'))
 	return doc.name
-
-
-@frappe.whitelist()
-def get_design_table(sketch_order_form_id):
-	db_data = frappe.db.sql(
-		f"""SELECT  design_attributes,design_attribute_value_1 ,design_attribute_value_2 ,design_attribute_value_3 ,design_attribute_value_4 ,design_attribute_value_5 ,design_attribute_value_6 ,design_attribute_value_7 ,design_attribute_value_8  from `tabDesign Attributes` tda where parent  = '{sketch_order_form_id}' ORDER BY  idx"""
-	,as_dict=1)
-	return db_data

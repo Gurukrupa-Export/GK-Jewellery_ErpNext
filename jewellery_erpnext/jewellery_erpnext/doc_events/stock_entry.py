@@ -296,7 +296,7 @@ def get_bom_scrap_material(self, qty):
 def update_manufacturing_operation(doc, is_cancelled=False):
 	if isinstance(doc, str):
 		doc = frappe.get_doc("Stock Entry",doc)
-	if doc.stock_entry_type != "Material Transfer":
+	if doc.stock_entry_type != "Material Transfer" or doc.auto_created:
 		return
 	item_wt_map = frappe._dict()
 	field_map = {
@@ -310,7 +310,7 @@ def update_manufacturing_operation(doc, is_cancelled=False):
 		if not entry.manufacturing_operation:
 			continue
 		variant_of = frappe.db.get_value("Item",entry.item_code, "variant_of")
-		fieldname = field_map.get(variant_of)
+		fieldname = field_map.get(variant_of, "other_wt")
 		wt = item_wt_map.setdefault(entry.manufacturing_operation, frappe._dict())
 		qty = entry.qty if not is_cancelled else -entry.qty
 		weight_in_gram = flt(wt.get(fieldname)) + qty*0.2 if entry.uom == "cts" else qty

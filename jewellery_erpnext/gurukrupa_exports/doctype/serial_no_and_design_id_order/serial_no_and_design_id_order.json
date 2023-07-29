@@ -8,6 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
+  "department",
+  "section_break_erli8",
   "serial_and_design_id_order_form",
   "serial_and_design_id_order_form_detail",
   "index",
@@ -1001,12 +1003,22 @@
    "fieldtype": "Select",
    "label": "Order Type",
    "options": "Sales\nStock Order"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "section_break_erli8",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-25 11:43:11.849611",
+ "modified": "2023-07-28 20:51:25.383660",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Serial No and Design ID Order",

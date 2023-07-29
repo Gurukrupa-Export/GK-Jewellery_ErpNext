@@ -36,11 +36,11 @@ class EmployeeIR(Document):
 		self.on_submit_receive(cancel=True)
 
 	def validate_gross_wt(self):
+		precision = cint(frappe.db.get_single_value("System Settings", "float_precision"))
 		for row in self.employee_ir_operations:
 			if not self.main_slip:
-				if row.gross_wt < row.received_gross_wt:
+				if flt(row.gross_wt, precision) < flt(row.received_gross_wt, precision):
 					frappe.throw(f"Row #{row.idx}: Received gross wt cannot be greater than gross wt")
-
 
 	#for issue
 	def on_submit_issue(self, cancel=False):
@@ -168,7 +168,9 @@ def create_stock_entry(doc, row, difference_wt=0):
 			child.material_request = None
 			child.material_request_item = None
 		
-		stock_entry.flags.auto_created = True
+		stock_entries.department = doc.department
+		stock_entries.to_department = doc.department
+		stock_entry.auto_created = True
 		stock_entry.manufacturing_operation = row.manufacturing_operation
 		stock_entry.save()
 		stock_entry.submit()

@@ -102,7 +102,7 @@ def create_stock_entry(doc, row):
 			child.to_department = doc.current_department
 		se_doc.department = doc.previous_department
 		se_doc.to_department = doc.current_department
-		se_doc.flags.auto_created = True
+		se_doc.auto_created = True
 		se_doc.save()
 		se_doc.submit()
 
@@ -138,7 +138,7 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 		se_doc.department = doc.current_department
 		se_doc.to_department = doc.next_department
 		se_doc.manufacturing_operation = manufacturing_operation
-		se_doc.flags.auto_created = True
+		se_doc.auto_created = True
 		se_doc.save()
 		se_doc.submit()
 
@@ -207,10 +207,3 @@ def get_previous_operation(manufacturing_operation):
 	if not mfg_operation.previous_operation:
 		return None
 	return frappe.db.get_value("Manufacturing Operation", {"operation": mfg_operation.previous_operation, "manufacturing_work_order": mfg_operation.manufacturing_work_order})
-
-
-# Updated Code
-@frappe.whitelist()
-def get_default_cu_de():
-	db_data = frappe.db.sql(f"""SELECT department  from tabEmployee te  WHERE user_id = '{frappe.session.user}'""")
-	return db_data

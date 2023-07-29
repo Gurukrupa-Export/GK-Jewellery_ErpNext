@@ -1,2 +1,5 @@
-# GK-Jewellery_ErpNext
- 
+
+#### License
+
+MIT
+# jewellery-erpnext

@@ -20,7 +20,7 @@
   "delivery_date",
   "est_delivery_date",
   "column_break_ng98u",
-  "po_number",
+  "po_no",
   "order_type",
   "delivery_days",
   "project",
@@ -163,8 +163,8 @@
    "read_only": 1
   },
   {
-   "fetch_from": "sketch_order_form.po_number",
-   "fieldname": "po_number",
+   "fetch_from": "sketch_order_form.po_no",
+   "fieldname": "po_no",
    "fieldtype": "Data",
    "label": "Customer PO Number",
    "read_only": 1
@@ -284,11 +284,11 @@
    "fieldname": "design_type",
    "fieldtype": "Select",
    "label": "Design Type",
-   "options": "\nNew Creation\nModification\nIs Combine\nIs Matching",
+   "options": "New Design\nMod\nFusion\nSimilar",
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Modification\"))",
+   "depends_on": "eval:((doc.design_type==\"Mod\"))",
    "fetch_from": "sketch_order_form_detail.tag__design_id",
    "fieldname": "tag__design_id",
    "fieldtype": "Link",
@@ -297,7 +297,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:(doc.design_type==\"Modification\")",
+   "depends_on": "eval:(doc.design_type==\"Mod\")",
    "fetch_from": "sketch_order_form_detail.item_code",
    "fieldname": "item_code",
    "fieldtype": "Data",
@@ -306,7 +306,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fetch_from": "sketch_order_form_detail.master_bom_no",
    "fieldname": "master_bom_no",
    "fieldtype": "Link",
@@ -315,7 +315,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fetch_from": "sketch_order_form_detail.reference_designid",
    "fieldname": "reference_designid",
    "fieldtype": "Link",
@@ -324,7 +324,7 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Is Matching\"))",
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fetch_from": "sketch_order_form_detail.reference_tagid",
    "fieldname": "reference_tagid",
    "fieldtype": "Link",
@@ -334,7 +334,7 @@
   },
   {
    "fieldname": "column_break_32",
-   "fieldtype": "Section Break"
+   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "sketch_order_form_detail.category",
@@ -772,7 +772,7 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:((doc.design_type==\"Modification\"))",
+   "depends_on": "eval:((doc.design_type==\"Mod\"))",
    "fieldname": "tag_id",
    "fieldtype": "Link",
    "label": "Master Serial No",

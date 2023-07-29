@@ -44,11 +44,10 @@ class ManufacturingPlan(Document):
 	@frappe.whitelist()
 	def get_items_for_production(self):
 		sales_orders = [row.sales_order for row in self.sales_order]
-		items = frappe.db.sql(f"""select soi.name as docname, soi.parent as sales_order, soi.item_code, itm.mould as mould_no, soi.order_form_date, soi.delivery_date,
+		items = frappe.db.sql(f"""select soi.name as docname, soi.parent as sales_order, soi.item_code, itm.mould as mould_no,
 		 			(soi.qty - soi.manufacturing_order_qty) as pending_qty
 					from `tabSales Order Item` soi left join `tabItem` itm on soi.item_code = itm.name
 					where soi.parent in ('{"', '".join(sales_orders)}') and soi.qty > soi.manufacturing_order_qty""", as_dict=1)
-		print(items)
 		self.manufacturing_plan_table = []
 		for item_row in items:
 			item_row['manufacturing_order_qty'] = item_row.get("pending_qty")

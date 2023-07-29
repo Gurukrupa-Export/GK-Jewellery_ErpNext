@@ -23,6 +23,7 @@
   "rowname",
   "amended_from",
   "column_break_lhbfx",
+  "branch",
   "posting_date",
   "delivery_date",
   "order_type",
@@ -44,7 +45,6 @@
   "section_break_royco",
   "order_remarks",
   "order_details_tab",
-  "branch",
   "order_form_id",
   "sales_order",
   "column_break_0hg6a",
@@ -53,7 +53,7 @@
   "service_type",
   "column_break_acoov",
   "parcel_place",
-  "customer_po_no",
+  "po_no",
   "salesman_name"
  ],
  "fields": [
@@ -96,14 +96,14 @@
    "fetch_from": "sales_order_item.item_code",
    "fieldname": "item_code",
    "fieldtype": "Link",
-   "label": "Design Code",
+   "label": "Design ID",
    "options": "Item"
   },
   {
    "fetch_from": "sales_order_item.serial_no",
    "fieldname": "serial_no",
    "fieldtype": "Link",
-   "label": "Serial No",
+   "label": "Serial ID",
    "options": "Serial No"
   },
   {
@@ -151,6 +151,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "sales_order.branch",
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Order Branch name",
@@ -301,6 +302,7 @@
    "label": "Order form date"
   },
   {
+   "fetch_from": "sales_order.service_type",
    "fieldname": "service_type",
    "fieldtype": "Link",
    "label": "Service Type",
@@ -311,19 +313,19 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "sales_order.parcel_type",
    "fieldname": "parcel_place",
    "fieldtype": "Link",
-   "label": "Shipping Territory",
+   "label": "Parcel Place",
    "options": "Parcel Place List"
   },
   {
-   "fetch_from": "sales_order.po_number",
-   "fieldname": "customer_po_no",
+   "fetch_from": "sales_order.po_no",
+   "fieldname": "po_no",
    "fieldtype": "Data",
    "label": "Customer PO No"
   },
   {
-   "fetch_from": "sales_order.salesman_name",
    "fieldname": "salesman_name",
    "fieldtype": "Data",
    "label": "Salesman Name"
@@ -332,7 +334,6 @@
    "fetch_from": "company.abbr",
    "fieldname": "abbr",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "Abbr",
    "read_only": 1
   },
@@ -367,7 +368,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-07-26 14:43:19.211208",
+ "modified": "2023-05-11 15:58:44.342868",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

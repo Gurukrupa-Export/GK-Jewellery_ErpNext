@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-05-24 15:10:11.273771",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "metal_type",
+  "metal_id",
+  "metal_weight",
+  "metal_purity",
+  "pure_weight"
+ ],
+ "fields": [
+  {
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Metal type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "metal_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Metal ID"
+  },
+  {
+   "fieldname": "metal_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Metal Weight"
+  },
+  {
+   "fieldname": "metal_purity",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Metal Purity",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "pure_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Pure Weight"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-07-19 18:35:58.627210",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Refined Gold",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
