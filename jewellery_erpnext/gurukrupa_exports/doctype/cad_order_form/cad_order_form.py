@@ -64,3 +64,13 @@ def make_cad_order(source_name, target_doc=None, parent_doc = None):
 	doc.form_remarks = parent_doc.remarks
 	doc.save()
 	return doc.name
+
+
+
+@frappe.whitelist()
+def get_value():
+	# db_value = frappe.db.get_all('Item Attribute Value',{'parent':'Design Attributes'},'attribute_value','order_by':'attribute_value')
+	db_value = frappe.db.sql(
+		"""select attribute_value  from `tabItem Attribute Value` tiav  WHERE parent ='Design Attributes' ORDER  by  attribute_value ASC"""
+	,as_dict=1)
+	return db_value

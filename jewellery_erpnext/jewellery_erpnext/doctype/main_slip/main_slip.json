@@ -9,30 +9,43 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "section_break_nv7vg",
+  "company",
   "manufacturer",
-  "metal_type",
   "type_abbr",
-  "metal_touch",
-  "metal_purity",
-  "metal_color",
+  "column_break_lbsmh",
   "color_abbr",
-  "employee",
-  "operation",
   "department",
+  "employee",
   "dep_abbr",
+  "section_break_i4ngw",
   "is_tree_reqd",
+  "issue_metal",
+  "receive_metal",
+  "pending_metal",
+  "column_break_6ug6u",
   "check_color",
+  "used_gold_count",
+  "operation_issue",
+  "operation_receive",
+  "operation",
+  "section_break_6h8u2",
   "tree_number",
   "tree_wax_wt",
+  "column_break_b1a2u",
   "computed_gold_wt",
-  "column_break_6ug6u",
+  "metal_details_section",
+  "metal_type",
+  "metal_touch",
+  "column_break_uuxlq",
+  "metal_color",
+  "metal_purity",
+  "section_break_rou6s",
   "flask_size",
-  "used_gold_count",
-  "issue_metal",
-  "operation_issue",
-  "receive_metal",
-  "operation_receive",
-  "pending_metal",
+  "special_powder_weight",
+  "column_break_64zs9",
+  "boric_powder_weight",
+  "water_weight",
   "section_break_rr9oa",
   "main_slip_operation",
   "amended_from"
@@ -79,7 +92,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval: doc.operation == 'Casting'",
    "fieldname": "flask_size",
    "fieldtype": "Data",
    "label": "Flask Size"
@@ -219,12 +231,82 @@
    "options": "Main Slip",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "metal_details_section",
+   "fieldtype": "Section Break",
+   "label": "Metal Details"
+  },
+  {
+   "fieldname": "column_break_uuxlq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lbsmh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_i4ngw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "Gurukrupa Exports",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_nv7vg",
+   "fieldtype": "Section Break",
+   "label": "Company Details"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_6h8u2",
+   "fieldtype": "Section Break",
+   "label": "Tree Details"
+  },
+  {
+   "fieldname": "column_break_b1a2u",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval: doc.operation == 'Casting B1'",
+   "fieldname": "section_break_rou6s",
+   "fieldtype": "Section Break",
+   "label": "Flask Details"
+  },
+  {
+   "fieldname": "column_break_64zs9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Water Wt =  ( Powder Wt * Water Value) / POWER VALUE",
+   "fieldname": "water_weight",
+   "fieldtype": "Float",
+   "label": "Water Weight"
+  },
+  {
+   "description": "Special Powder Boric Wt = ( Power Wt * SPECIAL POWDER BORIC VALUE ) / POWER VALUE",
+   "fieldname": "special_powder_weight",
+   "fieldtype": "Float",
+   "label": "Special Powder Weight"
+  },
+  {
+   "description": "Boric Powder Wt = ( Powder Wt * BORIC VALUE ) / POWDER VALUE",
+   "fieldname": "boric_powder_weight",
+   "fieldtype": "Float",
+   "label": "Boric Powder Weight"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-22 02:02:35.061924",
+ "modified": "2023-07-31 20:21:06.031608",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Main Slip",

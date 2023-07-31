@@ -21,6 +21,24 @@ frappe.ui.form.on('CAD Order Form', {
 		var parent_fields = [['diamond_quality', 'Diamond Quality']];
 		set_filters_on_parent_table_fields(frm, parent_fields);
 
+		// cur_frm.clear_table('design_attributes');
+		// frappe.call({
+		// 	method: 'jewellery_erpnext.gurukrupa_exports.doctype.cad_order_form.cad_order_form.get_value',
+		// 	callback: function(r) {
+		// 		if (!r.exc) {
+		// 			var arrayLength = r.message;
+		// 			for (var i = 0; i < arrayLength; i++) {
+		// 				let row = frm.add_child('design_attributes', {
+		// 					design_attributes: r.message[i],
+		// 				});
+		// 			}
+		// 			frm.refresh_field('design_attributes');
+		// 		}
+		// 	}
+		// });
+
+
+
 		var fields = [['category', 'Item Category'],
 		['subcategory', 'Item Subcategory'],
 		['setting_type', 'Setting Type'],
@@ -69,7 +87,7 @@ frappe.ui.form.on('CAD Order Form', {
 		['sub_setting_type2', 'Sub Setting Type'],
 		['gemstone_quality', 'Gemstone Quality'],
 		];
-
+		
 		set_filters_on_child_table_fields(frm, fields);
 		// set_filter_for_salesman_name(frm);
 
@@ -137,7 +155,6 @@ frappe.ui.form.on('CAD Order Form', {
 	},
 	
 	design_by: function (frm) { set_order_type_from_design_by(frm); },
-	
 	customer_code: function(frm){
 		frm.doc.service_type = [];
         if(frm.doc.customer_code){

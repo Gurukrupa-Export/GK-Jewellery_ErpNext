@@ -20,9 +20,11 @@
   "subcategory",
   "column_break_14",
   "setting_type",
-  "purity",
-  "column_break_28",
   "qty",
+  "column_break_28",
+  "metal_type",
+  "metal_touch",
+  "metal_purity",
   "metal_colour",
   "section_break_4",
   "gold_target",
@@ -179,7 +181,7 @@
   {
    "fieldname": "category",
    "fieldtype": "Link",
-   "label": "Category",
+   "label": "Item Category",
    "options": "Attribute Value",
    "read_only_depends_on": "eval:((doc.modification == 'Yes') || (doc.modification == 'No'))"
   },
@@ -188,7 +190,7 @@
    "fieldname": "subcategory",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Subcategory",
+   "label": "Item Subcategory",
    "options": "Attribute Value",
    "read_only_depends_on": "eval:((doc.modification == 'Yes') || (doc.modification == 'No'))"
   },
@@ -204,13 +206,6 @@
    "in_list_view": 1,
    "label": "Setting Type",
    "options": "Attribute Value",
-   "read_only_depends_on": "eval:doc.modification =='No'"
-  },
-  {
-   "fetch_from": "bom.metal_purity",
-   "fieldname": "purity",
-   "fieldtype": "Data",
-   "label": "Purity",
    "read_only_depends_on": "eval:doc.modification =='No'"
   },
   {
@@ -857,12 +852,32 @@
    "fieldtype": "Link",
    "label": "Serial No BOM",
    "options": "BOM"
+  },
+  {
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "label": "Metal Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "metal_touch",
+   "fieldtype": "Link",
+   "label": "Metal Touch",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "bom.metal_purity",
+   "fieldname": "metal_purity",
+   "fieldtype": "Link",
+   "label": "Metal Purity",
+   "options": "Attribute Value",
+   "read_only_depends_on": "eval:doc.modification =='No'"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-25 11:56:44.166296",
+ "modified": "2023-07-30 00:09:16.579593",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Serial No and Design Code Order Form Detail",
