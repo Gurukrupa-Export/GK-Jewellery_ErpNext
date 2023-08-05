@@ -10,7 +10,7 @@ frappe.ui.form.on('Main Slip', {
                                             metal_type: frm.doc.metal_type,
                                             metal_touch: frm.doc.metal_touch,
                                             metal_purity: frm.doc.metal_purity,
-                                            metal_color: frm.doc.metal_color || null
+                                            metal_colour: frm.doc.metal_colour || null
                                         }
                                     })).message
             frappe.route_options = {
@@ -104,7 +104,7 @@ frappe.ui.form.on('Main Slip', {
                     		'metal_type': frm.doc.metal_type,
                     		'metal_touch': frm.doc.metal_touch,
                     		'metal_purity': frm.doc.metal_purity,
-                    		'metal_colour': frm.doc.metal_color,
+                    		'metal_colour': frm.doc.metal_colour,
                     	},
                     	callback: function(r) {
                             console.log(r.message)

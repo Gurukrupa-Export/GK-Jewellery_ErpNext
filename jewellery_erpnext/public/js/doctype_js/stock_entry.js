@@ -1,8 +1,81 @@
 frappe.ui.form.on('Stock Entry', {
+    refresh(frm) {
+        frm.trigger("get_items_from_customer_goods")
+    },
+    get_items_from_customer_goods(frm) {
+        if (frm.doc.docstatus===0 && frm.doc.stock_entry_type == "Customer Goods Issue") {
+            frm.add_custom_button(__('Customer Goods Received'), function() {
+                erpnext.utils.map_current_doc({
+                    method: "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.make_stock_in_entry",
+                    source_doctype: "Stock Entry",
+                    target: frm,
+                    date_field: "posting_date",
+                    setters: {
+                        stock_entry_type: "Customer Goods Received",
+                        purpose: "Material Receipt",
+                        _customer: frm.doc._customer,
+                        inventory_type: frm.doc.inventory_type
+                    },
+                    get_query_filters: {
+                        docstatus: 1,
+                        purpose: "Material Receipt",
+                    },
+    		    	size: "extra-large"
+
+                })
+            }, __("Get Items From"));
+        }
+        else {
+            frm.remove_custom_button(__('Customer Goods Received'),__("Get Items From"))
+        }
+    },
     setup: function (frm) {
         frm.set_query('item_template', function (doc) {
             return { filters: { 'has_variants': 1 } }
         });
+        frm.set_query('manufacturing_work_order', function(doc) {
+		    return {
+		        filters: {
+		            "manufacturing_order": frm.doc.manufacturing_order
+		        }
+		    }
+		});
+		frm.set_query("manufacturing_operation", function(doc) {
+		    return {
+		        filters: {
+		            "manufacturing_work_order": frm.doc.manufacturing_work_order,
+                    "status": ['not in', ["Finished", "Revert"]]
+		        }
+		    }
+		})
+        frm.set_query("department", function(doc) {
+		    return {
+		        filters: {
+		            "company": frm.doc.company
+		        }
+		    }
+		})
+        frm.set_query("to_department", function(doc) {
+		    return {
+		        filters: {
+		            "company": frm.doc.company
+		        }
+		    }
+		})
+        frm.set_query("employee", function(doc) {
+		    return {
+		        filters: {
+		            "department": frm.doc.department
+		        }
+		    }
+		})
+        frm.set_query("to_employee", function(doc) {
+		    return {
+		        filters: {
+		            "department": frm.doc.to_department
+		        }
+		    }
+		})
         frm.fields_dict['item_template_attribute'].grid.get_field('attribute_value').get_query = function (frm, cdt, cdn) {
             var child = locals[cdt][cdn];
             return {
@@ -74,6 +147,7 @@ frappe.ui.form.on('Stock Entry', {
         else {
             frm.set_value('inventory_type', 'Regular Stock')
         }
+        frm.trigger("get_items_from_customer_goods")
     },
     inventory_type(frm) {
         $.each(frm.doc.items || [], function (i, d) {

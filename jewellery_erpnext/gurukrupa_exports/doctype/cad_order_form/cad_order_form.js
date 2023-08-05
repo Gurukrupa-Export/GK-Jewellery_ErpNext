@@ -24,6 +24,7 @@ frappe.ui.form.on('CAD Order Form', {
 		var fields = [['category', 'Item Category'],
 		['subcategory', 'Item Subcategory'],
 		['setting_type', 'Setting Type'],
+		['metal_type', 'Metal Type'],
 		['metal_purity', 'Metal Purity'],
 		['diamond_quality', 'Diamond Quality'],
 		['metal_touch', 'Metal Touch'],
@@ -70,20 +71,35 @@ frappe.ui.form.on('CAD Order Form', {
 		];
 
 		set_filters_on_child_table_fields(frm, fields);
-		set_filter_for_salesman_name(frm);
+		// set_filter_for_salesman_name(frm);
 
 		let design_fields = [["design_id", "tag_no"], ["reference_designid", "reference_serial_no_1"],
 		["reference_design_id_2", "reference_serial_no_2"], ["reference_design_id_3", "reference_serial_no_3"]]
 		set_filter_for_design_n_serial(frm, design_fields)
-		frm.set_query("parcel_place", function (doc) {
+		// frm.set_query("parcel_place", function (doc) {
+		// 	return {
+		// 		query: "jewellery_erpnext.query.get_parcel_place",
+		// 		filters: {
+		// 			"customer_code": doc.customer_code
+		// 		}
+		// 	}
+		// })
+		frm.set_query('sub_setting_type1', 'order_details', function (doc, cdt, cdn) {
+			let d = locals[cdt][cdn];
 			return {
-				query: "jewellery_erpnext.query.get_parcel_place",
 				filters: {
-					"customer_code": doc.customer_code
+					'parent_attribute_value': d.setting_type
 				}
-			}
-		})
-
+			};
+		});
+		frm.set_query('sub_setting_type2', 'order_details', function (doc, cdt, cdn) {
+			let d = locals[cdt][cdn];
+			return {
+				filters: {
+					'parent_attribute_value': d.setting_type
+				}
+			};
+		});
 		frm.set_query('subcategory', 'order_details', function (doc, cdt, cdn) {
 			let d = locals[cdt][cdn];
 			return {
@@ -108,22 +124,22 @@ frappe.ui.form.on('CAD Order Form', {
 	due_days: function (frm) {
 		delivery_date(frm);
 	},
-
+	
 	validate: function (frm) {
 		if (frm.doc.delivery_date < frm.doc.order_date) {
 			frappe.msgprint(__("You can not select past date in Delivery Date"));
 			frappe.validated = false;
 		}
 	},
-
+	
 	concept_image: function (frm) {
 		refresh_field('image_preview');
 	},
-
+	
 	design_by: function (frm) { set_order_type_from_design_by(frm); },
-
+	
 	customer_code: function(frm){
-        frm.doc.service_type = [];
+		frm.doc.service_type = [];
         if(frm.doc.customer_code){
          frappe.model.with_doc("Customer", frm.doc.customer_code, function() {
           let customer_doc = frappe.model.get_doc("Customer", frm.doc.customer_code);
@@ -131,46 +147,29 @@ frappe.ui.form.on('CAD Order Form', {
             let d = frm.add_child("service_type");
             d.service_type1 = row.service_type1;
           });
-           refresh_field("service_type");
+		  refresh_field("service_type");
          });
         }
-   },
-
-	scan_tag_no: function (frm) {
-		if (frm.doc.scan_tag_no) {
-			frappe.call({
-				method: "erpnext.selling.page.point_of_sale.point_of_sale.search_for_serial_or_batch_or_barcode_number",
-				args: {
-					'search_value': frm.doc.scan_tag_no
-				},
-				callback: function (r) {
-					if (r.message.item_code) {
-						let d = frm.add_child('order_details');
-						d.tag_no = frm.doc.scan_tag_no;
-						d.item = r.message.item_code;
-						d.delivery_date = frm.doc.delivery_date;
-						d.diamond_quality = frm.doc.diamond_quality;
-						frappe.model.with_doc("Item", r.message.item_code, function (m) {
-							var doc = frappe.model.get_doc("Item", r.message.item_code);
-							if (doc.attributes) {
-								$.each(doc.attributes, function (index, row) {
-									var df = frappe.meta.get_docfield(d.doctype, row.attribute.toLowerCase().replace(/\s+/g, '_'), d.name);
-									if (df) { df.hidden = 0 }
-									var filed = row.attribute.toLowerCase().replace(/\s+/g, '_');
-									d[filed] = row.attribute_value;
-								});
-								cur_frm.refresh_field("order_details");
-							}
-						});
-						frm.set_value('scan_tag_no', '');
-					} else {
-						frappe.msgprint('Cannot find Item with this barcode');
-					}
-					frm.refresh_field('order_details');
+		frm.set_query('subcategory', 'order_details', function (doc, cdt, cdn) {
+			let d = locals[cdt][cdn];
+			return {
+				filters: {
+					'parent_attribute_value': d.category
 				}
-			});
+			};
+		});
+		frm.set_query('diamond_quality','order_details', function (doc) {
+			return {
+				query: 'jewellery_erpnext.query.item_attribute_query',
+				filters: { 'item_attribute': "Diamond Quality", "customer_code": doc.customer_code }
+			};
+		});
+		if (frm.doc.order_details) {
+			frm.doc.order_details.forEach(function (d) {
+				show_attribute_fields_for_subcategory(frm, d.doctype, d.name, d);
+			})
 		}
-	}
+   }
 });
 
 frappe.ui.form.on('CAD Order Form Detail', {
@@ -275,8 +274,25 @@ frappe.ui.form.on('CAD Order Form Detail', {
 	category: function (frm, cdt, cdn) {
 		var row = locals[cdt][cdn];
 		frappe.model.set_value(row.doctype, row.name, 'subcategory', '');
+	},
+
+	serial_no_bom(frm, cdt, cdn) {
+		set_metal_properties_from_bom(frm, cdt, cdn)
+	},
+
+	bom(frm, cdt, cdn) {
+		set_metal_properties_from_bom(frm, cdt, cdn)
 	}
 });
+
+function set_metal_properties_from_bom(frm, cdt, cdn) {
+	let row = locals[cdt][cdn]
+	if (row.design_type != "Mod" && (row.serial_no_bom || row.bom)) {
+		frappe.db.get_value("BOM", row.serial_no_bom || row.bom, ["metal_touch","metal_type","metal_colour"], (r)=> {
+			frappe.model.set_value(cdt, cdn, r)
+		})
+	}
+}
 
 function validate_dates(frm, doc, dateField) {
     let order_date = frm.doc.order_date
@@ -301,14 +317,14 @@ function set_field_visibility(frm, cdt, cdn) {
 
 //public function to set item attribute filters on child doctype
 function set_filters_on_child_table_fields(frm, fields) {
-	fields.map(function (field) {
-		frm.set_query(field[0], "order_details", function () {
-			return {
-				query: 'jewellery_erpnext.query.item_attribute_query',
-				filters: { 'item_attribute': field[1] }
-			};
+			fields.map(function (field) {
+			frm.set_query(field[0], "order_details", function () {
+				return {
+					query: 'jewellery_erpnext.query.item_attribute_query',
+					filters: { 'item_attribute': field[1] }
+				};
+			});
 		});
-	});
 }
 
 //public function to set item attribute filters on parent doctype
@@ -352,7 +368,7 @@ function show_attribute_fields_for_subcategory(frm, cdt, cdn, order_detail) {
 //private function to hide all subcategory related fields in order details
 function hide_all_subcategory_attribute_fields(frm, cdt, cdn) {
 	var subcategory_attribute_fields = ['Gold Target', 'Diamond Target', 
-	'Metal Colour', 'Product Size', 'Length', 'Height', 'Sizer Type', 
+	'Product Size', 'Length', 'Height', 'Sizer Type', 'Navratna',
 	'Enamal', 'Rhodium', 'Stone Type', 'Gemstone Type', 'Gemstone Quality',
 	'Gemstone Types1', 'Gemstone Types2', 'Gemstone Types3', 'Gemstone Types4',
 	'Gemstone Types5', 'Gemstone Types6', 'Gemstone Types7', 'Gemstone Types8',

@@ -11,7 +11,7 @@ refresh_field("order_details");
           ['diamond_quality','Diamond Quality'],
           ['purity', 'Metal Purity'], 
           ['setting_type', 'Setting Type'], 
-          ['metal_color', 'Metal Colour'], 
+          ['metal_colour', 'Metal Colour'], 
           ['sizer_type', 'Sizer Type'], 
           ['enamal', 'Enamal'], 
           ['rhodium', 'Rhodium'], 

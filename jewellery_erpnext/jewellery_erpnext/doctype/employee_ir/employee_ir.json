@@ -8,23 +8,33 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "section_break_rzndq",
   "company",
-  "date_time",
-  "manufacturer",
-  "type",
-  "subcontracting",
-  "operation",
   "department",
-  "next_operation",
-  "is_main_slip_required",
-  "previous_operation",
+  "column_break_jtffh",
+  "manufacturer",
+  "date_time",
+  "section_break_5eq34",
+  "type",
+  "section_break_pk7m5",
   "employee",
+  "is_main_slip_required",
   "main_slip",
-  "sub_contractor_name",
-  "wastage",
-  "making",
-  "handling",
+  "column_break_mooif",
+  "operation",
   "show_manufacturing_operation",
+  "section_break_unylm",
+  "subcontracting",
+  "next_operation",
+  "previous_operation",
+  "sub_contractor_name",
+  "section_break_jttnk",
+  "wastage",
+  "column_break_bmpc3",
+  "making",
+  "column_break_lwchv",
+  "handling",
+  "section_break_nrv3i",
   "get_operations",
   "employee_ir_operations",
   "amended_from"
@@ -165,7 +175,6 @@
    "fetch_from": "operation.is_main_slip_required",
    "fieldname": "is_main_slip_required",
    "fieldtype": "Check",
-   "hidden": 1,
    "label": "Is Main Slip Required"
   },
   {
@@ -176,12 +185,55 @@
    "mandatory_depends_on": "eval:doc.is_main_slip_required",
    "no_copy": 1,
    "options": "Main Slip"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_rzndq",
+   "fieldtype": "Section Break",
+   "label": "Company Details"
+  },
+  {
+   "fieldname": "section_break_5eq34",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_jtffh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_pk7m5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_mooif",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_nrv3i",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_unylm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.subcontracting == \"Yes\"",
+   "fieldname": "section_break_jttnk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_bmpc3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lwchv",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-06-29 00:43:23.328708",
+ "modified": "2023-07-31 20:00:46.303831",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Employee IR",

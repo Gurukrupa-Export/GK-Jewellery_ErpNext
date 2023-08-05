@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Parent Manufacturing Order', {
 	setup(frm) {
-		var parent_fields = [['diamond_grade', 'Diamond Grade'], ['metal_color', 'Metal Colour'], ['metal_purity', 'Metal Purity']];
+		var parent_fields = [['diamond_grade', 'Diamond Grade'], ['metal_colour', 'Metal Colour'], ['metal_purity', 'Metal Purity']];
 		set_filters_on_parent_table_fields(frm, parent_fields);
 	},
 	sales_order_item: function (frm) {

@@ -5,6 +5,7 @@ from frappe.utils import flt,cint
 from six import itervalues
 from jewellery_erpnext.utils import get_variant_of_item, update_existing
 import json
+from frappe.model.mapper import get_mapped_doc
 
 def validate(self, method):
 	"""
@@ -55,7 +56,7 @@ def validate(self, method):
 def validate_metal_properties(doc):
 	mwo = frappe._dict()
 	if doc.manufacturing_work_order:
-		mwo = frappe.db.get_value("Manufacturing Work Order", doc.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_color"], as_dict=1)
+		mwo = frappe.db.get_value("Manufacturing Work Order", doc.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_colour"], as_dict=1)
 	for row in doc.items:
 		item_template = frappe.db.get_value("Item",row.item_code, "variant_of")
 		main_slip = row.main_slip or row.to_main_slip
@@ -66,11 +67,11 @@ def validate_metal_properties(doc):
 		attribute_det = frappe.db.get_values("Item Variant Attribute",{"parent": row.item_code, "attribute":["in",["Metal Type", "Metal Touch", "Metal Purity", "Metal Colour"]]}, ['attribute', 'attribute_value'], as_dict=1)
 		item_det = { row.attribute: row.attribute_value for row in attribute_det}
 		if main_slip:
-			ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_color", "check_color"], as_dict=1)
-			if ms.metal_touch != item_det.get("Metal Touch") or ms.metal_purity != item_det.get("Metal Purity") or (ms.metal_color != item_det.get("Metal Colour") and ms.check_color):
+			ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_colour", "check_color"], as_dict=1)
+			if ms.metal_touch != item_det.get("Metal Touch") or ms.metal_purity != item_det.get("Metal Purity") or (ms.metal_colour != item_det.get("Metal Colour") and ms.check_color):
 				frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected main slip")
 		if mwo:
-			# frappe.throw(str([mwo.metal_touch != item_det.get("Metal Touch"), mwo.metal_purity != item_det.get("Metal Purity"), (mwo.metal_color != item_det.get("Metal Colour"))]))
+			# frappe.throw(str([mwo.metal_touch != item_det.get("Metal Touch"), mwo.metal_purity != item_det.get("Metal Purity"), (mwo.metal_colour != item_det.get("Metal Colour"))]))
 			if mwo.metal_touch != item_det.get("Metal Touch") or mwo.metal_purity != item_det.get("Metal Purity"):
 				frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected Manufacturing Work Order")
 
@@ -296,7 +297,7 @@ def get_bom_scrap_material(self, qty):
 def update_manufacturing_operation(doc, is_cancelled=False):
 	if isinstance(doc, str):
 		doc = frappe.get_doc("Stock Entry",doc)
-	if doc.stock_entry_type != "Material Transfer":
+	if doc.stock_entry_type != "Material Transfer" or doc.auto_created:
 		return
 	item_wt_map = frappe._dict()
 	field_map = {
@@ -310,7 +311,7 @@ def update_manufacturing_operation(doc, is_cancelled=False):
 		if not entry.manufacturing_operation:
 			continue
 		variant_of = frappe.db.get_value("Item",entry.item_code, "variant_of")
-		fieldname = field_map.get(variant_of)
+		fieldname = field_map.get(variant_of, "other_wt")
 		wt = item_wt_map.setdefault(entry.manufacturing_operation, frappe._dict())
 		qty = entry.qty if not is_cancelled else -entry.qty
 		weight_in_gram = flt(wt.get(fieldname)) + qty*0.2 if entry.uom == "cts" else qty
@@ -318,9 +319,57 @@ def update_manufacturing_operation(doc, is_cancelled=False):
 		wt[fieldname] = weight_in_cts
 		if variant_of == 'D':
 			wt["diamond_wt_in_gram"] = weight_in_gram
+		elif variant_of == 'G':
+			wt["gemstone_wt_in_grame"] = weight_in_gram
 		wt['gross_wt'] = weight_in_gram
 		item_wt_map[entry.manufacturing_operation] = wt
 
 	for manufacturing_operation, values in item_wt_map.items():
 		_values = { key: f'{key} + {value}' for key,value in values.items() if key != "finding_wt"}
 		update_existing("Manufacturing Operation", manufacturing_operation, _values)
+
+
+
+@frappe.whitelist()
+def make_stock_in_entry(source_name, target_doc=None):
+	def set_missing_values(source, target):
+		if target.stock_entry_type == "Customer Goods Received":
+			target.stock_entry_type = "Customer Goods Issue"
+			target.purpose = "Material Issue"
+		elif target.stoc_entry_type == "Customer Goods Issue":
+			target.stock_entry_type = "Customer Goods Received"
+			target.purpose = "Material Receipt"
+		target.set_missing_values()
+
+	def update_item(source_doc, target_doc, source_parent):
+		target_doc.t_warehouse = ""
+
+		target_doc.s_warehouse = source_doc.t_warehouse
+		target_doc.qty = source_doc.qty
+
+	doclist = get_mapped_doc(
+		"Stock Entry",
+		source_name,
+		{
+			"Stock Entry": {
+				"doctype": "Stock Entry",
+				"field_map": {"name": "outgoing_stock_entry"},
+				"validation": {"docstatus": ["=", 1]},
+			},
+			"Stock Entry Detail": {
+				"doctype": "Stock Entry Detail",
+				"field_map": {
+					"name": "ste_detail",
+					"parent": "against_stock_entry",
+					"serial_no": "serial_no",
+					"batch_no": "batch_no",
+				},
+				"postprocess": update_item,
+				# "condition": lambda doc: flt(doc.qty) - flt(doc.transferred_qty) > 0.01,
+			},
+		},
+		target_doc,
+		set_missing_values,
+	)
+
+	return doclist

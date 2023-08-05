@@ -58,6 +58,10 @@ class ParentManufacturingOrder(Document):
 		oc_doc.save()
 		frappe.msgprint('First Operation Card Created !!')
 
+	def set_missing_value(self):
+		if not self.is_new():
+			pass
+
 
 def get_item_type(item_code):
 	item_type = frappe.db.get_value("Item",item_code, "variant_of")
@@ -78,25 +82,21 @@ def get_item_code(sales_order_item):
 
 @frappe.whitelist()
 def make_manufacturing_order(source_doc, row):
-	# print(type(frappe.db.get_value("Parcel Place MultiSelect",{"parent":row.sales_order,},"parcel_place")))
-	print([frappe.db.get_value("Service Type 2",{"parent":row.sales_order},"service_type1")])
 	doc = frappe.new_doc("Parent Manufacturing Order")
+	so_det = frappe.get_value("Sales Order Item", row.docname, ["metal_type","metal_touch","metal_colour"], as_dict=1) or {}
 	doc.company = source_doc.company
 	doc.sales_order = row.sales_order
 	doc.sales_order_item = row.docname
 	doc.item_code = row.item_code
-	doc.branch = frappe.db.get_value("Sales Order Item",{"parent":row.sales_order,"item_code":row.item_code},"branch")
-	doc.order_form_id = frappe.db.get_value("Sales Order Item",{"parent":row.sales_order,"item_code":row.item_code},"order_form_id")
-	doc.order_form_date = frappe.db.get_value("Sales Order Item",{"parent":row.sales_order,"item_code":row.item_code},"order_form_date")
-	# recheck this
-	doc.service_type = frappe.db.get_value("Service Type 2",{"parent":row.sales_order},"service_type1")
-	doc.parcel_place = frappe.db.get_value("Parcel Place MultiSelect",{"parent":row.sales_order,},"parcel_place")
-	# 
+	doc.metal_type = so_det.get("metal_type")
+	doc.metal_touch = so_det.get("metal_touch")
+	doc.metal_colour = so_det.get("metal_colour")
+	# doc.sales_order_bom = row.bom
+	doc.service_type = frappe.get_all("Service Type 2", {"parent": row.sales_order}, ["service_type1"]) or []
 	doc.manufacturing_plan = source_doc.name
 	doc.manufacturer = frappe.db.get_value("Manufacturer",{"company":source_doc.company}, "name", order_by="creation asc")
 	doc.qty = row.qty_per_manufacturing_order
 	doc.rowname = row.name
-	
 	doc.save()
 	diamond_grade = frappe.db.get_value("Customer Diamond Grade",{"diamond_quality": doc.diamond_quality, "parent": doc.customer},"diamond_grade_1")
 	doc.db_set("diamond_grade",diamond_grade)
@@ -121,14 +121,10 @@ def create_manufacturing_work_order(self):
 					}
 				}
 			   })
-		doc.branch = row.branch
-		doc.order_form_id = doc.order_form_id
-		doc.order_form_date = doc.order_form_date
-		doc.order_form_id = doc.order_form_id
 		doc.metal_touch = row.metal_touch
 		doc.metal_type = row.metal_type
 		doc.metal_purity = row.metal_purity
-		doc.metal_color = row.metal_colour
+		doc.metal_colour = row.metal_colour
 		doc.seq = int(self.name.split("-")[-1])
 		doc.department = frappe.db.get_single_value("Jewellery Settings", "default_department")
 		doc.auto_created = 1

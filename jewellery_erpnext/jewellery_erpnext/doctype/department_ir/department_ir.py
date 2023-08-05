@@ -69,9 +69,18 @@ class DepartmentIR(Document):
 			# 				 		"t_warehouse": in_transit_wh}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
 			# frappe.set_value("Manufacturing Operation", row.manufacturing_operation, "gross_wt", gross_wt)
 
-def update_stock_entry_dimensions(doc, row, manufacturing_operation):
-	stock_entries = frappe.get_all("Stock Entry", {"manufacturing_work_order": row.manufacturing_work_order, "docstatus": 1,
-						    "manufacturing_operation": ["is", "not set"], "department": doc.current_department, "to_department": doc.next_department}, pluck="name")
+def update_stock_entry_dimensions(doc, row, manufacturing_operation, for_employee = False):
+	filters = {}
+	if for_employee:
+		filters['employee' if doc.type == "Receive" else "to_employee"] = doc.employee
+		current_dep = doc.department
+		next_dep = doc.department
+	else:
+		current_dep = doc.current_department
+		next_dep = doc.next_department
+	filters.update({"manufacturing_work_order": row.manufacturing_work_order, "docstatus": 1,
+					"manufacturing_operation": ["is", "not set"], "department": current_dep, "to_department": next_dep})
+	stock_entries = frappe.get_all("Stock Entry", filters = filters, pluck="name")
 	values = {
 		"manufacturing_operation": manufacturing_operation
 	}
@@ -102,7 +111,7 @@ def create_stock_entry(doc, row):
 			child.to_department = doc.current_department
 		se_doc.department = doc.previous_department
 		se_doc.to_department = doc.current_department
-		se_doc.flags.auto_created = True
+		se_doc.auto_created = True
 		se_doc.save()
 		se_doc.submit()
 
@@ -138,7 +147,7 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 		se_doc.department = doc.current_department
 		se_doc.to_department = doc.next_department
 		se_doc.manufacturing_operation = manufacturing_operation
-		se_doc.flags.auto_created = True
+		se_doc.auto_created = True
 		se_doc.save()
 		se_doc.submit()
 
@@ -207,10 +216,3 @@ def get_previous_operation(manufacturing_operation):
 	if not mfg_operation.previous_operation:
 		return None
 	return frappe.db.get_value("Manufacturing Operation", {"operation": mfg_operation.previous_operation, "manufacturing_work_order": mfg_operation.manufacturing_work_order})
-
-
-# Updated Code
-@frappe.whitelist()
-def get_default_cu_de():
-	db_data = frappe.db.sql(f"""SELECT department  from tabEmployee te  WHERE user_id = '{frappe.session.user}'""")
-	return db_data

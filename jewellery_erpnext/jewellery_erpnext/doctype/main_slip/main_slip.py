@@ -11,7 +11,7 @@ class MainSlip(Document):
 		initials = department.split(' ')
 		self.dep_abbr = ''.join([word[0] for word in initials if word])
 		self.type_abbr = self.metal_type[0]
-		self.color_abbr = self.metal_color[0] if self.metal_color else None
+		self.color_abbr = self.metal_colour[0] if self.metal_colour else None
 
 	def validate(self):
 		self.validate_metal_properties()
@@ -30,8 +30,8 @@ class MainSlip(Document):
 
 	def validate_metal_properties(self):
 		for row in self.main_slip_operation:
-			mwo = frappe.db.get_value("Manufacturing Work Order", row.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_color"], as_dict=1)
-			if mwo.metal_type != self.metal_type or mwo.metal_touch != self.metal_touch or mwo.metal_purity != self.metal_purity or (self.check_color and mwo.metal_color != self.metal_color):
+			mwo = frappe.db.get_value("Manufacturing Work Order", row.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_colour"], as_dict=1)
+			if mwo.metal_type != self.metal_type or mwo.metal_touch != self.metal_touch or mwo.metal_purity != self.metal_purity or (self.check_color and mwo.metal_colour != self.metal_colour):
 				frappe.throw(f"Metal properties in Manufacturing Work Order: {row.manufacturing_work_order} do not match the main slip")
 
 	def before_insert(self):
@@ -41,7 +41,7 @@ class MainSlip(Document):
 def create_material_request(doc):
 	mr = frappe.new_doc("Material Request")
 	mr.material_request_type = "Material Transfer"
-	item = get_item_from_attribute(doc.metal_type, doc.metal_touch, doc.metal_purity, doc.metal_color)
+	item = get_item_from_attribute(doc.metal_type, doc.metal_touch, doc.metal_purity, doc.metal_colour)
 	if not item:
 		return
 	mr.schedule_date = frappe.utils.nowdate()
@@ -59,8 +59,8 @@ def create_tree_number():
 	return doc.name
 
 @frappe.whitelist()
-def create_stock_entries(main_slip, actual_qty, metal_loss, metal_type, metal_touch, metal_purity, metal_color=None):
-	item = get_item_from_attribute(metal_type, metal_touch, metal_purity, metal_color)
+def create_stock_entries(main_slip, actual_qty, metal_loss, metal_type, metal_touch, metal_purity, metal_colour=None):
+	item = get_item_from_attribute(metal_type, metal_touch, metal_purity, metal_colour)
 	if not item:
 		frappe.throw("No Item found for selected atrributes in main slip")
 	if flt(actual_qty) <= 0:
@@ -116,16 +116,16 @@ def create_metal_loss(doc,settings,item,metal_loss):
 	se.submit()
 
 def get_main_slip_item(main_slip):
-	ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_color"], as_dict=1)
-	item = get_item_from_attribute(ms.metal_type, ms.metal_touch, ms.metal_purity, ms.metal_color)
+	ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_colour"], as_dict=1)
+	item = get_item_from_attribute(ms.metal_type, ms.metal_touch, ms.metal_purity, ms.metal_colour)
 	return item
 
 @frappe.whitelist()
-def get_item_from_attribute(metal_type, metal_touch, metal_purity, metal_color = None):
+def get_item_from_attribute(metal_type, metal_touch, metal_purity, metal_colour = None):
 	# items are created without metal_touch as attribute so not considering it in condition for now
 	condition = ''
-	if metal_color:
-		condition += f"and metal_colour = '{metal_color}'"
+	if metal_colour:
+		condition += f"and metal_colour = '{metal_colour}'"
 	data = frappe.db.sql(f"""select mtp.parent as item_code from 
 						(select _mtp.parent, _mtp.attribute_value as metal_type from `tabItem Variant Attribute` _mtp where _mtp.attribute = "Metal Type") mtp
 						left join 

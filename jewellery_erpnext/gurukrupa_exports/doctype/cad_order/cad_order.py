@@ -42,9 +42,6 @@ def create_item_from_cad_order(source_name, target_doc=None):
 		},target_doc, post_process
 	)
 	doc.save()
-	print(doc.name)
-	frappe.db.set_value('Item',doc.name,'order_from','CAD Order')
-	frappe.db.set_value('Item',doc.name,'order_from_no',source_name)
 	return doc.name
 
 @frappe.whitelist()
@@ -76,22 +73,13 @@ def make_quotation(source_name, target_doc=None):
 			"company": "company",
 			"party_name": "customer_code",
 			"order_type": "order_type",
-			"diamond_quality": "diamond_quality",
-			"salesman_name":"salesman_name",
-			"po_number":"po_number",
-			"parcel_place": "parcel_place",
-
+			"diamond_quality": "diamond_quality"
 		}
 		for target_field, source_field in field_map.items():
-			print(source.get(source_field))
 			quotation.set(target_field,source.get(source_field))
 		service_types = frappe.db.get_values("Service Type 2", {"parent": source.name},"service_type1")
 		for service_type in service_types:
 			quotation.append("service_type",{"service_type1": service_type})
-
-		parcel_places = frappe.db.get_values("Parcel Place MultiSelect", {"parent": source.name},"parcel_place")
-		for parcel_place in parcel_places:
-			quotation.append("parcel_place",{"parcel_place": parcel_place})
 
 	if isinstance(target_doc, str):
 		target_doc = json.loads(target_doc)
@@ -107,7 +95,7 @@ def make_quotation(source_name, target_doc=None):
 		"project": cad_order.get("project"),
 		"item_code": cad_order.get("item"),
 		"serial_no": cad_order.get("tag_no"),
-		"metal_color": cad_order.get("metal_colour"),
+		"metal_colour": cad_order.get("metal_colour"),
 		"metal_purity": cad_order.get("metal_purity"),
 		"metal_touch": cad_order.get("metal_touch"),
 		"gemstone_quality": cad_order.get("gemstone_quality"),
@@ -120,10 +108,7 @@ def make_quotation(source_name, target_doc=None):
 		"order_form_id": cad_order.get("name"),
 		"salesman_name": cad_order.get("salesman_name"),
 		"order_form_date": cad_order.get("order_date"),
-		"po_no": cad_order.get("po_number"),
-		"parcel_place": cad_order.get("parcel_place"),
-		"bom":cad_order.get("bom"),
-		"serial_no_bom":cad_order.get("serial_no_bom"),
+		"po_no": cad_order.get("po_no")
 	})
 	set_missing_values(cad_order, target_doc)
 

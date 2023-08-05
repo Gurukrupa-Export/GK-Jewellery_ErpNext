@@ -8,7 +8,7 @@ from frappe.model.mapper import get_mapped_doc
 
 class ManufacturingWorkOrder(Document):
 	def autoname(self):
-		color = self.metal_color.split('+')
+		color = self.metal_colour.split('+')
 		self.color = ''.join([word[0] for word in color if word])
 
 	def on_submit(self):

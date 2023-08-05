@@ -31,26 +31,7 @@ frappe.ui.form.on('Department IR', {
 			return {
 				filters: filter_dict
 			}
-		})		
-	},
-
-	// Updated Code
-
-	onload:function(frm){
-		// frappe.call({
-		// 	method: 'jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir.get_default_cu_de',
-		// 	callback: function(r) {
-		// 		if (!r.exc) {
-		// 			frm.set_value('current_department',r.message[0][0])
-		// 		}
-		// 	}
-		// });
-		console.log((frm.doc.__islocal))
-		if (frm.doc.__islocal) {
-			frappe.db.get_value("Employee", {"user_id": frappe.session.user}, "department", (r)=> {
-				if (r.department)   frm.set_value("current_department", r.department)
-			})
-		}
+		})
 	},
 	type(frm) {
 		frm.clear_table("department_ir_operation")

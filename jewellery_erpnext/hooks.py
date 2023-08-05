@@ -97,7 +97,7 @@ override_whitelisted_methods = {
 fixtures = [
 	{
 		"dt": "Custom Field", 
-		"filters": [["dt", "in", ["Stock Entry", "Warehouse"]], ["is_system_generated",'=',0]]
+		"filters": [["dt", "in", ["Stock Entry", "Warehouse", "Quotation Item", "Sales Order Item", "Sales Order", "Quotation", "Stock Entry Detail"]], ["is_system_generated",'=',0]]
 	}
 ]
 

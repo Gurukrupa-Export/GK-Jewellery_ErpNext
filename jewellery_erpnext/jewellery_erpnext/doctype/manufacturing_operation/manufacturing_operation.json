@@ -8,47 +8,58 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "company",
-  "abbr",
-  "manufacturing_work_order",
-  "main_slip_no",
-  "department",
-  "operation",
-  "column_break_7",
+  "tab_break_c0w88",
   "status",
-  "type",
-  "employee",
+  "section_break_o4oog",
+  "company",
   "manufacturer",
+  "abbr",
+  "column_break_wotev",
+  "department",
+  "employee",
+  "section_break_8ac16",
+  "manufacturing_work_order",
+  "operation",
+  "type",
+  "column_break_7",
+  "main_slip_no",
   "previous_operation",
   "section_break_10",
   "department_issue_id",
   "department_ir_status",
   "column_break_13",
   "department_receive_id",
+  "section_break_ccpns",
+  "qty",
+  "column_break_swroi",
+  "rodium",
   "section_break_15",
   "item_code",
   "design_id_bom",
-  "qty",
-  "metal_purity",
-  "metal_touch",
-  "metal_color",
+  "column_break_wnrc8",
   "serial_no",
-  "rodium",
-  "column_break_22",
+  "section_break_535sx",
+  "metal_type",
+  "metal_touch",
+  "column_break_g5rb9",
+  "metal_colour",
+  "metal_purity",
+  "section_break_yzv9o",
   "start_time",
   "finish_time",
   "time_taken",
   "section_break_nlzla",
   "gross_wt",
   "net_wt",
-  "diamond_wt",
-  "gemstone_wt",
+  "diamond_wt_in_gram",
+  "gemstone_wt_in_gram",
   "other_wt",
   "column_break_oyjmw",
   "received_gross_wt",
   "received_net_wt",
   "loss_wt",
-  "diamond_wt_in_gram",
+  "diamond_wt",
+  "gemstone_wt",
   "diamond_pcs",
   "gemstone_pcs",
   "section_break_26",
@@ -102,6 +113,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Status",
    "options": "Not Started\nOn Hold\nWIP\nQC\nFinished\nRevert"
   },
@@ -112,8 +124,10 @@
    "options": "Employee"
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_10",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Department IR Details"
   },
   {
    "fieldname": "department_issue_id",
@@ -141,8 +155,10 @@
    "fieldtype": "Column Break"
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_15",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Design Details"
   },
   {
    "fieldname": "qty",
@@ -165,10 +181,6 @@
    "fieldname": "rodium",
    "fieldtype": "Data",
    "label": "Rodium"
-  },
-  {
-   "fieldname": "column_break_22",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "start_time",
@@ -236,8 +248,8 @@
    "label": "Estimated RPT WT"
   },
   {
-   "fetch_from": "manufacturing_work_order.metal_color",
-   "fieldname": "metal_color",
+   "fetch_from": "manufacturing_work_order.metal_colour",
+   "fieldname": "metal_colour",
    "fieldtype": "Link",
    "label": "Metal Colour",
    "options": "Attribute Value"
@@ -252,13 +264,13 @@
    "fetch_from": "company.abbr",
    "fieldname": "abbr",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Abbr",
    "read_only": 1
   },
   {
    "fieldname": "manufacturing_work_order",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Manufacturing Work Order",
    "options": "Manufacturing Work Order",
    "read_only": 1
@@ -266,15 +278,14 @@
   {
    "fieldname": "manufacturer",
    "fieldtype": "Link",
-   "label": "Manufacturer Name",
-   "options": "Manufacturer",
-   "read_only": 1
+   "label": "Manufacturer",
+   "options": "Manufacturer"
   },
   {
    "fetch_from": "manufacturing_work_order.item_code",
    "fieldname": "item_code",
    "fieldtype": "Link",
-   "label": "Design ID",
+   "label": "Design Code",
    "options": "Item",
    "read_only": 1
   },
@@ -282,14 +293,14 @@
    "fetch_from": "manufacturing_work_order.master_bom",
    "fieldname": "design_id_bom",
    "fieldtype": "Link",
-   "label": "Design ID BOM",
+   "label": "Design Code BOM",
    "options": "BOM",
    "read_only": 1
   },
   {
    "fieldname": "metal_touch",
    "fieldtype": "Link",
-   "label": "Touch",
+   "label": "Metal Touch",
    "options": "Attribute Value"
   },
   {
@@ -328,8 +339,10 @@
    "read_only": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_nlzla",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Weight Details"
   },
   {
    "fieldname": "column_break_oyjmw",
@@ -370,7 +383,7 @@
   {
    "fieldname": "diamond_wt_in_gram",
    "fieldtype": "Float",
-   "label": "Diamond Wt(in gram)",
+   "label": "Diamond Wt (in gram)",
    "no_copy": 1,
    "read_only": 1
   },
@@ -382,11 +395,77 @@
   {
    "fieldname": "section_break_dvel5",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "tab_break_c0w88",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_o4oog",
+   "fieldtype": "Section Break",
+   "label": "Company Details"
+  },
+  {
+   "fieldname": "section_break_8ac16",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_wotev",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_wnrc8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_535sx",
+   "fieldtype": "Section Break",
+   "label": "Metal Detail"
+  },
+  {
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "label": "Metal Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "column_break_g5rb9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_yzv9o",
+   "fieldtype": "Section Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_ccpns",
+   "fieldtype": "Section Break",
+   "label": "Order Details"
+  },
+  {
+   "fieldname": "column_break_swroi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gemstone_wt_in_gram",
+   "fieldtype": "Float",
+   "label": "Gemstone Wt (in gram)",
+   "no_copy": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2023-07-19 00:41:38.576805",
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "manufacturing_operation",
+   "parent_doctype": "Stock Entry"
+  }
+ ],
+ "modified": "2023-08-02 11:53:31.205383",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Operation",

@@ -8,10 +8,12 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "posting_date",
-  "branch",
-  "column_break_ymty6",
+  "section_break_aedbn",
   "company",
+  "posting_date",
+  "column_break_ymty6",
+  "branch",
+  "department",
   "abbr",
   "amended_from",
   "section_break_tkb7i",
@@ -110,7 +112,21 @@
    "fetch_from": "company.abbr",
    "fieldname": "abbr",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Abbr",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_aedbn",
+   "fieldtype": "Section Break",
+   "label": "Company Details"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
    "read_only": 1
   }
  ],
@@ -122,7 +138,7 @@
    "link_fieldname": "manufacturing_plan"
   }
  ],
- "modified": "2023-05-11 12:51:52.286011",
+ "modified": "2023-07-31 16:36:41.461910",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Plan",

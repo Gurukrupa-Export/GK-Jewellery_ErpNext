@@ -360,8 +360,8 @@ def set_bom_item_details(self):
 		remark = ""
 		if item.diamond_quality:
 			remark += f"Diamond Quality: {item.diamond_quality} \n"
-		if item.metal_color:
-			remark += f"Colour: {item.metal_color}"
+		if item.metal_colour:
+			remark += f"Colour: {item.metal_colour}"
 		if item.quotation_bom:
 			self = (
 				frappe.get_doc("BOM", item.quotation_bom)
@@ -370,8 +370,8 @@ def set_bom_item_details(self):
 			)
 			# Set Metal Details Fields
 			for metal in self.metal_detail:
-				if item.metal_color:
-					metal.metal_colour = item.metal_color
+				if item.metal_colour:
+					metal.metal_colour = item.metal_colour
 
 			# Set Diamond Detail Fields
 			for diamond in self.diamond_detail:
@@ -383,8 +383,8 @@ def set_bom_item_details(self):
 
 			# Set Finding Fields
 			for finding in self.finding_detail:
-				if item.metal_color:
-					finding.metal_colour = item.metal_color
+				if item.metal_colour:
+					finding.metal_colour = item.metal_colour
 		item.remarks = remark
 
 
