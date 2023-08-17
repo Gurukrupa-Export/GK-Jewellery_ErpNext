@@ -17,11 +17,12 @@
   "section_break_5eq34",
   "type",
   "section_break_pk7m5",
-  "employee",
+  "operation",
+  "is_qc_reqd",
   "is_main_slip_required",
   "main_slip",
   "column_break_mooif",
-  "operation",
+  "employee",
   "show_manufacturing_operation",
   "section_break_unylm",
   "subcontracting",
@@ -63,15 +64,6 @@
    "fieldtype": "Link",
    "label": "Employee",
    "options": "Employee"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Employee IR",
-   "print_hide": 1,
-   "read_only": 1
   },
   {
    "depends_on": "eval:doc.type==\"Issue\"",
@@ -228,12 +220,25 @@
   {
    "fieldname": "column_break_lwchv",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fetch_from": "operation.is_qc_reqd",
+   "fieldname": "is_qc_reqd",
+   "fieldtype": "Check",
+   "label": "Is QC Required",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2023-07-31 20:00:46.303831",
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "employee_ir"
+  }
+ ],
+ "modified": "2023-08-16 00:17:37.958090",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Employee IR",

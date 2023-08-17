@@ -52,6 +52,18 @@ frappe.ui.form.on('Main Slip', {
             frm.set_value("naming_series", ".dep_abbr.-.type_abbr.-.metal_touch.-.metal_purity.-.#####")
         }
     },
+    powder_wt(frm) {
+        frm.trigger("calculate_powder_wt")
+    },
+    calculate_powder_wt(frm) {
+        console.log(frm.doc.powder_wt)
+        if (!frm.doc.powder_wt) return
+        frappe.db.get_value("Jewellery Settings", "Jewellery Settings", ["powder_value","water_value","boric_value","special_powder_boric_value"], (r)=> {
+            frm.set_value("water_weight",  ( frm.doc.powder_wt * r.water_value) / r.powder_value)
+            frm.set_value("boric_powder_weight",   ( frm.doc.powder_wt * r.boric_value ) / r.powder_value)
+            frm.set_value("special_powder_weight",  ( frm.doc.powder_wt * r.powder_value ) / r.powder_value)
+        })
+    },
     tree_wax_wt(frm) {
         if (frm.doc.metal_touch) {
             let field_map = {

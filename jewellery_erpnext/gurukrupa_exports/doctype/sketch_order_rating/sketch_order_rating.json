@@ -1,0 +1,249 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-07 16:42:29.470720",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sketch_order_id",
+  "section_break_wyiau",
+  "customer_name",
+  "section_break_c3tkw",
+  "design_image",
+  "design_image_preview",
+  "design_image_rating",
+  "design_image_rating_count",
+  "column_break_amda8",
+  "sketch_image",
+  "sketch_image_preview",
+  "sketch_image_rating",
+  "sketch_image_rating_count",
+  "section_break_n48um",
+  "design_image1",
+  "image_preview1",
+  "design_image1_rating",
+  "design_image1_rating_count",
+  "column_break_zhl3o",
+  "design_image2",
+  "image_preview2",
+  "design_image2_rating",
+  "design_image2_rating_count",
+  "section_break_6gmdt",
+  "design_image3",
+  "image_preview3",
+  "design_image3_rating",
+  "design_image3_rating_count",
+  "column_break_ad2qm",
+  "design_image4",
+  "image_preview4",
+  "design_image4_rating",
+  "design_image4_rating_count"
+ ],
+ "fields": [
+  {
+   "fieldname": "sketch_order_id",
+   "fieldtype": "Link",
+   "label": "Sketch Order ID",
+   "options": "Sketch Order"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image",
+   "fieldname": "design_image",
+   "fieldtype": "Attach Image",
+   "label": "Design Image"
+  },
+  {
+   "fetch_from": "sketch_order_id.sketch_image",
+   "fieldname": "sketch_image",
+   "fieldtype": "Attach Image",
+   "label": "Sketch Image"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image1",
+   "fieldname": "design_image1",
+   "fieldtype": "Attach Image",
+   "label": "Design Image1"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image2",
+   "fieldname": "design_image2",
+   "fieldtype": "Attach Image",
+   "label": "Design Image2"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image3",
+   "fieldname": "design_image3",
+   "fieldtype": "Attach Image",
+   "label": "Design Image3"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image4",
+   "fieldname": "design_image4",
+   "fieldtype": "Attach Image",
+   "label": "Design Image4"
+  },
+  {
+   "fieldname": "design_image_preview",
+   "fieldtype": "Image",
+   "label": "Design Image Preview",
+   "options": "design_image"
+  },
+  {
+   "fieldname": "column_break_amda8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sketch_image_preview",
+   "fieldtype": "Image",
+   "label": "Sketch Image Preview",
+   "options": "sketch_image"
+  },
+  {
+   "fieldname": "image_preview1",
+   "fieldtype": "Image",
+   "label": "Image Preview1",
+   "options": "design_image1"
+  },
+  {
+   "fieldname": "column_break_zhl3o",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "image_preview2",
+   "fieldtype": "Image",
+   "label": "Image Preview2",
+   "options": "design_image2"
+  },
+  {
+   "fieldname": "image_preview3",
+   "fieldtype": "Image",
+   "label": "Image Preview3",
+   "options": "design_image3"
+  },
+  {
+   "fieldname": "column_break_ad2qm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "image_preview4",
+   "fieldtype": "Image",
+   "label": "Image Preview4",
+   "options": "design_image4"
+  },
+  {
+   "fieldname": "section_break_c3tkw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_n48um",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_6gmdt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "design_image_rating",
+   "fieldtype": "Rating",
+   "label": "Design Image Rating"
+  },
+  {
+   "fieldname": "sketch_image_rating",
+   "fieldtype": "Rating",
+   "label": "Sketch Image Rating"
+  },
+  {
+   "fieldname": "design_image1_rating",
+   "fieldtype": "Rating",
+   "label": "Design Image1 Rating"
+  },
+  {
+   "fieldname": "design_image2_rating",
+   "fieldtype": "Rating",
+   "label": "Design Image2 Rating"
+  },
+  {
+   "fieldname": "design_image3_rating",
+   "fieldtype": "Rating",
+   "label": "Design Image3 Rating"
+  },
+  {
+   "fieldname": "design_image4_rating",
+   "fieldtype": "Rating",
+   "label": "Design Image4 Rating"
+  },
+  {
+   "fieldname": "design_image_rating_count",
+   "fieldtype": "Float",
+   "label": "Design Image Rating Count",
+   "precision": "2"
+  },
+  {
+   "fieldname": "sketch_image_rating_count",
+   "fieldtype": "Float",
+   "label": "Sketch Image Rating Count",
+   "precision": "2"
+  },
+  {
+   "fieldname": "design_image1_rating_count",
+   "fieldtype": "Float",
+   "label": "Design Image1 Rating Count",
+   "precision": "2"
+  },
+  {
+   "fieldname": "design_image2_rating_count",
+   "fieldtype": "Float",
+   "label": "Design Image2 Rating Count",
+   "precision": "2"
+  },
+  {
+   "fieldname": "design_image3_rating_count",
+   "fieldtype": "Float",
+   "label": "Design Image3 Rating Count",
+   "precision": "2"
+  },
+  {
+   "fieldname": "design_image4_rating_count",
+   "fieldtype": "Float",
+   "label": "Design Image4 Rating Count",
+   "precision": "2"
+  },
+  {
+   "fieldname": "section_break_wyiau",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "sketch_order_id.customer_code",
+   "fieldname": "customer_name",
+   "fieldtype": "Link",
+   "label": "Customer Name",
+   "options": "Customer"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-08 14:28:58.974421",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "Sketch Order Rating",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

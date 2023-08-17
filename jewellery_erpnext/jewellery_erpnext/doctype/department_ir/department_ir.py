@@ -3,7 +3,7 @@
 
 import frappe
 import json
-from frappe import _
+from frappe import _, scrub
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 from jewellery_erpnext.utils import set_values_in_bulk, get_value
@@ -52,7 +52,9 @@ class DepartmentIR(Document):
 			create_stock_entry(self, row)
 			in_transit_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "in_transit")
 			values["gross_wt"] = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation,
-								   "s_warehouse": in_transit_wh}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
+								   "s_warehouse": in_transit_wh, "docstatus":1}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
+			res = get_material_wt(self, row.manufacturing_operation)
+			values.update(res)
 			frappe.db.set_value("Manufacturing Operation", row.manufacturing_operation, values)
 			frappe.db.set_value("Manufacturing Work Order", row.manufacturing_work_order, 'department', self.current_department)
 
@@ -86,8 +88,8 @@ def update_stock_entry_dimensions(doc, row, manufacturing_operation, for_employe
 	}
 	for stock_entry in stock_entries:
 		rows = frappe.get_all("Stock Entry Detail", {"parent": stock_entry}, pluck = "name")
-		frappe.db.set_value("Stock Entry", stock_entry, values)
 		set_values_in_bulk("Stock Entry Detail", rows, values)
+		frappe.db.set_value("Stock Entry", stock_entry, values)
 		update_manufacturing_operation(stock_entry)
 
 def create_stock_entry(doc, row):
@@ -112,6 +114,7 @@ def create_stock_entry(doc, row):
 		se_doc.department = doc.previous_department
 		se_doc.to_department = doc.current_department
 		se_doc.auto_created = True
+		se_doc.department_ir = doc.name
 		se_doc.save()
 		se_doc.submit()
 
@@ -124,7 +127,6 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 						"manufacturing_operation": row.manufacturing_operation, "t_warehouse": department_wh,
 						"to_department": doc.current_department, "docstatus": 1
 					}, pluck="parent", group_by = "parent")
-	# frappe.throw(str(stock_entries))
 	if not stock_entries:
 		prev_mfg_operation = get_previous_operation(row.manufacturing_operation)
 		in_transit_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "in_transit")
@@ -146,6 +148,7 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 			child.to_department = doc.next_department
 		se_doc.department = doc.current_department
 		se_doc.to_department = doc.next_department
+		se_doc.department_ir = doc.name
 		se_doc.manufacturing_operation = manufacturing_operation
 		se_doc.auto_created = True
 		se_doc.save()
@@ -216,3 +219,14 @@ def get_previous_operation(manufacturing_operation):
 	if not mfg_operation.previous_operation:
 		return None
 	return frappe.db.get_value("Manufacturing Operation", {"operation": mfg_operation.previous_operation, "manufacturing_work_order": mfg_operation.manufacturing_work_order})
+
+def get_material_wt(doc, manufacturing_operation):
+	res = frappe.db.sql(f"""select ifnull(sum(if(sed.uom='cts',sed.qty*0.2, sed.qty)),0) as gross_wt, ifnull(sum(if(i.variant_of = 'M',sed.qty,0)),0) as net_wt,
+        ifnull(sum(if(i.variant_of = 'D',sed.qty,0)),0) as diamond_wt, ifnull(sum(if(i.variant_of = 'D',if(sed.uom='cts',sed.qty*0.2, sed.qty),0)),0) as diamond_wt_in_gram,
+        ifnull(sum(if(i.variant_of = 'G',sed.qty,0)),0) as gemstone_wt, ifnull(sum(if(i.variant_of = 'G',if(sed.uom='cts',sed.qty*0.2, sed.qty),0)),0) as gemstone_wt_in_gram,
+        ifnull(sum(if(i.variant_of = 'O',sed.qty,0)),0) as other_wt
+        from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name left join `tabItem` i on i.name = sed.item_code 
+		    where se.{scrub(doc.doctype)} = "{doc.name}" and sed.manufacturing_operation = "{manufacturing_operation}" and se.docstatus = 1""", as_dict=1)
+	if res:
+		return res[0]
+	return {}

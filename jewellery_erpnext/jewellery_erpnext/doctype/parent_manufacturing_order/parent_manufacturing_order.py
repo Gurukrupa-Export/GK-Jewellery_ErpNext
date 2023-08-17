@@ -49,15 +49,6 @@ class ParentManufacturingOrder(Document):
 			mr_doc.save()
 		frappe.msgprint("Material Request Created !!")
 
-	def create_operation_card(self):
-		oc_doc = frappe.new_doc('Operation Card')
-		oc_doc.manufacturing_order = self.name
-		oc_doc.purity = self.purity
-		oc_doc.item_code = self.item_code
-		oc_doc.operation = self.first_operation
-		oc_doc.save()
-		frappe.msgprint('First Operation Card Created !!')
-
 	def set_missing_value(self):
 		if not self.is_new():
 			pass
@@ -129,3 +120,23 @@ def create_manufacturing_work_order(self):
 		doc.department = frappe.db.get_single_value("Jewellery Settings", "default_department")
 		doc.auto_created = 1
 		doc.save()
+	
+	#for FG item
+	fg_doc = get_mapped_doc("Parent Manufacturing Order", self.name,
+				{
+				"Parent Manufacturing Order" : {
+					"doctype":	"Manufacturing Work Order",
+					"field_map": {
+						"name": "manufacturing_order"
+					}
+				}
+			   })
+	fg_doc.metal_touch = row.metal_touch
+	fg_doc.metal_type = row.metal_type
+	fg_doc.metal_purity = row.metal_purity
+	fg_doc.metal_colour = row.metal_colour
+	fg_doc.seq = int(self.name.split("-")[-1])
+	fg_doc.department = frappe.db.get_single_value("Jewellery Settings", "default_department")
+	fg_doc.for_fg = 1
+	fg_doc.auto_created = 1
+	fg_doc.save()

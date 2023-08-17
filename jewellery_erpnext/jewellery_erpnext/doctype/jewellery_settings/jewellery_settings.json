@@ -10,16 +10,19 @@
   "gold_loss_item",
   "column_break_9vro2",
   "default_department",
-  "manufacturing_warehouses_section",
   "in_transit",
-  "department_wip",
-  "column_break_iocpe",
-  "employee_wip",
+  "manufacturing_warehouses_section",
+  "powder_value",
+  "water_value",
+  "column_break_eo1lh",
+  "boric_value",
+  "special_powder_boric_value",
   "section_break_aoydf",
   "update_uom_conversion_in_variant",
   "defualt_item",
   "system_item",
   "gold_gst_rate",
+  "wo_split_limit",
   "warehouses_section",
   "source_warehouse",
   "work_in_progress",
@@ -280,28 +283,12 @@
   {
    "fieldname": "manufacturing_warehouses_section",
    "fieldtype": "Section Break",
-   "label": "Manufacturing Warehouses"
+   "label": "Flask Details"
   },
   {
    "fieldname": "in_transit",
    "fieldtype": "Link",
-   "label": "In Transit",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "department_wip",
-   "fieldtype": "Link",
-   "label": "Department WIP",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "column_break_iocpe",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "employee_wip",
-   "fieldtype": "Link",
-   "label": "Employee WIP",
+   "label": "Default In Transit",
    "options": "Warehouse"
   },
   {
@@ -314,12 +301,41 @@
    "fieldtype": "Link",
    "label": "Gold Loss Item",
    "options": "Item"
+  },
+  {
+   "fieldname": "powder_value",
+   "fieldtype": "Float",
+   "label": "Powder Value"
+  },
+  {
+   "fieldname": "water_value",
+   "fieldtype": "Float",
+   "label": "Water Value"
+  },
+  {
+   "fieldname": "column_break_eo1lh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boric_value",
+   "fieldtype": "Float",
+   "label": "Boric Value"
+  },
+  {
+   "fieldname": "special_powder_boric_value",
+   "fieldtype": "Float",
+   "label": "Special Powder Boric Value"
+  },
+  {
+   "fieldname": "wo_split_limit",
+   "fieldtype": "Int",
+   "label": "Limit of Work Order Split"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-06-21 19:30:15.949604",
+ "modified": "2023-08-16 13:56:05.018764",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Jewellery Settings",

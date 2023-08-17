@@ -2,21 +2,44 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe.utils import now
+from frappe import _
+from frappe.utils import now, cint
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
+from frappe.model.naming import make_autoname
+from jewellery_erpnext.utils import set_values_in_bulk
+
 
 class ManufacturingWorkOrder(Document):
 	def autoname(self):
-		color = self.metal_colour.split('+')
-		self.color = ''.join([word[0] for word in color if word])
+		if self.for_fg:
+			self.name = make_autoname("MWO-.abbr.-.item_code.-.seq.-.##", doc=self)
+		else:
+			color = self.metal_colour.split('+')
+			self.color = ''.join([word[0] for word in color if word])
 
 	def on_submit(self):
+		if self.for_fg:
+			self.validate_other_work_orders()
 		create_manufacturing_operation(self)
 		self.start_datetime = now()
+		self.db_set("status","Not Started")
+
+	def validate_other_work_orders(self):
+		last_department = frappe.db.get_value("Department Operation", {"is_last_operation":1}, "department")
+		if not last_department:
+			frappe.throw(_("Please set last operation first in Department Operation"))
+		pending_wo = frappe.get_all("Manufacturing Work Order",
+			      {"name": ["!=",self.name],"manufacturing_order":self.manufacturing_order, "docstatus":["!=",2], "department":["!=",last_department]},
+				  "name")
+		if pending_wo:
+			frappe.throw(_(f"All the pending manufacturing work orders should be in {last_department}."))
+
+	def on_cancel(self):
+		self.db_set("status","Cancelled")
 
 def create_manufacturing_operation(doc):
-	doc = get_mapped_doc("Manufacturing Work Order", doc.name,
+	mop = get_mapped_doc("Manufacturing Work Order", doc.name,
 			{
 			"Manufacturing Work Order" : {
 				"doctype":	"Manufacturing Operation",
@@ -25,8 +48,44 @@ def create_manufacturing_operation(doc):
 				}
 			}
 			})
-	doc.type = "Manufacturing Work Order"
-	doc.operation = frappe.db.get_single_value("Jewellery Settings", "default_operation")
-	doc.status = "Finished"
-	doc.department = frappe.db.get_single_value("Jewellery Settings", "default_department")
-	doc.save()
+	
+	settings = frappe.db.get_value("Jewellery Settings", "Jewellery Settings",["default_operation", "default_department"], as_dict=1)
+	department = settings.get("default_department")
+	operation = settings.get("default_operation")
+	status = "Finished"
+	if doc.for_fg:
+		department, operation = frappe.db.get_value("Department Operation", {"is_last_operation":1}, ["department","name"]) or ["",""]
+		status = "Not Started"
+	if doc.split_from:
+		department = doc.department
+		status = "Not Started"
+		operation = None
+	mop.status = status
+	mop.type = "Manufacturing Work Order"
+	mop.operation = operation
+	mop.department = department
+	mop.save()
+
+@frappe.whitelist()
+def create_split_work_order(docname, count = 1):
+	limit = cint(frappe.db.get_single_value("Jewellery Settings", "wo_split_limit"))
+	if cint(count) < 1 or (cint(count) > limit and limit > 0):
+		frappe.throw(_("Invalid split count"))
+	open_operations = frappe.get_all("Manufacturing Operation", {"manufacturing_work_order": docname,"status": ["not in",["Finished", "Not Started", "Revert"]]}, pluck='name')
+	if open_operations:
+		frappe.throw(f"Following operation should be closed before splitting work order: {', '.join(open_operations)}")
+	for i in range(0, cint(count)):
+		mop = get_mapped_doc("Manufacturing Work Order", docname,
+			{
+			"Manufacturing Work Order" : {
+				"doctype":	"Manufacturing Work Order",
+				"field_map": {
+					"name": "split_from"
+				}
+			}
+		})
+		mop.save()
+	pending_operations = frappe.get_all("Manufacturing Operation", {"manufacturing_work_order": docname, "status": "Not Started"}, pluck='name')
+	if pending_operations:	#to prevent this workorder from showing in any IR doc
+		set_values_in_bulk("Manufacturing Operation", pending_operations, {"status": "Finished"})
+	frappe.db.set_value("Manufacturing Work Order", docname, "status", "Closed")

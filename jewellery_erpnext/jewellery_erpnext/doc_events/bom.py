@@ -65,19 +65,19 @@ def set_bom_items(self):
 		If BOM Type is TEMPLATE or QUOTATION set defualt Item from Jewellery Settings to avoid garbage items creation.
 	"""
 	# Place a dummy Item if Bom type is Template or Quotation
-	_set_bom_items_by_child_tables(self)
-	# if self.bom_type in ['Template', 'Quotation']:
-	# 	defualt_item = frappe.db.get_value('Jewellery Settings', 'Jewellery Settings', 'defualt_item')
-	# 	self.items = [] 
-	# 	self.append('items',{
-	# 		'item_code': defualt_item,
-	# 		'is_variant': 1,
-	# 		'qty': 1,
-	# 		'uom': frappe.db.get_value("Item",defualt_item,'stock_uom'),
-	# 		'rate': 0
-	# 	})
-	# else:
+	if self.bom_type in ['Template', 'Quotation']:
+		defualt_item = frappe.db.get_value('Jewellery Settings', 'Jewellery Settings', 'defualt_item')
+		self.items = [] 
+		self.append('items',{
+			'item_code': defualt_item,
+			'is_variant': 1,
+			'qty': 1,
+			'uom': frappe.db.get_value("Item",defualt_item,'stock_uom'),
+			'rate': 0
+		})
+	else:
 		# Set Item Based On Child Tables 
+		_set_bom_items_by_child_tables(self)
 
 
 def _set_bom_items_by_child_tables(self):

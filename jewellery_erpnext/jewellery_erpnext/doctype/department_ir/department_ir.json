@@ -141,8 +141,13 @@
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2023-07-31 19:50:34.576895",
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "department_ir"
+  }
+ ],
+ "modified": "2023-08-05 11:59:37.598794",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Department IR",

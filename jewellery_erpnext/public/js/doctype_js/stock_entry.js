@@ -76,6 +76,20 @@ frappe.ui.form.on('Stock Entry', {
 		        }
 		    }
 		})
+        frm.set_query("main_slip", function(doc) {
+		    return {
+		        filters: {
+		            "docstatus": 0
+		        }
+		    }
+		})
+        frm.set_query("to_main_slip", function(doc) {
+		    return {
+		        filters: {
+		            "docstatus": 0
+		        }
+		    }
+		})
         frm.fields_dict['item_template_attribute'].grid.get_field('attribute_value').get_query = function (frm, cdt, cdn) {
             var child = locals[cdt][cdn];
             return {
@@ -175,13 +189,33 @@ frappe.ui.form.on('Stock Entry', {
         });
     },
     main_slip(frm) {
+        if (frm.doc.main_slip) {
+            frappe.db.get_value("Main Slip", frm.doc.main_slip, "employee", (r)=> {
+                frm.set_value("employee",r.employee)
+            })
+        }
         $.each(frm.doc.items || [], function (i, d) {
             d.main_slip = frm.doc.main_slip;
         });
     },
     to_main_slip(frm) {
+        if (frm.doc.to_main_slip) {
+            frappe.db.get_value("Main Slip", frm.doc.to_main_slip, "employee", (r)=> {
+                frm.set_value("to_employee",r.employee)
+            })
+        }
         $.each(frm.doc.items || [], function (i, d) {
             d.to_main_slip = frm.doc.to_main_slip;
+        });
+    },
+    employee(frm) {
+        $.each(frm.doc.items || [], function (i, d) {
+            d.employee = frm.doc.employee;
+        });
+    },
+    to_employee(frm) {
+        $.each(frm.doc.items || [], function (i, d) {
+            d.to_employee = frm.doc.to_employee;
         });
     },
     project(frm) {
@@ -208,6 +242,8 @@ frappe.ui.form.on("Stock Entry Detail", {
         row.to_department = frm.doc.to_department;
         row.main_slip = frm.doc.main_slip;
         row.to_main_slip = frm.doc.to_main_slip;
+        row.employee = frm.doc.employee;
+        row.to_employee = frm.doc.to_employee;
         row.project = frm.doc.project;
         row.manufacturing_operation = frm.doc.manufacturing_operation
         refresh_field("items");

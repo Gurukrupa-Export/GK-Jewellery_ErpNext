@@ -57,7 +57,7 @@ frappe.ui.form.on('Employee IR', {
 				manufacturing_work_order: undefined,
 			},
 			get_query_filters: query_filters,
-			size: "large"
+			size: "extra-large"
 		})
 	}
 });

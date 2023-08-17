@@ -93,6 +93,8 @@ def update_main_slip(doc, is_cancelled=False):
 		return
 	main_slip_map = frappe._dict()
 	for entry in doc.items:
+		if entry.main_slip and entry.to_main_slip:
+			frappe.throw(_("Select either source or target main slip."))
 		if entry.main_slip:
 			metal_type = frappe.db.get_value("Main Slip", entry.main_slip, "metal_type")
 			excluded_metal = frappe.db.get_value("Item Variant Attribute",{'parent': entry.item_code, "attribute": "Metal Type", "attribute_value": metal_type})

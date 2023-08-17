@@ -17,7 +17,7 @@ frappe.ui.form.on('Manufacturing Plan', {
 				branch : frm.doc.branch
 			},
 			get_query_method: "jewellery_erpnext.jewellery_erpnext.doctype.manufacturing_plan.manufacturing_plan.get_pending_ppo_sales_order",
-			size: "large"
+			size: "extra-large"
 		})
 	},
 	show_progress(frm) {
