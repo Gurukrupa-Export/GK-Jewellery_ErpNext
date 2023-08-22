@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Manufacturing Work Order', {
 	refresh: function(frm) {
-		if (frm.doc.docstatus == 1 && frm.doc.status == "In Process") {
+		if (frm.doc.docstatus == 1 && in_list(["In Process", "Not Started"],frm.doc.status)) {
 			frm.add_custom_button("Split Work Order", function() {
                 frm.trigger("split_work_order")
 			})

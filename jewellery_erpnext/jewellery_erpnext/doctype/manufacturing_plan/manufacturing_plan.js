@@ -2,6 +2,10 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Manufacturing Plan', {
+	setup(frm) {
+		var parent_fields = [['diamond_quality', 'Diamond Quality']];
+        set_item_attribute_filters_on_fields_in_child_doctype(frm, parent_fields);
+	},
 	refresh(frm) {
 		if (frm.doc.docstatus == 1)	frm.trigger("show_progress")
 	},
@@ -179,3 +183,14 @@ var map_current_doc = function(opts) {
 		_map();
 	}
 }
+
+function set_item_attribute_filters_on_fields_in_child_doctype(frm, fields) {
+	fields.map(function(field){
+	  frm.set_query(field[0], 'manufacturing_plan_table', function() {
+		return {
+		  query: 'jewellery_erpnext.query.item_attribute_query',
+		  filters: {'item_attribute': field[1]}
+		}
+	  })
+	})
+  }

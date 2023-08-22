@@ -21,7 +21,8 @@ doctype_js = {
 	"Operation"                    : "public/js/doctype_js/operation.js",
 	"Job Card"                     : "public/js/doctype_js/job_card.js",
 	"Sales Order"                  : "public/js/doctype_js/sales_order.js",
-	"Manufacturer"                 : "public/js/doctype_js/manufacturer.js"
+	"Manufacturer"                 : "public/js/doctype_js/manufacturer.js",
+    "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js"
 }
 
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
@@ -86,6 +87,9 @@ doc_events = {
 	},
     "Warehouse": {
         "validate": "jewellery_erpnext.jewellery_erpnext.doc_events.warehouse.validate"
+	},
+    "Purchase Order": {
+        "on_cancel": "jewellery_erpnext.jewellery_erpnext.doc_events.purchase_order.on_cancel"
 	}
 
 }
@@ -99,8 +103,15 @@ fixtures = [
 		"dt": "Custom Field", 
 		"filters": [["dt", "in", [
             "Stock Entry", "Warehouse", "Quotation Item", "Sales Order Item", 
-            "Sales Order", "Quotation", "Stock Entry Detail", "Quality Inspection Template"
+            "Sales Order", "Quotation", "Stock Entry Detail", "Quality Inspection Template",
+            "Purchase Order"
             ]], ["is_system_generated",'=',0]]
+	},
+    {
+		"dt": "Property Setter", 
+		"filters": [["doc_type", "in", [
+            "Quality Inspection Template"
+            ]], ["is_system_generated",'=',0], ["module","=","Jewellery Erpnext"]]
 	}
 ]
 

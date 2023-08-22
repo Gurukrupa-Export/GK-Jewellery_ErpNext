@@ -71,7 +71,8 @@ def create_split_work_order(docname, count = 1):
 	limit = cint(frappe.db.get_single_value("Jewellery Settings", "wo_split_limit"))
 	if cint(count) < 1 or (cint(count) > limit and limit > 0):
 		frappe.throw(_("Invalid split count"))
-	open_operations = frappe.get_all("Manufacturing Operation", {"manufacturing_work_order": docname,"status": ["not in",["Finished", "Not Started", "Revert"]]}, pluck='name')
+	open_operations = frappe.get_all("Manufacturing Operation", filters={"manufacturing_work_order": docname},
+				  or_filters = {"status": ["not in",["Finished", "Not Started", "Revert"]], "department_ir_status": "In-Transit"}, pluck='name')
 	if open_operations:
 		frappe.throw(f"Following operation should be closed before splitting work order: {', '.join(open_operations)}")
 	for i in range(0, cint(count)):

@@ -89,21 +89,15 @@ def set_metal_purity(sales_order):
 
 @frappe.whitelist()
 def get_scrap_items(doctype, txt, searchfield, start, page_len, filters):
-	work_order = filters.get('work_order')
+	manufacturing_operation = filters.get('manufacturing_operation')
 	data = frappe.db.sql(
 		"""
 		SELECT
-		woi.item_code
+		distinct sed.item_code
 		FROM 
-		`tabWork Order Item` woi 
-		WHERE woi.parent = '%s'
-		GROUP BY
-		woi.item_code 
-		"""%(work_order)
-	)
-	data = list(data)
-	data.append(('METAL LOSS',))
-	data = tuple(data)
+		`tabStock Entry Detail` sed left join tabItem i on i.name = sed.item_code
+		WHERE sed.manufacturing_operation = '%s'
+		"""%(manufacturing_operation))
 	return data
 
 @frappe.whitelist()

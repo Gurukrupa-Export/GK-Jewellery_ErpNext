@@ -8,21 +8,33 @@ from frappe.utils import cint
 import json
 from jewellery_erpnext.utils import update_existing
 from jewellery_erpnext.jewellery_erpnext.doctype.parent_manufacturing_order.parent_manufacturing_order import make_manufacturing_order
+from jewellery_erpnext.jewellery_erpnext.doc_events.purchase_order import make_subcontracting_order
 
 class ManufacturingPlan(Document):
 	def on_submit(self):
 		for row in self.manufacturing_plan_table:
-			update_existing("Sales Order Item",row.docname, "manufacturing_order_qty", f"manufacturing_order_qty + {row.manufacturing_order_qty}")
+			update_existing("Sales Order Item",row.docname, "manufacturing_order_qty", 
+		   							f"manufacturing_order_qty + {cint(row.manufacturing_order_qty) + cint(row.subcontracting_qty)}")
 			create_manufacturing_order(self, row)
+			if row.subcontracting:
+				create_subcontracting_order(self, row)
 
 	def on_cancel(self):
 		for row in self.manufacturing_plan_table:
-			update_existing("Sales Order Item", row.docname, "manufacturing_order_qty", f"greatest(manufacturing_order_qty - {row.manufacturing_order_qty},0)")
+			update_existing("Sales Order Item", row.docname, "manufacturing_order_qty", f"greatest(manufacturing_order_qty - {cint(row.manufacturing_order_qty) + cint(row.subcontracting_qty)},0)")
 
 	def validate(self):
+		self.validate_qty()
+
+	def validate_qty(self):
 		total = 0
 		for row in self.manufacturing_plan_table:
-			total += cint(row.manufacturing_order_qty)
+			if not row.subcontracting:
+				row.subcontracting_qty = 0
+				row.supplier = None
+			if (row.manufacturing_order_qty + row.subcontracting_qty) > row.pending_qty:
+				frappe.throw(_(f"Row #{row.idx}: Total Order qty cannot be greater than {row.pending_qty}"))
+			total += (cint(row.manufacturing_order_qty) + cint(row.subcontracting_qty))
 			if row.qty_per_manufacturing_order == 0:
 				frappe.throw(_("Qty per Manufacturing Order cannot be Zero"))
 			if row.manufacturing_order_qty % row.qty_per_manufacturing_order != 0:
@@ -59,6 +71,10 @@ def create_manufacturing_order(doc, row):
 	for i in range(0,cnt):
 		make_manufacturing_order(doc, row)
 	frappe.msgprint("Parent Manufacturing Order Created")
+
+def create_subcontracting_order(doc, row):
+	for row in doc.manufacturing_plan_table:
+		make_subcontracting_order(doc, row)
 
 @frappe.whitelist()
 def get_sales_order(source_name, target_doc=None):

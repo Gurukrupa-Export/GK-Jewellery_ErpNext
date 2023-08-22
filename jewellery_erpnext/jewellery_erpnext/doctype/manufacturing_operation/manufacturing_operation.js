@@ -26,6 +26,14 @@ frappe.ui.form.on('Manufacturing Operation', {
 			}
 		}
 	},
+	setup(frm) {
+		frm.set_query("item_code", "loss_details", function(doc, cdt, cdn) {
+			return {
+			  query: 'jewellery_erpnext.query.get_scrap_items',
+			  filters: {'manufacturing_operation': doc.name}
+			}
+		  })
+	}
 });
 
 function set_html(frm) {

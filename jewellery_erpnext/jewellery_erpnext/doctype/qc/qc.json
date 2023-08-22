@@ -10,15 +10,18 @@
  "field_order": [
   "manufacturing_work_order",
   "manufacturing_operation",
-  "qc_person",
+  "operation",
+  "gross_wt",
+  "received_gross_wt",
+  "allowed_loss_percentage",
+  "allowed_diamond_loss",
+  "allowed_gemstone_loss",
   "manual_inspection",
-  "diamond_qc",
-  "diamond_qc_rejection_reason",
-  "diamond_pcs",
-  "reject_diamond_pcs",
   "column_break_fn0zx",
   "posting_date",
   "status",
+  "qc_person",
+  "employee_ir",
   "rejection_reason",
   "start_time",
   "finish_time",
@@ -38,17 +41,16 @@
    "reqd": 1
   },
   {
-   "default": "user",
    "fieldname": "qc_person",
    "fieldtype": "Link",
    "label": "QC Person",
-   "options": "User"
+   "options": "Employee"
   },
   {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Pending\nWIP\nAccepted\nRejected"
+   "options": "Pending\nWIP\nAccepted\nRejected\nForce Approved"
   },
   {
    "depends_on": "eval:doc.status=='Reject'",
@@ -56,36 +58,6 @@
    "fieldtype": "Link",
    "label": "Rejection Reason",
    "options": "QC Rejection Reason"
-  },
-  {
-   "fieldname": "diamond_qc",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Diamond QC",
-   "options": "\nAccept\nReject"
-  },
-  {
-   "fieldname": "diamond_pcs",
-   "fieldtype": "Int",
-   "hidden": 1,
-   "label": "Diamond PCS",
-   "non_negative": 1
-  },
-  {
-   "depends_on": "eval:doc.diamond_qc==\"Reject\"",
-   "fieldname": "diamond_qc_rejection_reason",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Diamond QC Rejection Reason",
-   "options": "QC Rejection Reason"
-  },
-  {
-   "depends_on": "eval:doc.diamond_qc==\"Reject\"",
-   "fieldname": "reject_diamond_pcs",
-   "fieldtype": "Int",
-   "hidden": 1,
-   "label": "Reject Diamond PCS",
-   "non_negative": 1
   },
   {
    "default": "now",
@@ -138,7 +110,7 @@
    "fieldname": "readings",
    "fieldtype": "Table",
    "label": "Readings",
-   "options": "Quality Inspection Reading"
+   "options": "QC Readings"
   },
   {
    "fieldname": "amended_from",
@@ -154,12 +126,61 @@
    "fieldname": "manual_inspection",
    "fieldtype": "Check",
    "label": "Manual Inspection"
+  },
+  {
+   "fieldname": "employee_ir",
+   "fieldtype": "Link",
+   "label": "Employee IR",
+   "options": "Employee IR",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "manufacturing_operation.gross_wt",
+   "fieldname": "gross_wt",
+   "fieldtype": "Float",
+   "label": "Gross Wt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "received_gross_wt",
+   "fieldtype": "Float",
+   "label": "Received Gross Wt",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "operation.allowed_loss_percentage",
+   "fieldname": "allowed_loss_percentage",
+   "fieldtype": "Float",
+   "label": "Standard Process Loss Percentage",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "manufacturing_operation.operation",
+   "fieldname": "operation",
+   "fieldtype": "Link",
+   "label": "Operation",
+   "options": "Department Operation",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "operation.allowed_diamond_loss",
+   "fieldname": "allowed_diamond_loss",
+   "fieldtype": "Float",
+   "label": "Per Diamond Average Loss Weight",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "operation.allowed_gemstone_loss",
+   "fieldname": "allowed_gemstone_loss",
+   "fieldtype": "Float",
+   "label": "Per Gemstone Average Loss Weight",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-16 02:19:37.488606",
+ "modified": "2023-08-18 17:09:03.134748",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "QC",
@@ -167,6 +188,8 @@
  "owner": "Administrator",
  "permissions": [
   {
+   "amend": 1,
+   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -175,7 +198,25 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "MFG. QC Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],

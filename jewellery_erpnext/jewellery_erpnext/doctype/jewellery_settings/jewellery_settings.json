@@ -8,6 +8,7 @@
  "field_order": [
   "default_operation",
   "gold_loss_item",
+  "service_item",
   "column_break_9vro2",
   "default_department",
   "in_transit",
@@ -330,12 +331,18 @@
    "fieldname": "wo_split_limit",
    "fieldtype": "Int",
    "label": "Limit of Work Order Split"
+  },
+  {
+   "fieldname": "service_item",
+   "fieldtype": "Link",
+   "label": "Subcontracting Service Item",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-08-16 13:56:05.018764",
+ "modified": "2023-08-22 10:35:40.856363",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Jewellery Settings",

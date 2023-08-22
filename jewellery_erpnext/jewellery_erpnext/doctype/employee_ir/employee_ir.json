@@ -236,9 +236,13 @@
   {
    "link_doctype": "Stock Entry",
    "link_fieldname": "employee_ir"
+  },
+  {
+   "link_doctype": "QC",
+   "link_fieldname": "employee_ir"
   }
  ],
- "modified": "2023-08-16 00:17:37.958090",
+ "modified": "2023-08-18 12:21:31.905696",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Employee IR",

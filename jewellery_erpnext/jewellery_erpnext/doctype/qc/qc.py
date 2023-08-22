@@ -14,11 +14,11 @@ class QC(Document):
 		frappe.db.set_value("Manufacturing Operation",self.manufacturing_operation, {"status": "QC Pending"})
 
 	def on_submit(self):
-		if self.status not in ["Accepted", "Rejected"] or any([row.idx for row in self.readings if not row.status]):
+		if self.status not in ["Accepted", "Rejected", "Force Approved"] or any([row.idx for row in self.readings if not row.status]):
 			frappe.throw(_("QC can only be submitted in Accepted or Rejected state"))
 		status = "WIP"
-		if self.status == "Accepted":
-			pending_qc = frappe.db.get_value("QC", {"manufacturing_operation": self.manufacturing_operation, "status": ["!=", "Accepted"], "docstatus": ["!=",2]}, "name")
+		if self.status in ["Accepted", "Force Approved"]:
+			pending_qc = frappe.db.get_value("QC", {"manufacturing_operation": self.manufacturing_operation, "status": ["not in", ["Accepted", "Force Approved"]], "docstatus": ["!=",2]}, "name")
 			if pending_qc:
 				status = "QC Pending"
 			else:
@@ -26,6 +26,8 @@ class QC(Document):
 		frappe.db.set_value("Manufacturing Operation",self.manufacturing_operation, {"status": status})
 
 	def validate(self):
+		if self.status == "Force Approved" or any([row.name for row in self.readings if row.status == 'Force Approved']):
+			frappe.throw(_("Not allowed to select 'Force Approved'"))
 		if not self.readings:
 			self.get_specification_details()
 		else:
@@ -34,6 +36,14 @@ class QC(Document):
 		if self.has_value_changed("status") and self.status in ["Accepted", "Rejected"]:
 			self.finish_time = now()
 			self.time_taken = time_diff(self.finish_time, self.start_time)
+
+	@frappe.whitelist()
+	def force_approve(self):
+		self.db_set("status", "Force Approved")
+		for row in self.readings:
+			if row.status == "Rejected":
+				row.db_set("status","Force Approved")
+		self.on_submit()
 
 	@frappe.whitelist()
 	def get_specification_details(self):
@@ -126,6 +136,11 @@ class QC(Document):
 				field = "reading_" + str(i)
 				data[field] = flt(reading.get(field))
 			data["mean"] = self.calculate_mean(reading)
+			data["gross_wt"] = self.gross_wt
+			data["received_gross_wt"] = self.received_gross_wt
+			data["allowed_loss_percentage"] = self.allowed_loss_percentage
+			data["allowed_diamond_loss"] = self.allowed_diamond_loss
+			data["allowed_gemstone_loss"] = self.allowed_gemstone_loss
 
 		return data
 
@@ -143,16 +158,22 @@ class QC(Document):
 		actual_mean = mean(readings_list) if readings_list else 0
 		return actual_mean
 
-def create_qc_record(row, operation):
-	templates = frappe.db.get_all("Operation MultiSelect", {"operation": operation}, pluck = "parent")
+def create_qc_record(row, operation, employee_ir):
+	item = frappe.db.get_value("Manufacturing Operation", row.manufacturing_operation, "item_code")
+	category = frappe.db.get_value("Item", item, "item_category")
+	template_based_on_cat = frappe.db.get_all("Category MultiSelect", {"category": category}, pluck='parent')
+	templates = frappe.db.get_all("Operation MultiSelect", {"operation": operation, 'parent': ['in', template_based_on_cat]}, pluck = "parent")
+	if not templates:
+		frappe.msgprint(f"No Templates found for given category and operation i.e. {category} and {operation}")
 	for template in templates:
 		if frappe.db.sql(f"""select name from `tabQC` where manufacturing_operation = '{row.manufacturing_operation}' and
-					quality_inspection_template = '{template}' and ((docstatus = 1 and status = 'Accepted') or docstatus = 0)"""):
+					quality_inspection_template = '{template}' and ((docstatus = 1 and status in ('Accepted', 'Force Approved')) or docstatus = 0)"""):
 			continue
 		doc = frappe.new_doc("QC")
 		doc.manufacturing_work_order = row.manufacturing_work_order
 		doc.manufacturing_operation = row.manufacturing_operation
+		doc.received_gross_wt = row.received_gross_wt
+		doc.employee_ir = employee_ir
 		doc.quality_inspection_template = template
-		doc.qc_person = frappe.session.user
 		doc.posting_date = frappe.utils.getdate()
 		doc.save(ignore_permissions=True)

@@ -12,6 +12,18 @@ frappe.ui.form.on('QC', {
 				frm.save()
 			})
 		}
+		if (frm.doc.status == 'Rejected' && frm.doc.docstatus == 1) {
+			frm.add_custom_button("Force Approve", function() {
+				frm.call({
+					method: "force_approve",
+					doc: frm.doc,
+					callback: function() {
+						frm.reload_doc();
+						frappe.msgprint("Status updated successfully")
+					}
+				});
+			})
+		}
 	},
 	setup: function(frm) {
 		frm.set_query("manufacturing_operation", function(doc) {

@@ -11,6 +11,7 @@ from jewellery_erpnext.jewellery_erpnext.doctype.main_slip.main_slip import get_
 from jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir import update_stock_entry_dimensions, get_material_wt
 from jewellery_erpnext.utils import update_existing
 from jewellery_erpnext.jewellery_erpnext.doctype.qc.qc import create_qc_record
+from jewellery_erpnext.jewellery_erpnext.doctype.manufacturing_operation.manufacturing_operation import get_loss_details
 
 
 class EmployeeIR(Document):
@@ -34,6 +35,10 @@ class EmployeeIR(Document):
 	def validate(self):
 		self.validate_gross_wt()
 		self.update_main_slip()
+		if not self.is_new():
+			self.validate_qc("Warn")
+
+	def after_insert(self):
 		self.validate_qc("Warn")
 
 	def on_cancel(self):
@@ -70,6 +75,7 @@ class EmployeeIR(Document):
 		self.validate_qc("Stop")
 		precision = cint(frappe.db.get_single_value("System Settings", "float_precision"))
 		for row in self.employee_ir_operations:
+			res = {"received_gross_wt": row.received_gross_wt}
 			status = "WIP"
 			if not cancel:
 				status = "Finished"
@@ -87,22 +93,10 @@ class EmployeeIR(Document):
 	
 		qc_list = []
 		for row in self.employee_ir_operations:
-			# is_created = frappe.db.sql("""select 
-		 	# 					(select count(name) from `tabQC` where manufacturing_operation = 'MOP-01307' and docstatus != 2)
-		 	# 					= (select count(distinct quality_inspection_template) from `tabQC` where manufacturing_operation = 'MOP-01307' and docstatus != 2) 
-		 	# 				as is_created""")
 			operation = frappe.db.get_value("Manufacturing Operation",row.manufacturing_operation, ["status"], as_dict=1)
-			# qc_rejected = False
-			# if operation.get("quality_inspection"):
-			# 	qc_rejected = frappe.db.get_value("QC", operation.get("quality_inspection"), "status") == "Rejected"
-
-			# if not operation.get("quality_inspection") or qc_rejected:
-			# 	if action == "Warn":
-			# 		create_qc_record(row, self.operation)
-			# 	qc_list.append(row.manufacturing_operation)
 			if operation.get("status") in ['QC Pending',"WIP"]:
 				if action == "Warn":
-					create_qc_record(row, self.operation)
+					create_qc_record(row, self.operation, self.name)
 				qc_list.append(row.manufacturing_operation)
 		if qc_list:
 			msg = f"Please complete QC for the following: {', '.join(qc_list)}"
@@ -161,30 +155,42 @@ def create_stock_entry(doc, row, difference_wt=0):
 	stock_entries = frappe.db.sql(f"""select se.name from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name 
 			       where se.docstatus=1 and sed.manufacturing_operation = '{row.manufacturing_operation}' and 
 				   {"sed.t_warehouse" if doc.type == "Issue" else "sed.s_warehouse"} = '{department_wh}' 
-				   and sed.to_department = '{doc.department}'""", as_dict=1, pluck=1)
+				   and sed.to_department = '{doc.department}' order by se.creation asc""", as_dict=1, pluck=1)
 	
 	if doc.type == "Issue" and not stock_entries:
 		prev_mfg_operation = get_previous_operation(row.manufacturing_operation)
 		stock_entries = frappe.db.sql(f"""select se.name from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name 
 			       where se.docstatus=1 and sed.manufacturing_operation = '{prev_mfg_operation}' and 
 				   sed.t_warehouse = '{department_wh}' and sed.employee is not NULL
-				   and sed.to_department = '{doc.department}'""", as_dict=1, pluck=1)
+				   and sed.to_department = '{doc.department}' order by se.creation asc""", as_dict=1, pluck=1)
 	item = None
 	metal_item = None
 	if doc.main_slip:
 		item = get_main_slip_item(doc.main_slip)
 
+	existing_items = frappe.get_all("Stock Entry Detail",{"parent": ['in',stock_entries]}, pluck='item_code')
 	if difference_wt != 0:
 		mwo = frappe.db.get_value("Manufacturing Work Order", row.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_colour"], as_dict=1)
 		metal_item = get_item_from_attribute(mwo.metal_type, mwo.metal_touch, mwo.metal_purity, mwo.metal_colour)
-		existing_items = frappe.get_all("Stock Entry Detail",{"parent": ['in',stock_entries]}, pluck='item_code')
-		if (metal_item not in existing_items) and difference_wt != 0:
-			frappe.throw(_(f"Stock Entry for metal not found. Unable to add/subtract weight difference({difference_wt})"))
-	
+		if (metal_item not in existing_items) and difference_wt < 0:
+			frappe.throw(_(f"Stock Entry for metal not found. Unable to subtract weight difference({difference_wt})"))
+	loss = {}
+	if doc.type == "Receive":
+		loss = get_loss_details(row.manufacturing_operation)
 	for stock_entry in stock_entries:
 		existing_doc = frappe.get_doc("Stock Entry", stock_entry)
 		se_doc = frappe.copy_doc(existing_doc)
 		for child in se_doc.items:
+			if child.item_code in loss.keys():
+				loss_qty = loss[child.item_code].get("qty",0)
+				if child.qty == loss_qty or child.qty < loss_qty:
+					loss[child.item_code]["qty"] = loss_qty - child.qty
+					se_doc.remove(child)
+					continue
+				else:
+					child.qty = child.qty - loss_qty
+					loss[child.item_code]["qty"] = child.qty
+
 			if doc.type == "Issue":
 				child.s_warehouse = department_wh
 				child.t_warehouse = employee_wh
@@ -209,14 +215,53 @@ def create_stock_entry(doc, row, difference_wt=0):
 			child.manufacturer =  doc.manufacturer
 			child.material_request = None
 			child.material_request_item = None
-			if (metal_item == child.item_code):
+			if (metal_item == child.item_code) and difference_wt < 0:
 				update_existing("Manufacturing Operation", row.manufacturing_operation, {"gross_wt": f"gross_wt + {difference_wt}", "net_wt": f"net_wt + {difference_wt}"})
-		
 		se_doc.department = doc.department
 		se_doc.to_department = doc.department
+		se_doc.to_employee = doc.employee if doc.type == "Issue" else None
+		se_doc.employee = doc.employee if doc.type == "Receive" else None
 		se_doc.auto_created = True
 		se_doc.employee_ir = doc.name
 		se_doc.manufacturing_operation = row.manufacturing_operation
+		if not se_doc.items:
+			continue
+		se_doc.save()
+		se_doc.submit()
+
+	if (metal_item not in existing_items) and difference_wt > 0:
+		if not doc.main_slip:
+			frappe.throw(_("Cannot add wt without Main Slip"))
+		se_doc = frappe.new_doc("Stock Entry")
+		se_doc.stock_entry_type = "Material Transfer"
+		se_doc.purpose = "Material Transfer"
+		se_doc.manufacturing_order = frappe.db.get_value("Manufacturing Work Order",row.manufacturing_work_order, "manufacturing_order")
+		se_doc.manufacturing_work_order = row.manufacturing_work_order
+		se_doc.manufacturing_operion = row.manufacturing_operation
+		se_doc.department = doc.department
+		se_doc.to_department = doc.department
+		se_doc.main_slip = doc.main_slip
+		se_doc.employee = doc.employee
+		se_doc.inventory_type = "Regular Stock"
+		se_doc.auto_created = False
+		se_doc.employee_ir = doc.name
+		se_doc.append("items", {
+			"item_code": metal_item,
+			"s_warehouse": employee_wh,
+			"t_warehouse": department_wh,
+			"to_employee": None,
+			"employee": doc.employee,
+			"to_main_slip": None,
+			"main_slip": doc.main_slip,
+			"qty": difference_wt,
+			"manufacturing_operation": row.manufacturing_operation,
+			"department": doc.department,
+			"to_department": doc.department,
+			"manufacturer":  doc.manufacturer,
+			"material_request": None,
+			"material_request_item": None,
+			"inventory_type": "Regular Stock"
+		})
 		se_doc.save()
 		se_doc.submit()
 

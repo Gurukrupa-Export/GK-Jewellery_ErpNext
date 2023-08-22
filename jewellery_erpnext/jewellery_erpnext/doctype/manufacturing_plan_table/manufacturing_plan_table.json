@@ -9,6 +9,7 @@
   "sales_order",
   "docname",
   "item_code",
+  "bom",
   "mould_no",
   "delivery_date",
   "estimated_delivery_date",
@@ -16,9 +17,10 @@
   "column_break_p3gkl",
   "pending_qty",
   "manufacturing_order_qty",
+  "subcontracting_qty",
   "qty_per_manufacturing_order",
-  "supplier",
   "subcontracting",
+  "supplier",
   "produced_qty",
   "order_form_date",
   "diamond_quality"
@@ -104,17 +106,20 @@
    "options": "Attribute Value"
   },
   {
+   "depends_on": "eval: doc.subcontracting",
    "fetch_from": "item_code.product_supplier",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier Name",
+   "mandatory_depends_on": "eval: doc.subcontracting",
    "options": "Supplier"
   },
   {
    "allow_on_submit": 1,
    "fieldname": "estimated_delivery_date",
    "fieldtype": "Date",
-   "label": "Estimated Delivery Date"
+   "label": "Estimated Delivery Date",
+   "mandatory_depends_on": "eval: doc.subcontracting"
   },
   {
    "fieldname": "manufacturing_end_date",
@@ -138,12 +143,25 @@
    "in_preview": 1,
    "label": "Qty Per Manufacturing Order",
    "reqd": 1
+  },
+  {
+   "fieldname": "bom",
+   "fieldtype": "Link",
+   "label": "BOM",
+   "options": "BOM"
+  },
+  {
+   "depends_on": "eval: doc.subcontracting",
+   "fieldname": "subcontracting_qty",
+   "fieldtype": "Int",
+   "label": "Subcontracting Qty",
+   "mandatory_depends_on": "eval: doc.subcontracting"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-11 13:35:35.260063",
+ "modified": "2023-08-22 11:00:16.728199",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Plan Table",

@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.utils import now, time_diff
 from frappe.model.document import Document
 from jewellery_erpnext.utils import set_values_in_bulk
@@ -9,7 +10,19 @@ from jewellery_erpnext.utils import set_values_in_bulk
 class ManufacturingOperation(Document):
 	def validate(self):
 		self.set_start_finish_time()
-		# self.set_active_department_in_work_order()
+		self.validate_loss()
+
+	def validate_loss(self):
+		if self.is_new() or not self.loss_details:
+			return
+		items = get_stock_entries_against_mfg_operation(self)
+		for row in self.loss_details:
+			if row.item_code not in items.keys():
+				frappe.throw(_(f"Row #{row.idx}: Invalid item for loss"), title="Loss Details")
+			if row.stock_uom != items[row.item_code].get("uom"):
+				frappe.throw(_(f"Row #{row.idx}: UOM should be {items[row.item_code].get('uom')}"), title="Loss Details") 
+			if row.stock_qty > items[row.item_code].get("qty",0):
+				frappe.throw(_(f"Row #{row.idx}: qty cannot be greater than {items[row.item_code].get('qty',0)}"), title="Loss Details")
 
 	def set_start_finish_time(self):
 		if self.has_value_changed("status"):
@@ -23,10 +36,6 @@ class ManufacturingOperation(Document):
 		if self.start_time and self.finish_time:
 			self.time_taken = time_diff(self.finish_time, self.start_time)
 	
-	def set_active_department_in_work_order(self):
-		if self.status == "WIP":
-			frappe.set_value("Manufacturing Work Order", self.manufacturing_work_order, {"department": self.department, "status": "In Process"})
-
 	@frappe.whitelist()
 	def create_fg(self):
 		create_manufacturing_entry(self)
@@ -95,3 +104,32 @@ def create_manufacturing_entry(doc):
 	se.save()
 	se.submit()
 	frappe.msgprint('Finished Good created successfully')
+
+def get_stock_entries_against_mfg_operation(doc):
+	if isinstance(doc, str):
+		doc = frappe.get_doc("Manufacturing Operation", doc)
+	wh = frappe.db.get_value("Warehouse", {"department": doc.department}, "name")
+	if doc.employee:
+		wh = frappe.db.get_value("Warehouse", {"employee": doc.employee}, "name")
+	sed = frappe.db.get_all("Stock Entry Detail", filters={"t_warehouse": wh, "manufacturing_operation": doc.name, "docstatus": 1}, fields=["item_code", "qty", "uom"])
+	items = {}
+	for row in sed:
+		existing = items.get(row.item_code)
+		if existing:
+			qty = existing.get("qty",0) + row.qty
+		else:
+			qty = row.qty
+		items[row.item_code] = {"qty": qty, "uom": row.uom}
+	return items
+
+def get_loss_details(docname):
+	data = frappe.get_all("Operation Loss Details", {"parent": docname}, ["item_code", "stock_qty as qty", "stock_uom as uom"])
+	items = {}
+	for row in data:
+		existing = items.get(row.item_code)
+		if existing:
+			qty = existing.get("qty",0) + row.qty
+		else:
+			qty = row.qty
+		items[row.item_code] = {"qty": qty, "uom": row.uom}
+	return items
