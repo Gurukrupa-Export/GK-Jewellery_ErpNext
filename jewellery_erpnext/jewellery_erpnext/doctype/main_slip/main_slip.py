@@ -2,8 +2,11 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.utils import flt
 from frappe.model.document import Document
+from jewellery_erpnext.utils import get_item_from_attribute
+
 
 class MainSlip(Document):
 	def autoname(self):
@@ -14,7 +17,13 @@ class MainSlip(Document):
 		self.color_abbr = self.metal_colour[0] if self.metal_colour else None
 
 	def validate(self):
-		self.validate_metal_properties()
+		if not self.for_subcontracting:
+			self.validate_metal_properties()
+			self.warehouse = frappe.db.get_value("Warehouse",{"employee": self.employee})
+		else:
+			self.warehouse = frappe.db.get_value("Warehouse",{"subcontractor": self.subcontractor})
+		if not self.warehouse:
+			frappe.throw(_(f"Please set warehouse for {'subcontractor' if self.for_subcontracting else 'employee'}: {self.subcontractor if self.for_subcontracting else self.employee}"))
 		field_map = {
 			"10KT": "wax_to_gold_10",
 			"14KT": "wax_to_gold_14",
@@ -45,12 +54,12 @@ def create_material_request(doc):
 	if not item:
 		return
 	mr.schedule_date = frappe.utils.nowdate()
-	mr.main_slip = doc.name
+	mr.to_main_slip = doc.name
 	mr.department = doc.department
 	mr.append("items", {
 		"item_code": item,
 		"qty": doc.computed_gold_wt,
-		"warehouse":  frappe.db.get_single_value("Jewellery Settings","department_wip")
+		"warehouse":  frappe.db.get_value("Warehouse",{"department": doc.department},"name")
 	})
 	mr.save()
 
@@ -119,22 +128,3 @@ def get_main_slip_item(main_slip):
 	ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_colour"], as_dict=1)
 	item = get_item_from_attribute(ms.metal_type, ms.metal_touch, ms.metal_purity, ms.metal_colour)
 	return item
-
-@frappe.whitelist()
-def get_item_from_attribute(metal_type, metal_touch, metal_purity, metal_colour = None):
-	# items are created without metal_touch as attribute so not considering it in condition for now
-	condition = ''
-	if metal_colour:
-		condition += f"and metal_colour = '{metal_colour}'"
-	data = frappe.db.sql(f"""select mtp.parent as item_code from 
-						(select _mtp.parent, _mtp.attribute_value as metal_type from `tabItem Variant Attribute` _mtp where _mtp.attribute = "Metal Type") mtp
-						left join 
-						(select _mt.parent, _mt.attribute_value as metal_touch from `tabItem Variant Attribute` _mt where _mt.attribute = "Metal Touch") mt
-						on mt.parent = mtp.parent left join
-						(select _mp.parent, _mp.attribute_value as metal_purity from `tabItem Variant Attribute` _mp where _mp.attribute = "Metal Purity") mp
-						on mp.parent = mtp.parent left join
-						(select _mc.parent, _mc.attribute_value as metal_colour from `tabItem Variant Attribute` _mc where _mc.attribute = "Metal Colour") mc 
-						on mtp.parent = mc.parent where metal_type = '{metal_type}' and metal_purity = '{metal_purity}' {condition}""")
-	if data:
-		return data[0][0]
-	return None

@@ -8,6 +8,7 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 from jewellery_erpnext.utils import set_values_in_bulk, get_value
 from jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry import update_manufacturing_operation
+from jewellery_erpnext.jewellery_erpnext.doctype.manufacturing_operation.manufacturing_operation import get_previous_operation
 
 class DepartmentIR(Document):
 	@frappe.whitelist()
@@ -39,6 +40,11 @@ class DepartmentIR(Document):
 		if self.type == 'Receive' and self.receive_against:
 			if existing:=frappe.db.exists("Department IR",{"receive_against": self.receive_against, "name": ['!=',self.name], 'docstatus':["!=",2]}):
 				frappe.throw(_(f"Department IR: {existing} already exist for Issue: {self.receive_against}"))
+		for row in self.department_ir_operation:
+			existing = frappe.db.sql(f"""select di.name from `tabDepartment IR Operation` dip left join `tabDepartment IR` di on dip.parent = di.name
+			    					where di.docstatus != 2 and di.type = '{self.type}' and dip.name != '{row.name}' and dip.manufacturing_operation = '{row.manufacturing_operation}'""")
+			if existing:
+				frappe.throw(_(f"Row #{row.idx}: Found duplicate entry in Department IR: {existing[0][0]}"))
 
 	def on_cancel(self):
 		self.on_submit_receive(cancel=True)
@@ -213,12 +219,6 @@ def department_receive_query(doctype, txt, searchfield, start, page_len, filters
 				and name like %(txt)s {condition}
 			""",args)
 	return data if data else []
-
-def get_previous_operation(manufacturing_operation):
-	mfg_operation = frappe.db.get_value("Manufacturing Operation", manufacturing_operation, ["previous_operation", "manufacturing_work_order"], as_dict=1)
-	if not mfg_operation.previous_operation:
-		return None
-	return frappe.db.get_value("Manufacturing Operation", {"operation": mfg_operation.previous_operation, "manufacturing_work_order": mfg_operation.manufacturing_work_order})
 
 def get_material_wt(doc, manufacturing_operation):
 	res = frappe.db.sql(f"""select ifnull(sum(if(sed.uom='cts',sed.qty*0.2, sed.qty)),0) as gross_wt, ifnull(sum(if(i.variant_of = 'M',sed.qty,0)),0) as net_wt,

@@ -22,7 +22,8 @@ doctype_js = {
 	"Job Card"                     : "public/js/doctype_js/job_card.js",
 	"Sales Order"                  : "public/js/doctype_js/sales_order.js",
 	"Manufacturer"                 : "public/js/doctype_js/manufacturer.js",
-    "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js"
+    "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js",
+    "Supplier"                     : "public/js/doctype_js/supplier.js"
 }
 
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
@@ -102,9 +103,9 @@ fixtures = [
 	{
 		"dt": "Custom Field", 
 		"filters": [["dt", "in", [
-            "Stock Entry", "Warehouse", "Quotation Item", "Sales Order Item", 
+            "Stock Entry", "Warehouse", "Quotation Item", "Sales Order Item",
             "Sales Order", "Quotation", "Stock Entry Detail", "Quality Inspection Template",
-            "Purchase Order"
+            "Purchase Order", "Material Request", "Supplier"
             ]], ["is_system_generated",'=',0]]
 	},
     {

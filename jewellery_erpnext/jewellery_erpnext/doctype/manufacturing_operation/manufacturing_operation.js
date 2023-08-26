@@ -20,7 +20,7 @@ frappe.ui.form.on('Manufacturing Operation', {
 			}
 			if (in_list(["On Hold"],frm.doc.status)) {
 				frm.add_custom_button(__("Resume"), ()=>{
-					frm.set_value("status", "WIP")
+					frm.set_value("status", (frm.doc.employee || frm.doc.subcontractor)? "WIP": "Not Started")
 					frm.save()
 				})
 			}

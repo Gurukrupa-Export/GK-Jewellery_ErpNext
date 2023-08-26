@@ -87,7 +87,7 @@ frappe.ui.form.on('Department IR', {
 				department: frm.doc.current_department
 			},
 			get_query_filters: query_filters,
-			size: "large"
+			size: "extra-large"
 		})
 	}
 });

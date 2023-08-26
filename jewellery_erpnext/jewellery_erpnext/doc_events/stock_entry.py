@@ -1,10 +1,10 @@
+import json
 import frappe
 import itertools
+from six import itervalues
 from frappe import _
 from frappe.utils import flt,cint
-from six import itervalues
-from jewellery_erpnext.utils import get_variant_of_item, update_existing
-import json
+from jewellery_erpnext.utils import get_variant_of_item, update_existing, get_item_from_attribute
 from frappe.model.mapper import get_mapped_doc
 
 def validate(self, method):
@@ -52,6 +52,16 @@ def validate(self, method):
 
 	if self.stock_entry_type == "Material Transfer":
 		validate_metal_properties(self)
+	validate_main_slip_warehouse(self)
+
+def validate_main_slip_warehouse(doc):
+	for row in doc.items:
+		main_slip = row.main_slip or row.to_main_slip
+		if not main_slip:
+			return
+		warehouse = frappe.db.get_value("Main Slip", main_slip, "warehouse")
+		if (row.main_slip and row.s_warehouse != warehouse) or (row.to_main_slip and row.t_warehouse != warehouse):
+			frappe.throw(_("Selected warehouse does not belongs to main slip"))
 
 def validate_metal_properties(doc):
 	mwo = frappe._dict()
@@ -67,7 +77,9 @@ def validate_metal_properties(doc):
 		attribute_det = frappe.db.get_values("Item Variant Attribute",{"parent": row.item_code, "attribute":["in",["Metal Type", "Metal Touch", "Metal Purity", "Metal Colour"]]}, ['attribute', 'attribute_value'], as_dict=1)
 		item_det = { row.attribute: row.attribute_value for row in attribute_det}
 		if main_slip:
-			ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_colour", "check_color"], as_dict=1)
+			ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_colour", "check_color", "for_subcontracting"], as_dict=1)
+			if ms.get("for_subcontracting"):
+				continue
 			if ms.metal_touch != item_det.get("Metal Touch") or ms.metal_purity != item_det.get("Metal Purity") or (ms.metal_colour != item_det.get("Metal Colour") and ms.check_color):
 				frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected main slip")
 		if mwo:
@@ -299,7 +311,7 @@ def get_bom_scrap_material(self, qty):
 def update_manufacturing_operation(doc, is_cancelled=False):
 	if isinstance(doc, str):
 		doc = frappe.get_doc("Stock Entry",doc)
-	if doc.stock_entry_type != "Material Transfer" or doc.auto_created:
+	if doc.stock_entry_type not in ["Material Transfer", "Material Receipt"] or doc.auto_created:
 		return
 	item_wt_map = frappe._dict()
 	field_map = {
@@ -375,3 +387,29 @@ def make_stock_in_entry(source_name, target_doc=None):
 	)
 
 	return doclist
+
+
+def convert_metal_purity(from_item: dict, to_item: dict, s_warehouse, t_warehouse):
+	f_item = get_item_from_attribute(from_item.metal_type, from_item.metal_touch, from_item.metal_purity, from_item.metal_colour)
+	t_item = get_item_from_attribute(to_item.metal_type, to_item.metal_touch, to_item.metal_purity, to_item.metal_colour)
+	doc = frappe.new_doc("Stock Entry")
+	doc.stock_entry_type = "Repack"
+	doc.purpose = "Repack"
+	doc.inventory_type = "Regular Stock"
+	doc.auto_created = True
+	doc.append("items", {
+		"item_code": f_item,
+		"s_warehouse": s_warehouse,
+		"t_warehouse": None,
+		"qty": from_item.qty,
+		"inventory_type": "Regular Stock"
+	})
+	doc.append("items", {
+		"item_code": t_item,
+		"s_warehouse": None,
+		"t_warehouse": t_warehouse,
+		"qty": to_item.qty,
+		"inventory_type": "Regular Stock"
+	})
+	doc.save()
+	doc.submit()

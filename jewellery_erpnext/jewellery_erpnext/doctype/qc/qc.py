@@ -162,7 +162,7 @@ def create_qc_record(row, operation, employee_ir):
 	item = frappe.db.get_value("Manufacturing Operation", row.manufacturing_operation, "item_code")
 	category = frappe.db.get_value("Item", item, "item_category")
 	template_based_on_cat = frappe.db.get_all("Category MultiSelect", {"category": category}, pluck='parent')
-	templates = frappe.db.get_all("Operation MultiSelect", {"operation": operation, 'parent': ['in', template_based_on_cat]}, pluck = "parent")
+	templates = frappe.db.get_all("Operation MultiSelect", {"operation": operation, 'parent': ['in', template_based_on_cat], "parenttype": "Quality Inspection Template"}, pluck = "parent")
 	if not templates:
 		frappe.msgprint(f"No Templates found for given category and operation i.e. {category} and {operation}")
 	for template in templates:

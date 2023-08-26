@@ -76,6 +76,7 @@ def make_manufacturing_order(source_doc, row):
 	doc = frappe.new_doc("Parent Manufacturing Order")
 	so_det = frappe.get_value("Sales Order Item", row.docname, ["metal_type","metal_touch","metal_colour"], as_dict=1) or {}
 	doc.company = source_doc.company
+	doc.department = frappe.db.get_single_value("Jewellery Settings","default_department")
 	doc.sales_order = row.sales_order
 	doc.sales_order_item = row.docname
 	doc.item_code = row.item_code
@@ -83,7 +84,7 @@ def make_manufacturing_order(source_doc, row):
 	doc.metal_touch = so_det.get("metal_touch")
 	doc.metal_colour = so_det.get("metal_colour")
 	# doc.sales_order_bom = row.bom
-	doc.service_type = frappe.get_all("Service Type 2", {"parent": row.sales_order}, ["service_type1"]) or []
+	doc.service_type = [frappe.get_doc(row) for row in frappe.get_all("Service Type 2", {"parent": row.sales_order}, ["service_type1", "'Service Type 2' as doctype"])]
 	doc.manufacturing_plan = source_doc.name
 	doc.manufacturer = frappe.db.get_value("Manufacturer",{"company":source_doc.company}, "name", order_by="creation asc")
 	doc.qty = row.qty_per_manufacturing_order

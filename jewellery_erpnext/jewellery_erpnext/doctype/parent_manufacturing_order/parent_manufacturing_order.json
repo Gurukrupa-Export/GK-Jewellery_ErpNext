@@ -444,7 +444,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "default": "Manufacturing Plan & Management - GE",
    "fieldname": "department",
    "fieldtype": "Link",
    "label": "Department",

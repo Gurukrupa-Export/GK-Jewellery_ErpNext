@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{sketch_order_id}",
+ "creation": "2023-08-21 16:47:01.656585",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sketch_order_id",
+  "section_break_wyiau",
+  "design_image",
+  "design_image_preview",
+  "column_break_g7yls",
+  "design_image1",
+  "image_preview1",
+  "column_break_zhl3o",
+  "design_image2",
+  "image_preview2",
+  "section_break_6gmdt",
+  "design_image3",
+  "image_preview3",
+  "column_break_ad2qm",
+  "design_image4",
+  "image_preview4"
+ ],
+ "fields": [
+  {
+   "fieldname": "sketch_order_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sketch Order ID",
+   "options": "Sketch Order"
+  },
+  {
+   "fieldname": "section_break_wyiau",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image",
+   "fieldname": "design_image",
+   "fieldtype": "Attach Image",
+   "label": "Design Image"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image",
+   "fieldname": "design_image_preview",
+   "fieldtype": "Image",
+   "label": "Design Image Preview",
+   "options": "design_image"
+  },
+  {
+   "fieldname": "column_break_g7yls",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image1",
+   "fieldname": "design_image1",
+   "fieldtype": "Attach Image",
+   "label": "Design Image1"
+  },
+  {
+   "fieldname": "image_preview1",
+   "fieldtype": "Image",
+   "label": "Image Preview1",
+   "options": "design_image1"
+  },
+  {
+   "fieldname": "column_break_zhl3o",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image2",
+   "fieldname": "design_image2",
+   "fieldtype": "Attach Image",
+   "label": "Design Image2"
+  },
+  {
+   "fieldname": "image_preview2",
+   "fieldtype": "Image",
+   "label": "Image Preview2",
+   "options": "design_image2"
+  },
+  {
+   "fieldname": "section_break_6gmdt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image3",
+   "fieldname": "design_image3",
+   "fieldtype": "Attach Image",
+   "label": "Design Image3"
+  },
+  {
+   "fieldname": "image_preview3",
+   "fieldtype": "Image",
+   "label": "Image Preview3",
+   "options": "design_image3"
+  },
+  {
+   "fieldname": "column_break_ad2qm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "sketch_order_id.design_image4",
+   "fieldname": "design_image4",
+   "fieldtype": "Attach Image",
+   "label": "Design Image4"
+  },
+  {
+   "fieldname": "image_preview4",
+   "fieldtype": "Image",
+   "label": "Image Preview4",
+   "options": "design_image4"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-08-21 16:48:56.774375",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "Sketch Order Images",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

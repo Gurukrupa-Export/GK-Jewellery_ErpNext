@@ -5,7 +5,7 @@ frappe.ui.form.on('Main Slip', {
     refresh(frm) {
         cur_frm.add_custom_button(__("Stock Ledger"), async function() {
             var item = (await frappe.call({
-                                        method: "jewellery_erpnext.jewellery_erpnext.doctype.main_slip.main_slip.get_item_from_attribute",
+                                        method: "jewellery_erpnext.utils.get_item_from_attribute",
                                         args: {
                                             metal_type: frm.doc.metal_type,
                                             metal_touch: frm.doc.metal_touch,

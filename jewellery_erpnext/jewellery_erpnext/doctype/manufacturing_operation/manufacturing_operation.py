@@ -10,7 +10,12 @@ from jewellery_erpnext.utils import set_values_in_bulk
 class ManufacturingOperation(Document):
 	def validate(self):
 		self.set_start_finish_time()
+		self.update_weights()
 		self.validate_loss()
+
+	def update_weights(self):
+		res = get_material_wt(self)
+		self.update(res)
 
 	def validate_loss(self):
 		if self.is_new() or not self.loss_details:
@@ -133,3 +138,30 @@ def get_loss_details(docname):
 			qty = row.qty
 		items[row.item_code] = {"qty": qty, "uom": row.uom}
 	return items
+
+def get_previous_operation(manufacturing_operation):
+	mfg_operation = frappe.db.get_value("Manufacturing Operation", manufacturing_operation, ["previous_operation", "manufacturing_work_order"], as_dict=1)
+	if not mfg_operation.previous_operation:
+		return None
+	return frappe.db.get_value("Manufacturing Operation", {"operation": mfg_operation.previous_operation, "manufacturing_work_order": mfg_operation.manufacturing_work_order})
+
+def get_material_wt(doc):
+	filters = {}
+	if doc.for_subcontracting:
+		if doc.subcontractor:
+			filters["subcontractor"] = doc.subcontractor
+	else:
+		if doc.employee:
+			filters["employee"] = doc.employee
+	if not filters:
+		filters["department"] = doc.department
+	t_warehouse = frappe.db.get_value("Warehouse", filters, "name")
+	res = frappe.db.sql(f"""select ifnull(sum(if(sed.uom='cts',sed.qty*0.2, sed.qty)),0) as gross_wt, ifnull(sum(if(i.variant_of = 'M',sed.qty,0)),0) as net_wt,
+        ifnull(sum(if(i.variant_of = 'D',sed.qty,0)),0) as diamond_wt, ifnull(sum(if(i.variant_of = 'D',if(sed.uom='cts',sed.qty*0.2, sed.qty),0)),0) as diamond_wt_in_gram,
+        ifnull(sum(if(i.variant_of = 'G',sed.qty,0)),0) as gemstone_wt, ifnull(sum(if(i.variant_of = 'G',if(sed.uom='cts',sed.qty*0.2, sed.qty),0)),0) as gemstone_wt_in_gram,
+        ifnull(sum(if(i.variant_of = 'O',sed.qty,0)),0) as other_wt
+        from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name left join `tabItem` i on i.name = sed.item_code 
+		    where sed.t_warehouse = "{t_warehouse}" and sed.manufacturing_operation = "{doc.name}" and se.docstatus = 1""", as_dict=1)
+	if res:
+		return res[0]
+	return {}
