@@ -188,6 +188,7 @@ frappe.ui.form.on('Quotation Item', {
     edit_bom: function (frm, cdt, cdn) {
         var row = locals[cdt][cdn];
         if (frm.doc.__islocal) {
+            console.log('HERE')
             frappe.throw("Please save document to edit the BOM.")
         }
         if (!row.quotation_bom) {

@@ -44,6 +44,7 @@ class ParentManufacturingOrder(Document):
 			mr_doc.material_request_type = 'Material Transfer'
 			mr_doc.schedule_date = frappe.utils.nowdate()
 			mr_doc.manufacturing_order = self.name
+			mr_doc.company = self.company
 			for i in val:
 				mr_doc.append('items', i)
 			mr_doc.save()

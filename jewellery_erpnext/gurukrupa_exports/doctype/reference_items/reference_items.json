@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:REF-{####}",
+ "creation": "2023-09-19 10:06:51.794055",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "parent_reference_item",
+  "section_break_w9zry",
+  "reference_item_table"
+ ],
+ "fields": [
+  {
+   "fieldname": "parent_reference_item",
+   "fieldtype": "Link",
+   "label": "Parent Reference Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "section_break_w9zry",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reference_item_table",
+   "fieldtype": "Table",
+   "label": "Reference Item Table",
+   "options": "Reference Item Table"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-09-19 10:08:22.505775",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "Reference Items",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

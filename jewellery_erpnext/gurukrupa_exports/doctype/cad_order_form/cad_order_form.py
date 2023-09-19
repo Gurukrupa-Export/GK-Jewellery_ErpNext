@@ -56,11 +56,14 @@ def make_cad_order(source_name, target_doc=None, parent_doc = None):
 			}
 		},target_doc, set_missing_values
 	)
-
-	doc.save()
-	doc.service_type = parent_doc.service_type
+	print('parent_doc: ',parent_doc)
+	print('doc: ',doc)
 	doc.parcel_place = parent_doc.parcel_place
-	doc.company = parent_doc.company
-	doc.form_remarks = parent_doc.remarks
+	print('doc.parcel_place: ', doc.parcel_place)
+	print('parent_doc.parcel_place: ', parent_doc.parcel_place,)
 	doc.save()
+	# doc.service_type = parent_doc.service_type
+	# doc.company = parent_doc.company
+	# doc.form_remarks = parent_doc.remarks
+	# doc.save()
 	return doc.name

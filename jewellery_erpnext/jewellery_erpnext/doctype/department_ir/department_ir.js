@@ -81,14 +81,20 @@ frappe.ui.form.on('Department IR', {
 			method: "jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir.get_manufacturing_operations",
 			source_doctype: "Manufacturing Operation",
 			target: frm,
-			setters: {
+			setters: {		
 				manufacturing_work_order: undefined,
 				company: frm.doc.company || undefined,
-				department: frm.doc.current_department
+				department: frm.doc.current_department 
 			},
 			get_query_filters: query_filters,
-			size: "extra-large"
-		})
+			size: "extra-large",
+		});
+		// setTimeout(function() {
+		// 	// Set the "Department" field as read-only using jQuery
+		// 	var departmentField = $("input[data-fieldname='department']");
+		// 	departmentField.prop("readonly", true);
+		//   }, 500);
+		
 	}
 });
 

@@ -1,0 +1,143 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series",
+ "creation": "2023-09-11 16:12:13.916379",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "tab_break_c0w88",
+  "status",
+  "section_break_yzv9o",
+  "start_time",
+  "finish_time",
+  "time_taken",
+  "section_break_ee062",
+  "started_time",
+  "current_time",
+  "employee",
+  "time_logs",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_break_c0w88",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Not Started\nOn Hold\nWork In Progress\nQC Pending\nQC Completed\nComplete\nRevert"
+  },
+  {
+   "fieldname": "section_break_yzv9o",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Datetime",
+   "label": "Start Time",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "finish_time",
+   "fieldtype": "Datetime",
+   "label": "Finish Time",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:(doc.start_time && doc.finish_time)",
+   "fieldname": "time_taken",
+   "fieldtype": "Time",
+   "label": "Time Taken",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_ee062",
+   "fieldtype": "Section Break",
+   "label": "Time Log"
+  },
+  {
+   "fieldname": "started_time",
+   "fieldtype": "Datetime",
+   "label": "Started Time"
+  },
+  {
+   "fieldname": "current_time",
+   "fieldtype": "Int",
+   "label": "Current Time"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Table MultiSelect",
+   "label": "Employee",
+   "options": "Job Card Time Log"
+  },
+  {
+   "fieldname": "time_logs",
+   "fieldtype": "Table",
+   "label": "Time Logs",
+   "options": "Job Card Time Log"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Manufacturing Operation",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Read Only",
+   "label": "Series"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "manufacturing_operation",
+   "parent_doctype": "Stock Entry"
+  },
+  {
+   "link_doctype": "QC",
+   "link_fieldname": "manufacturing_operation"
+  }
+ ],
+ "modified": "2023-09-12 15:34:17.370913",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "demo Manufacturing Operation",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,34 +1,91 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "format:DE-{####}",
  "creation": "2023-07-26 17:07:16.733704",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "start",
-  "timer"
+  "item_category",
+  "order_form_type",
+  "customer_diamond",
+  "column_break_lrkdx",
+  "item_subcategory",
+  "order_form_id",
+  "customer_stone",
+  "section_break_patrf",
+  "bom_diamond_detail",
+  "bom_gemstone_detail"
  ],
  "fields": [
   {
-   "default": "0",
-   "fieldname": "start",
-   "fieldtype": "Check",
-   "label": "Start"
+   "fieldname": "item_category",
+   "fieldtype": "Link",
+   "label": "Item Category",
+   "options": "Attribute Value"
   },
   {
-   "fieldname": "timer",
-   "fieldtype": "Int",
-   "label": "Timer"
+   "fieldname": "item_subcategory",
+   "fieldtype": "Link",
+   "label": "Item Subcategory",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "order_form_type",
+   "fieldtype": "Select",
+   "label": "Order Form Type",
+   "options": "\nCAD Order Form\nSketch Order Form"
+  },
+  {
+   "fieldname": "section_break_patrf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.customer_diamond",
+   "fieldname": "bom_diamond_detail",
+   "fieldtype": "Table",
+   "label": "BOM Diamond Detail",
+   "options": "BOM Diamond Detail"
+  },
+  {
+   "depends_on": "eval:doc.customer_stone",
+   "fieldname": "bom_gemstone_detail",
+   "fieldtype": "Table",
+   "label": "BOM Gemstone Detail",
+   "options": "BOM Gemstone Detail"
+  },
+  {
+   "fieldname": "order_form_id",
+   "fieldtype": "Dynamic Link",
+   "label": "Order Form ID",
+   "options": "order_form_type"
+  },
+  {
+   "fieldname": "column_break_lrkdx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "customer_stone",
+   "fieldtype": "Check",
+   "label": "Customer Stone"
+  },
+  {
+   "default": "0",
+   "fieldname": "customer_diamond",
+   "fieldtype": "Check",
+   "label": "Customer Diamond"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-26 18:02:41.241219",
+ "modified": "2023-09-18 10:49:46.688749",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Demo",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

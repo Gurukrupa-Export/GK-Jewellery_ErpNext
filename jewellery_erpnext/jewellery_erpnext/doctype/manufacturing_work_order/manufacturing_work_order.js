@@ -37,5 +37,6 @@ frappe.ui.form.on('Manufacturing Work Order', {
         });
         dialog.show()
         // dialog.$wrapper.find('.modal-dialog').css("max-width", "90%");
-    }
+    },
+    
 });

@@ -1,0 +1,341 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-09-05 16:51:39.567540",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "department",
+  "designation",
+  "date_of_joining",
+  "last_working_days",
+  "total_length_of_service",
+  "reason_for_leaving",
+  "reasons_for_leaving",
+  "q1",
+  "section_break_syd8e",
+  "q2",
+  "section_break_tzdi2",
+  "q3",
+  "section_break_fhuyi",
+  "q4",
+  "section_break_rmsyu",
+  "q5",
+  "section_break_jlhk5",
+  "q6",
+  "section_break_7fqik",
+  "q7",
+  "section_break_fxznp",
+  "q8",
+  "promotional_opportunities",
+  "position_rotations",
+  "increased_responsiblities",
+  "special_projects",
+  "overseas",
+  "not_looking_for_any_progression",
+  "other",
+  "q9",
+  "job_satisfaction",
+  "job1",
+  "job2",
+  "job3",
+  "job4",
+  "job5",
+  "job6",
+  "section_break_ofair",
+  "q10",
+  "section_break_2yymg",
+  "q11",
+  "q12",
+  "q13",
+  "q14",
+  "q15",
+  "date",
+  "a"
+ ],
+ "fields": [
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "date_of_joining",
+   "fieldtype": "Date",
+   "label": "Date of Joining"
+  },
+  {
+   "fieldname": "last_working_days",
+   "fieldtype": "Date",
+   "label": "Last Working Days"
+  },
+  {
+   "fieldname": "total_length_of_service",
+   "fieldtype": "Small Text",
+   "label": "Total Length of Service"
+  },
+  {
+   "fieldname": "reason_for_leaving",
+   "fieldtype": "Small Text",
+   "label": "Reason for Leaving"
+  },
+  {
+   "fieldname": "reasons_for_leaving",
+   "fieldtype": "Read Only",
+   "label": "REASONS FOR LEAVING"
+  },
+  {
+   "fieldname": "q1",
+   "fieldtype": "Select",
+   "label": "Have you accepted another position?",
+   "options": "Yes\nNo"
+  },
+  {
+   "fieldname": "section_break_syd8e",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q2",
+   "fieldtype": "Long Text",
+   "label": "What prompted you to seek another job?"
+  },
+  {
+   "fieldname": "section_break_tzdi2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q3",
+   "fieldtype": "Long Text",
+   "label": "When did you begin searching for another job?"
+  },
+  {
+   "fieldname": "section_break_fhuyi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q4",
+   "fieldtype": "Long Text",
+   "label": "What makes the new job more attractive than your current position?"
+  },
+  {
+   "fieldname": "section_break_rmsyu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q5",
+   "fieldtype": "Long Text",
+   "label": "What made you decide that your career goals could be better achieved elsewhere?"
+  },
+  {
+   "fieldname": "section_break_jlhk5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6",
+   "fieldtype": "Long Text",
+   "label": "Have you spoken with anyone, either your director or any of the partners about your career goals?"
+  },
+  {
+   "fieldname": "section_break_7fqik",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q7",
+   "fieldtype": "Select",
+   "label": "In your opinion, have there been adequate career opportunities available within company?",
+   "options": "Yes\nNo"
+  },
+  {
+   "fieldname": "section_break_fxznp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q8",
+   "fieldtype": "Read Only",
+   "label": "What types of career opportunities are important to you? (Select all that apply)"
+  },
+  {
+   "fieldname": "q9",
+   "fieldtype": "Long Text",
+   "label": "If you selected other, please elaborate."
+  },
+  {
+   "fieldname": "job_satisfaction",
+   "fieldtype": "Read Only",
+   "label": "JOB SATISFACTION"
+  },
+  {
+   "fieldname": "job1",
+   "fieldtype": "Rating",
+   "label": "Job Responsibilities"
+  },
+  {
+   "fieldname": "job2",
+   "fieldtype": "Rating",
+   "label": "Opportunity for Achieving Goals"
+  },
+  {
+   "fieldname": "job3",
+   "fieldtype": "Rating",
+   "label": "Work Environment"
+  },
+  {
+   "fieldname": "job4",
+   "fieldtype": "Rating",
+   "label": "Director/ Manager"
+  },
+  {
+   "fieldname": "job5",
+   "fieldtype": "Rating",
+   "label": "Pay"
+  },
+  {
+   "fieldname": "job6",
+   "fieldtype": "Rating",
+   "label": "Benefits"
+  },
+  {
+   "fieldname": "section_break_ofair",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q10",
+   "fieldtype": "Long Text",
+   "label": "What did you enjoy most about your job?"
+  },
+  {
+   "fieldname": "section_break_2yymg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q11",
+   "fieldtype": "Long Text",
+   "label": "What did you enjoy least about your job?"
+  },
+  {
+   "fieldname": "q12",
+   "fieldtype": "Long Text",
+   "label": "What makes Acme Global Company a good place to work?"
+  },
+  {
+   "fieldname": "q13",
+   "fieldtype": "Long Text",
+   "label": "What makes the company poor place to work?"
+  },
+  {
+   "fieldname": "q14",
+   "fieldtype": "Long Text",
+   "label": "What recommendation would you have for making the company as a whole a better place to work?"
+  },
+  {
+   "fieldname": "q15",
+   "fieldtype": "Select",
+   "label": "Would you have stayed if a more satisfactory arrangement could have been worked out?",
+   "options": "Yes\nNo"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "a",
+   "fieldtype": "Read Only",
+   "label": " Please sign and date this form below authorizing the placement of this Exit Interview form within your personal file."
+  },
+  {
+   "default": "0",
+   "fieldname": "promotional_opportunities",
+   "fieldtype": "Check",
+   "label": "Promotional Opportunities"
+  },
+  {
+   "default": "0",
+   "fieldname": "position_rotations",
+   "fieldtype": "Check",
+   "label": "Position Rotations"
+  },
+  {
+   "default": "0",
+   "fieldname": "increased_responsiblities",
+   "fieldtype": "Check",
+   "label": "Increased Responsiblities"
+  },
+  {
+   "default": "0",
+   "fieldname": "special_projects",
+   "fieldtype": "Check",
+   "label": "Special Projects"
+  },
+  {
+   "default": "0",
+   "fieldname": "overseas",
+   "fieldtype": "Check",
+   "label": "Overseas"
+  },
+  {
+   "default": "0",
+   "fieldname": "not_looking_for_any_progression",
+   "fieldtype": "Check",
+   "label": "Not looking for any progression"
+  },
+  {
+   "default": "0",
+   "fieldname": "other",
+   "fieldtype": "Check",
+   "label": "Other"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee Code",
+   "options": "Employee"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-09-06 16:26:33.851744",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Employee Exit Questionnaire",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

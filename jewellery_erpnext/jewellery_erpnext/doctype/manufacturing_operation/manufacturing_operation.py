@@ -1,17 +1,236 @@
 # Copyright (c) 2023, Nirali and contributors
 # For license information, please see license.txt
 
-import frappe
-from frappe import _
+import frappe,json
+from frappe import _ ,bold
 from frappe.utils import now, time_diff
+from frappe.query_builder import Criterion
 from frappe.model.document import Document
 from jewellery_erpnext.utils import set_values_in_bulk
+from frappe.utils import (
+	add_days,
+	add_to_date,
+	cint,
+	flt,
+	get_datetime,
+	get_link_to_form,
+	get_time,
+	getdate,
+	time_diff,
+	time_diff_in_hours,
+	time_diff_in_seconds,
+)
+class OperationSequenceError(frappe.ValidationError):
+	pass
+
+class OverlapError(frappe.ValidationError):
+	pass
 
 class ManufacturingOperation(Document):
+	
+
+	def reset_timer_value(self, args):
+		self.started_time = None
+
+		if args.get("status") in ["WIP", "Complete"]:
+			self.current_time = 0.0
+
+			if args.get("status") == "WIP":
+				self.started_time = get_datetime(args.get("start_time"))
+
+		if args.get("status") == "Resume Job":
+			args["status"] = "WIP"
+
+		if args.get("status"):
+			self.status = args.get("status")
+
+	def add_start_time_log(self, args):
+		self.append("time_logs", args)
+
+	def add_time_log(self, args):
+		last_row = []
+		employees = args.employees
+		if isinstance(employees, str):
+			employees = json.loads(employees)
+
+		if self.time_logs and len(self.time_logs) > 0:
+			last_row = self.time_logs[-1]
+
+		self.reset_timer_value(args)
+		if last_row and args.get("complete_time"):
+			for row in self.time_logs:
+				if not row.to_time:
+					row.update(
+						{
+							"to_time": get_datetime(args.get("complete_time")),
+							"operation": args.get("sub_operation")
+							# "completed_qty": args.get("completed_qty") or 0.0,
+						}
+					)
+		elif args.get("start_time"):
+			new_args = frappe._dict(
+				{
+					"from_time": get_datetime(args.get("start_time")),
+					"operation": args.get("sub_operation"),
+					# "completed_qty": 0.0,
+				}
+			)
+
+			if employees:
+				for name in employees:
+					new_args.employee = name.get("employee")
+					self.add_start_time_log(new_args)
+			else:
+				self.add_start_time_log(new_args)
+
+		if not self.employee and employees:
+			self.set_employees(employees)
+
+		if self.status == "On Hold":
+			self.current_time = time_diff_in_seconds(last_row.to_time, last_row.from_time)
+
+		self.save()
+
+	def set_employees(self, employees):
+		for name in employees:
+			self.append("employee", {"employee": name.get("employee")})
+							# , "completed_qty": 0.0
+	# def validate_sequence_id(self):
+	# 	# if self.is_corrective_job_card:
+	# 	# 	return
+
+	# 	# if not (self.work_order and self.sequence_id):
+	# 	# 	return
+
+	# 	# current_operation_qty = 0.0
+	# 	# data = self.get_current_operation_data()
+	# 	# if data and len(data) > 0:
+	# 	# 	current_operation_qty = flt(data[0].completed_qty)
+
+	# 	# current_operation_qty += flt(self.total_completed_qty)
+
+	# 	data = frappe.get_all(
+	# 		"Work Order Operation",
+	# 		fields=["operation", "status", "completed_qty", "sequence_id"],
+	# 		filters={"docstatus": 1, "parent": self.work_order, "sequence_id": ("<", self.sequence_id)},
+	# 		order_by="sequence_id, idx",
+	# 	)
+
+	# 	message = "Job Card {0}: As per the sequence of the operations in the work order {1}".format(
+	# 		bold(self.name), bold(get_link_to_form("Work Order", self.work_order))
+	# 	)
+
+	# 	for row in data:
+	# 		if row.status != "Completed" and row.completed_qty < current_operation_qty:
+	# 			frappe.throw(
+	# 				_("{0}, complete the operation {1} before the operation {2}.").format(
+	# 					message, bold(row.operation), bold(self.operation)
+	# 				),
+	# 				OperationSequenceError,
+	# 			)
+
+	# 		if row.completed_qty < current_operation_qty:
+	# 			msg = f"""The completed quantity {bold(current_operation_qty)}
+	# 				of an operation {bold(self.operation)} cannot be greater
+	# 				than the completed quantity {bold(row.completed_qty)}
+	# 				of a previous operation
+	# 				{bold(row.operation)}.
+	# 			"""
+
+	# 			frappe.throw(_(msg))
 	def validate(self):
 		self.set_start_finish_time()
-		self.update_weights()
+		self.validate_time_logs()
+		# self.update_weights()
 		self.validate_loss()
+		# self.validate_time_logs()
+
+	def validate_time_logs(self):
+		self.total_time_in_mins = 0.0
+		# self.total_completed_qty = 0.0
+
+		if self.get("time_logs"):
+			for d in self.get("time_logs"):
+				if d.to_time and get_datetime(d.from_time) > get_datetime(d.to_time):
+					frappe.throw(_("Row {0}: From time must be less than to time").format(d.idx))
+
+				data = self.get_overlap_for(d)
+				if data:
+					frappe.throw(
+						_("Row {0}: From Time and To Time of {1} is overlapping with {2}").format(
+							d.idx, self.name, data.name
+						),
+						OverlapError,
+					)
+
+				if d.from_time and d.to_time:
+					d.time_in_mins = time_diff_in_hours(d.to_time, d.from_time) * 60
+					self.total_time_in_mins += d.time_in_mins
+
+				# if d.completed_qty and not self.sub_operations:
+				# 	self.total_completed_qty += d.completed_qty
+
+			# self.total_completed_qty = flt(self.total_completed_qty, self.precision("total_completed_qty"))
+
+		# for row in self.sub_operations:
+		# 	self.total_completed_qty += row.completed_qty
+
+	def get_overlap_for(self, args, check_next_available_slot=False):
+		production_capacity = 1
+
+		jc = frappe.qb.DocType("Manufacturing Operation")
+		jctl = frappe.qb.DocType("Job Card Time Log")
+
+		time_conditions = [
+			((jctl.from_time < args.from_time) & (jctl.to_time > args.from_time)),
+			((jctl.from_time < args.to_time) & (jctl.to_time > args.to_time)),
+			((jctl.from_time >= args.from_time) & (jctl.to_time <= args.to_time)),
+		]
+
+		if check_next_available_slot:
+			time_conditions.append(((jctl.from_time >= args.from_time) & (jctl.to_time >= args.to_time)))
+
+		query = (
+			frappe.qb.from_(jctl)
+			.from_(jc)
+			.select(jc.name.as_("name"), jctl.to_time)
+		#    , jc.workstation, jc.workstation_type
+			.where(
+				(jctl.parent == jc.name)
+				& (Criterion.any(time_conditions))
+				& (jctl.name != f"{args.name or 'No Name'}")
+				& (jc.name != f"{args.parent or 'No Name'}")
+				& (jc.docstatus < 2)
+			)
+			.orderby(jctl.to_time, order=frappe.qb.desc)
+		)
+
+		# if self.workstation_type:
+		# 	query = query.where(jc.workstation_type == self.workstation_type)
+
+		# if self.workstation:
+		# 	production_capacity = (
+		# 		frappe.get_cached_value("Workstation", self.workstation, "production_capacity") or 1
+		# 	)
+		# 	query = query.where(jc.workstation == self.workstation)
+
+		if args.get("employee"):
+			# override capacity for employee
+			production_capacity = 1
+			query = query.where(jctl.employee == args.get("employee"))
+
+		existing = query.run(as_dict=True)
+
+		if existing and production_capacity > len(existing):
+			return
+
+		# if self.workstation_type:
+		# 	if workstation := self.get_workstation_based_on_available_slot(existing):
+		# 		self.workstation = workstation
+		# 		return None
+
+		return existing[0] if existing else None
+
 
 	def update_weights(self):
 		res = get_material_wt(self)
@@ -165,3 +384,17 @@ def get_material_wt(doc):
 	if res:
 		return res[0]
 	return {}
+
+	
+
+
+@frappe.whitelist()
+def make_time_log(args):
+	if isinstance(args, str):
+		args = json.loads(args)
+	print('HERE')
+	args = frappe._dict(args)
+	doc = frappe.get_doc("Manufacturing Operation", args.job_card_id)
+	print(doc)
+	# doc.validate_sequence_id()
+	doc.add_time_log(args)

@@ -71,12 +71,15 @@
   "delivery_date_tab",
   "section_break_3oxbv",
   "delivery_date",
+  "updated_delivery_date",
   "estimated_delivery_date",
   "manufacturing_end_date",
   "column_break_bgazr",
   "due_days",
   "est_delivery_days",
-  "est_mfg_end_due_days"
+  "est_mfg_end_due_days",
+  "current_time",
+  "started_time"
  ],
  "fields": [
   {
@@ -499,6 +502,23 @@
    "label": "Split From",
    "options": "Manufacturing Work Order",
    "read_only": 1
+  },
+  {
+   "fieldname": "current_time",
+   "fieldtype": "Int",
+   "label": "Current Time"
+  },
+  {
+   "fieldname": "started_time",
+   "fieldtype": "Datetime",
+   "label": "Started Time"
+  },
+  {
+   "fetch_from": "manufacturing_order.updated_delivery_date",
+   "fetch_if_empty": 1,
+   "fieldname": "updated_delivery_date",
+   "fieldtype": "Date",
+   "label": "Updated Delivery Date"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -525,7 +545,7 @@
    "link_fieldname": "manufacturing_work_order"
   }
  ],
- "modified": "2023-08-16 14:28:13.798151",
+ "modified": "2023-09-15 18:29:11.098841",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Work Order",

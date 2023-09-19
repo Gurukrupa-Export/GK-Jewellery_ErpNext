@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:UP-{#}",
+ "creation": "2023-09-15 12:32:31.124870",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "order_from_type",
+  "order_form_id",
+  "section_break_af3s2",
+  "delivery_date",
+  "customer_code",
+  "parcel_place",
+  "manufacturing_end_date",
+  "column_break_nhv5g",
+  "update_delivery_date",
+  "update_customer_code",
+  "update_parcel_place",
+  "update_manufacturing_end_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "order_from_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order From Type",
+   "options": "\nCAD Order\nSketch Order"
+  },
+  {
+   "depends_on": "eval:doc.order_from_type",
+   "fieldname": "order_form_id",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order Form ID",
+   "options": "order_from_type"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Delivery Date"
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Code",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "parcel_place",
+   "fieldtype": "Table MultiSelect",
+   "label": "Shipping Territory",
+   "options": "Territory Multi Select"
+  },
+  {
+   "fieldname": "column_break_nhv5g",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "update_delivery_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Update Delivery Date"
+  },
+  {
+   "fieldname": "update_customer_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Update Customer Code",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "update_parcel_place",
+   "fieldtype": "Table MultiSelect",
+   "label": "Update Shipping Territory",
+   "options": "Territory Multi Select"
+  },
+  {
+   "depends_on": "eval:doc.order_form_id",
+   "fieldname": "section_break_af3s2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "manufacturing_end_date",
+   "fieldtype": "Date",
+   "label": "Est.MFG End Date"
+  },
+  {
+   "fieldname": "update_manufacturing_end_date",
+   "fieldtype": "Date",
+   "label": "Update Est.MFG End Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-09-15 16:49:28.007757",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "Update Filed In Order Form",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
