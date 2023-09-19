@@ -31,7 +31,7 @@ class ParentManufacturingOrder(Document):
 			frappe.throw("BOM is missing")
 		bom_doc = frappe.get_all("BOM Item",{"parent": bom}, ["item_code", "qty"])
 		items = {}
-		target_warehouse = frappe.db.get_single_value("Jewellery Settings","in_transit")
+		target_warehouse = frappe.db.get_value("Manufacturing Setting", {"company": self.company},"in_transit")
 		for row in bom_doc:
 			item_type = get_item_type(row.item_code)
 			if item_type not in items:
@@ -41,10 +41,10 @@ class ParentManufacturingOrder(Document):
 			if item_type == "metal_item":
 				continue
 			mr_doc = frappe.new_doc('Material Request')
+			mr_doc.company = self.company
 			mr_doc.material_request_type = 'Material Transfer'
 			mr_doc.schedule_date = frappe.utils.nowdate()
 			mr_doc.manufacturing_order = self.name
-			mr_doc.company = self.company
 			for i in val:
 				mr_doc.append('items', i)
 			mr_doc.save()
@@ -77,7 +77,7 @@ def make_manufacturing_order(source_doc, row):
 	doc = frappe.new_doc("Parent Manufacturing Order")
 	so_det = frappe.get_value("Sales Order Item", row.docname, ["metal_type","metal_touch","metal_colour"], as_dict=1) or {}
 	doc.company = source_doc.company
-	doc.department = frappe.db.get_single_value("Jewellery Settings","default_department")
+	doc.department = frappe.db.get_value("Manufacturing Setting", {"company": source_doc.company},"default_department")
 	doc.sales_order = row.sales_order
 	doc.sales_order_item = row.docname
 	doc.item_code = row.item_code
@@ -119,7 +119,7 @@ def create_manufacturing_work_order(self):
 		doc.metal_purity = row.metal_purity
 		doc.metal_colour = row.metal_colour
 		doc.seq = int(self.name.split("-")[-1])
-		doc.department = frappe.db.get_single_value("Jewellery Settings", "default_department")
+		doc.department = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"default_department")
 		doc.auto_created = 1
 		doc.save()
 	
@@ -138,7 +138,7 @@ def create_manufacturing_work_order(self):
 	fg_doc.metal_purity = row.metal_purity
 	fg_doc.metal_colour = row.metal_colour
 	fg_doc.seq = int(self.name.split("-")[-1])
-	fg_doc.department = frappe.db.get_single_value("Jewellery Settings", "default_department")
+	fg_doc.department = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"default_department")
 	fg_doc.for_fg = 1
 	fg_doc.auto_created = 1
 	fg_doc.save()

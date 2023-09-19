@@ -218,6 +218,16 @@ frappe.ui.form.on('Stock Entry', {
             d.to_employee = frm.doc.to_employee;
         });
     },
+    subcontractor(frm) {
+        $.each(frm.doc.items || [], function (i, d) {
+            d.subcontractor = frm.doc.subcontractor;
+        });
+    },
+    to_subcontractor(frm) {
+        $.each(frm.doc.items || [], function (i, d) {
+            d.to_subcontractor = frm.doc.to_subcontractor;
+        });
+    },
     project(frm) {
         $.each(frm.doc.items || [], function (i, d) {
             d.project = frm.doc.project;
@@ -244,6 +254,8 @@ frappe.ui.form.on("Stock Entry Detail", {
         row.to_main_slip = frm.doc.to_main_slip;
         row.employee = frm.doc.employee;
         row.to_employee = frm.doc.to_employee;
+        row.subcontractor = frm.doc.subcontractor
+        row.to_subcontractor = frm.doc.to_subcontractor
         row.project = frm.doc.project;
         row.manufacturing_operation = frm.doc.manufacturing_operation
         refresh_field("items");

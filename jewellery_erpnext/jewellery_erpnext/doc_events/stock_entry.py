@@ -61,7 +61,7 @@ def validate_main_slip_warehouse(doc):
 			return
 		warehouse = frappe.db.get_value("Main Slip", main_slip, "warehouse")
 		if (row.main_slip and row.s_warehouse != warehouse) or (row.to_main_slip and row.t_warehouse != warehouse):
-			frappe.throw(_("Selected warehouse does not belongs to main slip"))
+			frappe.throw(_(f"Selected warehouse does not belongs to main slip({main_slip})"))
 
 def validate_metal_properties(doc):
 	mwo = frappe._dict()

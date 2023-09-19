@@ -58,7 +58,7 @@ frappe.ui.form.on('Main Slip', {
     calculate_powder_wt(frm) {
         console.log(frm.doc.powder_wt)
         if (!frm.doc.powder_wt) return
-        frappe.db.get_value("Jewellery Settings", "Jewellery Settings", ["powder_value","water_value","boric_value","special_powder_boric_value"], (r)=> {
+        frappe.db.get_value("Manufacturing Setting", frm.doc.company, ["powder_value","water_value","boric_value","special_powder_boric_value"], (r)=> {
             frm.set_value("water_weight",  ( frm.doc.powder_wt * r.water_value) / r.powder_value)
             frm.set_value("boric_powder_weight",   ( frm.doc.powder_wt * r.boric_value ) / r.powder_value)
             frm.set_value("special_powder_weight",  ( frm.doc.powder_wt * r.powder_value ) / r.powder_value)
@@ -73,7 +73,7 @@ frappe.ui.form.on('Main Slip', {
                 "22KT": "wax_to_gold_22",
                 "24KT": "wax_to_gold_24",
             }
-            frappe.db.get_value("Jewellery Settings", "Jewellery Settings", field_map[frm.doc.metal_touch], (r) => {
+            frappe.db.get_value("Manufacturing Setting", frm.doc.company, field_map[frm.doc.metal_touch], (r) => {
                 frm.set_value('computed_gold_wt', flt(frm.doc.tree_wax_wt) * flt(r[field_map[frm.doc.metal_touch]]))
             })
         }

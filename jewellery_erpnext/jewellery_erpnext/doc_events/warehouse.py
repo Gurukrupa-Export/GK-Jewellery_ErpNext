@@ -6,6 +6,7 @@ def validate(doc, method=None):
         frappe.throw(_("You can fill in either the department or employee field, but not both."))
     check_unique(doc.name, "department", doc.department)
     check_unique(doc.name, "employee", doc.employee)
+    check_unique(doc.name, "subcontractor", doc.subcontractor)
     
 
 def check_unique(name, fieldname, value):

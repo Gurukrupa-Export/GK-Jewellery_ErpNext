@@ -1,47 +1,36 @@
+// Copyright (c) 2023, Nirali and contributors
+// For license information, please see license.txt
+
 frappe.ui.form.on('Refining', {
-	validate(frm) {
-		if (!frm.doc.multi_operation) {
-			frm.clear_table("refining_operation_details")
-			frm.refresh_field("refining_operation_details")
+	get_parent_production_order(frm) {
+		var query_filters = {
+			"department": frm.doc.department
 		}
-		else {
-			frm.set_value("employee", null)
-			frm.set_value("operation", null)
+		if (frm.doc.refining_type == "Parent Manufacturing Order") {
+			query_filters["status"] = ["in", ["Not Started"]]
+			// query_filters["operation"] = ["is", "not set"]
+			// else {
+			// 	query_filters["subcontractor"] = ["is", "not set"]
+			// }
 		}
-	},
-	date_from(frm) {
-		var today = frappe.datetime.now_date();
-		var entered_date = frm.doc.date_from;
-		if (entered_date > today) {
-			frappe.msgprint("Future dates are not allowed!");
-			frm.set_value("date_from", today);
-		}
-		else if(entered_date > frm.doc.date_to) {
-			frappe.msgprint("'Date From' cannot be after 'Date To'");
-			frm.set_value("date_from", frm.doc.date_to);
-		}
-	},
-	date_to(frm) {
-		var today = frappe.datetime.now_date();
-		var entered_date = frm.doc.date_to;
-		if (entered_date > today) {
-			frappe.msgprint("Future dates are not allowed!");
-			frm.set_value("date_to", today);
-		}
-		else if(entered_date < frm.doc.date_from) {
-			frappe.msgprint("'Date To' cannot be before 'Date From'");
-			frm.set_value("date_to", frm.doc.date_from);
-		}
-	},
-	refining_gold_weight(frm) {
-		frm.trigger("purity")
-	},
-	purity(frm) {
-		if (frm.doc.purity >100 || frm.doc.purity < 0) {
-		    frappe.msgprint("Purity must be between 0 to 100")
-		    frm.set_value("purity",0)
-		}
-		let fine_weight = flt(frm.doc.refining_gold_weight) * flt(frm.doc.purity) / 100
-		frm.set_value("fine_weight", fine_weight)
+		// else {
+		// 	query_filters["status"] = ["in", ["On Hold", "WIP", "QC Completed"]]
+		// 	query_filters["operation"] = frm.doc.operation
+		// 	if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
+		// 	if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor
+		// }
+		erpnext.utils.map_current_doc({
+			method: "jewellery_erpnext.jewellery_erpnext.doctype.refining.refining.get_manufacturing_operations",
+			source_doctype: "Manufacturing Work Order",
+			target: frm,
+			setters: {
+				// manufacturing_work_order: undefined,
+				company: frm.doc.company || undefined,
+				department: frm.doc.department || undefined,
+				manufacturing_order: undefined,
+			},
+			get_query_filters: query_filters,
+			size: "extra-large",
+		})
 	}
 });

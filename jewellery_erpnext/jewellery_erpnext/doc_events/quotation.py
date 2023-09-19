@@ -53,8 +53,6 @@ def create_quotation_bom(self, row, bom):
 	doc.gold_rate_with_gst = self.gold_rate_with_gst
 	doc.customer = self.party_name
 	doc.selling_price_list = self.selling_price_list
-	
-	
 	metal_criteria = frappe.get_list("Metal Criteria",{"parent": doc.customer}, ["metal_touch","metal_purity"], ignore_permissions=1) or {}
 	metal_criteria = {row.metal_touch:row.metal_purity for row in metal_criteria}
 	for item in doc.metal_detail:

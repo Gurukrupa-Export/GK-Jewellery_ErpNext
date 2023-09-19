@@ -11,12 +11,8 @@
   "rate_per_pc",
   "rate_per_diamond",
   "column_break_4",
-  "metal_colour",
-  "metal_touch",
-  "metal_purity",
-  "finding_size",
-  "rate_per_gm_threshold",
-  "wastage"
+  "wastage",
+  "rate_per_gm_threshold"
  ],
  "fields": [
   {
@@ -62,36 +58,12 @@
    "in_list_view": 1,
    "in_preview": 1,
    "label": "Rate per gm Threshold"
-  },
-  {
-   "fieldname": "metal_purity",
-   "fieldtype": "Link",
-   "label": "Metal Purity",
-   "options": "Attribute Value"
-  },
-  {
-   "fieldname": "metal_touch",
-   "fieldtype": "Link",
-   "label": "Metal Touch",
-   "options": "Attribute Value"
-  },
-  {
-   "fieldname": "finding_size",
-   "fieldtype": "Link",
-   "label": "Finding Size",
-   "options": "Attribute Value"
-  },
-  {
-   "fieldname": "metal_colour",
-   "fieldtype": "Link",
-   "label": "Metal Colour",
-   "options": "Attribute Value"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-14 17:23:58.600110",
+ "modified": "2023-04-24 12:30:08.482408",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Making Charge Price Finding Subcategory",

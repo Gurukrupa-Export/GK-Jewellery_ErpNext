@@ -105,7 +105,7 @@ fixtures = [
 		"filters": [["dt", "in", [
             "Stock Entry", "Warehouse", "Quotation Item", "Sales Order Item",
             "Sales Order", "Quotation", "Stock Entry Detail", "Quality Inspection Template",
-            "Purchase Order", "Material Request", "Supplier"
+            "Purchase Order", "Purchase Order Item", "Material Request", "Supplier", "Serial No"
             ]], ["is_system_generated",'=',0]]
 	},
     {

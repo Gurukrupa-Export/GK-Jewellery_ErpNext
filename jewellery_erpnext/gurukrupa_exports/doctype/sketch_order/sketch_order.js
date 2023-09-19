@@ -31,10 +31,8 @@ frappe.ui.form.on('Sketch Order', {
 			if (!d.count_1) {
 				frappe.throw(__("Row #{0}: Assigned Qty is cannot be 0",[d.idx]))
 			}
-			console.log('HERE')
 			if (!in_list(['Unassigned','On Hold'], frm.doc.workflow_state)) {
 				if (flt(d.count_1) != flt(d.rs_count)) {
-					console.log(frm.doc.workflow_state)
 					frappe.throw("Assigned Qty(Designer Assignment) does not match with accepted & rejected qty in Rough Sketch Approval (HOD)")
 				}
 			}

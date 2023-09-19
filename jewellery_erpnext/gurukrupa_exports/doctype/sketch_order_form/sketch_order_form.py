@@ -59,6 +59,18 @@ def make_sketch_order(doctype, source_name, parent_doc=None, target_doc=None):
 		target.company = parent.company
 		target.remark = parent.remarks
 		target.design_attributes = parent.design_attributes
+		target.stepping = parent.stepping
+		target.fusion = parent.fusion
+		target.drops = parent.drops
+		target.coin = parent.coin
+		target.gold_wire = parent.gold_wire
+		target.gold_ball = parent.gold_ball
+		target.flows = parent.flows
+		target.nagas = parent.nagas
+		target.india = parent.india
+		target.india_states = parent.india_states
+		target.usa = parent.usa
+		target.usa_states = parent.usa_states
 		if parent_doc.design_by == "Concept by Designer":
 			fields = ["market", "age", "gender", "function", "concept_type", "nature",
   						"setting_style", "animal", "god", "temple", "birds", "shape","creativity_type", 

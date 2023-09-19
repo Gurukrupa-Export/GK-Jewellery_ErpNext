@@ -26,7 +26,7 @@ class ManufacturingWorkOrder(Document):
 		self.db_set("status","Not Started")
 
 	def validate_other_work_orders(self):
-		last_department = frappe.db.get_value("Department Operation", {"is_last_operation":1}, "department")
+		last_department = frappe.db.get_value("Department Operation", {"is_last_operation":1,"company":self.company}, "department")
 		if not last_department:
 			frappe.throw(_("Please set last operation first in Department Operation"))
 		pending_wo = frappe.get_all("Manufacturing Work Order",
@@ -49,12 +49,12 @@ def create_manufacturing_operation(doc):
 			}
 			})
 	
-	settings = frappe.db.get_value("Jewellery Settings", "Jewellery Settings",["default_operation", "default_department"], as_dict=1)
+	settings = frappe.db.get_value("Manufacturing Setting", {'company': doc.company},["default_operation", "default_department"], as_dict=1)
 	department = settings.get("default_department")
 	operation = settings.get("default_operation")
 	status = "Finished"
 	if doc.for_fg:
-		department, operation = frappe.db.get_value("Department Operation", {"is_last_operation":1}, ["department","name"]) or ["",""]
+		department, operation = frappe.db.get_value("Department Operation", {"is_last_operation":1,"company":doc.company}, ["department","name"]) or ["",""]
 		status = "Not Started"
 	if doc.split_from:
 		department = doc.department
@@ -65,10 +65,11 @@ def create_manufacturing_operation(doc):
 	mop.operation = operation
 	mop.department = department
 	mop.save()
+	mop.db_set("employee", None)
 
 @frappe.whitelist()
-def create_split_work_order(docname, count = 1):
-	limit = cint(frappe.db.get_single_value("Jewellery Settings", "wo_split_limit"))
+def create_split_work_order(docname, company, count = 1):
+	limit = cint(frappe.db.get_value("Manufacturing Setting", {"company", company}, "wo_split_limit"))
 	if cint(count) < 1 or (cint(count) > limit and limit > 0):
 		frappe.throw(_("Invalid split count"))
 	open_operations = frappe.get_all("Manufacturing Operation", filters={"manufacturing_work_order": docname},

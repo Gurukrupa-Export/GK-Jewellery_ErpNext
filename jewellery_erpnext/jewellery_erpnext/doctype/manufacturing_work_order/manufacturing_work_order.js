@@ -25,6 +25,7 @@ frappe.ui.form.on('Manufacturing Work Order', {
                     freeze: true,
                     args: {
                         "docname": frm.doc.name,
+                        "company": frm.doc.company,
                         "count": dialog.get_values()["split_count"]
                     },
                     callback: function (r) {
@@ -37,6 +38,5 @@ frappe.ui.form.on('Manufacturing Work Order', {
         });
         dialog.show()
         // dialog.$wrapper.find('.modal-dialog').css("max-width", "90%");
-    },
-    
+    }
 });

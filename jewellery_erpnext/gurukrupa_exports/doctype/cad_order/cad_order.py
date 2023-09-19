@@ -36,7 +36,20 @@ def create_item_from_cad_order(source_name, target_doc=None):
 				"field_map": {
 					"category": "item_category",
 					"subcategory": "item_subcategory",
-					"setting_type": "setting_type"
+					"setting_type": "setting_type",
+					"stepping":"stepping",
+					"fusion":"fusion",
+					"drops":"drops",
+					"coin":"coin",
+					"gold_wire":"gold_wire",
+					"gold_ball":"gold_ball",
+					"flows":"flows",
+					"nagas":"nagas",
+					"design_attributes":"design_attribute",
+					"india":"india",
+					"india_states":"india_states",
+					"usa":"usa",
+					"usa_states":"usa_states"
 				} 
 			}
 		},target_doc, post_process

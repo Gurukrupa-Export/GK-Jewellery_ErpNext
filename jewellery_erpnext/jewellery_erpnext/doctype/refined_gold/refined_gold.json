@@ -7,7 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "metal_type",
-  "metal_id",
+  "item_code",
   "metal_weight",
   "metal_purity",
   "pure_weight"
@@ -21,16 +21,11 @@
    "options": "Attribute Value"
   },
   {
-   "fieldname": "metal_id",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Metal ID"
-  },
-  {
    "fieldname": "metal_weight",
-   "fieldtype": "Float",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Metal Weight"
+   "label": "Metal Weight",
+   "options": "Attribute Value"
   },
   {
    "fieldname": "metal_purity",
@@ -44,12 +39,19 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Pure Weight"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-07-19 18:35:58.627210",
+ "modified": "2023-08-27 23:38:27.211004",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Refined Gold",

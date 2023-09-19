@@ -95,7 +95,6 @@
   "customer_gold",
   "column_break_orxpd",
   "customer_diamond",
-  "cust_dia",
   "column_break_l45o3",
   "customer_stone",
   "section_break_iwhfe",
@@ -925,19 +924,12 @@
   {
    "fieldname": "column_break_qtvgq",
    "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:doc.customer_diamond == 'Yes'",
-   "fieldname": "cust_dia",
-   "fieldtype": "Link",
-   "label": "CUST DIA",
-   "options": "Demo"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-18 10:47:20.175312",
+ "modified": "2023-07-31 10:39:55.486620",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order Form Detail",

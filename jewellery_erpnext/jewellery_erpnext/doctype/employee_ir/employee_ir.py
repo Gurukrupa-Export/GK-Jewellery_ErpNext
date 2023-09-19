@@ -89,10 +89,14 @@ class EmployeeIR(Document):
 				status = "Finished"
 				create_operation_for_next_op(row.manufacturing_operation, employee_ir=self.name)
 				difference_wt = flt(row.received_gross_wt, precision) - flt(row.gross_wt, precision)
-				create_stock_entry(self, row, difference_wt)
+				create_stock_entry(self, row, flt(difference_wt, 3))
 				# res = get_material_wt(self, row.manufacturing_operation)
 			else:
-				pass
+				op = frappe.db.get_value("Manufacturing Operation", {"employee_ir": self.name})
+				if op:
+					frappe.delete_doc("Manufacturing Operation", op, ignore_permissions=1)
+					if self.is_qc_reqd:
+						status = "QC Pending"
 				# need to handle cancellation
 				# mfg_operation = frappe.db.exists("Manufacturing Operation", {"employee_ir": self.name})
 			res["status"] = status
@@ -160,12 +164,13 @@ class EmployeeIR(Document):
 def create_operation_for_next_op(docname, target_doc=None, employee_ir = None):
 	def set_missing_value(source, target):
 		target.previous_operation = source.operation
+		target.prev_gross_wt = source.received_gross_wt or source.gross_wt or source.prev_gross_wt
 
 	target_doc = get_mapped_doc("Manufacturing Operation", docname,
 			{
 			"Manufacturing Operation" : {
 				"doctype":	"Manufacturing Operation",
-				"field_no_map": ['status','employee',"start_time",
+				"field_no_map": ['status','employee',"start_time", "subcontractor", "for_subcontracting"
 		     					"finish_time", "time_taken", "department_issue_id",
 								"department_receive_id", "department_ir_status", "operation", "previous_operation"]
 			}
@@ -173,7 +178,7 @@ def create_operation_for_next_op(docname, target_doc=None, employee_ir = None):
 	target_doc.employee_ir = employee_ir
 	target_doc.time_taken = None
 	target_doc.save()
-
+	target_doc.db_set("employee", None)
 
 @frappe.whitelist()
 def get_manufacturing_operations(source_name, target_doc=None):
@@ -200,14 +205,13 @@ def create_stock_entry(doc, row, difference_wt=0):
 	stock_entries = frappe.db.sql(f"""select se.name from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name 
 			       where se.docstatus=1 and sed.manufacturing_operation = '{row.manufacturing_operation}' and 
 				   {"sed.t_warehouse" if doc.type == "Issue" else "sed.s_warehouse"} = '{department_wh}' 
-				   and sed.to_department = '{doc.department}' order by se.creation""", as_dict=1, pluck=1)
-
+				   and sed.to_department = '{doc.department}' group by se.name order by se.creation""", as_dict=1, pluck=1)
 	if doc.type == "Issue" and not stock_entries:
 		prev_mfg_operation = get_previous_operation(row.manufacturing_operation)
 		stock_entries = frappe.db.sql(f"""select se.name from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name 
 			       where se.docstatus=1 and sed.manufacturing_operation = '{prev_mfg_operation}' and 
-				   sed.t_warehouse = '{department_wh}' and sed.s_warehouse = '{employee_wh}'
-				   and sed.to_department = '{doc.department}' order by se.creation""", as_dict=1, pluck=1)
+				   sed.t_warehouse = '{department_wh}' and (sed.employee is not NULL or sed.subcontractor is not NULL)
+				   and sed.to_department = '{doc.department}' group by se.name order by se.creation""", as_dict=1, pluck=1)
 	item = None
 	metal_item = None
 	if doc.main_slip:
@@ -222,6 +226,9 @@ def create_stock_entry(doc, row, difference_wt=0):
 	loss = {}
 	if doc.type == "Receive":
 		loss = get_loss_details(row.manufacturing_operation)
+	if loss.get("total_loss"):
+		difference_wt = flt(difference_wt + loss.get("total_loss",0), 3)
+	row.db_set("gold_loss", difference_wt)
 	for stock_entry in stock_entries:
 		existing_doc = frappe.get_doc("Stock Entry", stock_entry)
 		se_doc = frappe.copy_doc(existing_doc)
@@ -285,6 +292,8 @@ def create_stock_entry(doc, row, difference_wt=0):
 		se_doc.submit()
 
 	if (metal_item in existing_items) and difference_wt < 0:
+		if not doc.main_slip:
+			frappe.throw(_("Unable to book metal loss as no main slip has been found for this operation."))
 		convert_pure_metal(row.manufacturing_work_order, doc.main_slip, abs(difference_wt), employee_wh, employee_wh, reverse=True)
 
 	if (metal_item not in existing_items) and difference_wt > 0:
@@ -301,6 +310,7 @@ def create_stock_entry(doc, row, difference_wt=0):
 		se_doc.to_department = doc.department
 		se_doc.main_slip = doc.main_slip
 		se_doc.employee = doc.employee
+		se_doc.subcontractor = doc.subcontractor
 		se_doc.inventory_type = "Regular Stock"
 		se_doc.auto_created = False
 		se_doc.employee_ir = doc.name
@@ -310,6 +320,8 @@ def create_stock_entry(doc, row, difference_wt=0):
 			"t_warehouse": department_wh,
 			"to_employee": None,
 			"employee": doc.employee,
+			"to_subcontractor": None,
+			"subcontractor": doc.subcontractor,
 			"to_main_slip": None,
 			"main_slip": doc.main_slip,
 			"qty": difference_wt,

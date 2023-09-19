@@ -56,7 +56,7 @@ class DepartmentIR(Document):
 		values["department_ir_status"] = "Received"
 		for row in self.department_ir_operation:
 			create_stock_entry(self, row)
-			in_transit_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "in_transit")
+			in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": self.company},"in_transit")
 			values["gross_wt"] = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation,
 								   "s_warehouse": in_transit_wh, "docstatus":1}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
 			res = get_material_wt(self, row.manufacturing_operation)
@@ -65,17 +65,18 @@ class DepartmentIR(Document):
 			frappe.db.set_value("Manufacturing Work Order", row.manufacturing_work_order, 'department', self.current_department)
 
 	#for Issue
-	def on_submit_issue(self):
+	def on_submit_issue(self, cancel=False):
 		for row in self.department_ir_operation:
-			new_operation = create_operation_for_next_dept(self.name,row.manufacturing_operation, self.next_department)
-			update_stock_entry_dimensions(self, row, new_operation)
-			create_stock_entry_for_issue(self, row, new_operation)
-			frappe.db.set_value("Manufacturing Operation", row.manufacturing_operation, "status", "Finished")
-			# in_transit_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "in_transit")
-			# gross_wt = get_value("Stock Entry Detail", {
-			# 						'manufacturing_operation': row.manufacturing_operation,
-			# 				 		"t_warehouse": in_transit_wh}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
-			# frappe.set_value("Manufacturing Operation", row.manufacturing_operation, "gross_wt", gross_wt)
+			if cancel:
+				new_operation = frappe.db.get_value("Manufacturing Operation", {"department_issue_id": self.name})
+				if new_operation:
+					frappe.delete_doc("Manufacturing Operation", new_operation, ignore_permissions=1)
+				frappe.db.set_value("Manufacturing Operation", row.manufacturing_operation, "status", "Not Started")
+			else:
+				new_operation = create_operation_for_next_dept(self.name,row.manufacturing_operation, self.next_department)
+				update_stock_entry_dimensions(self, row, new_operation)
+				create_stock_entry_for_issue(self, row, new_operation)
+				frappe.db.set_value("Manufacturing Operation", row.manufacturing_operation, "status", "Finished")
 
 def update_stock_entry_dimensions(doc, row, manufacturing_operation, for_employee = False):
 	filters = {}
@@ -99,7 +100,7 @@ def update_stock_entry_dimensions(doc, row, manufacturing_operation, for_employe
 		update_manufacturing_operation(stock_entry)
 
 def create_stock_entry(doc, row):
-	in_transit_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "in_transit")
+	in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"in_transit")
 	department_wh = frappe.get_value("Warehouse", {"department": doc.current_department})
 	if not department_wh:
 		frappe.throw(_(f"Please set warhouse for department {doc.current_department}"))
@@ -125,7 +126,7 @@ def create_stock_entry(doc, row):
 		se_doc.submit()
 
 def create_stock_entry_for_issue(doc, row, manufacturing_operation):
-	in_transit_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "in_transit")
+	in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"in_transit")
 	department_wh = frappe.get_value("Warehouse", {"department": doc.current_department})
 	if not department_wh:
 		frappe.throw(_(f"Please set warhouse for department {doc.current_department}"))
@@ -135,12 +136,12 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 					}, pluck="parent", group_by = "parent")
 	if not stock_entries:
 		prev_mfg_operation = get_previous_operation(row.manufacturing_operation)
-		in_transit_wh = frappe.db.get_value("Jewellery Settings","Jewellery Settings", "in_transit")
+		in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"in_transit")
 
-		stock_entries = frappe.get_all("Stock Entry Detail", {
+		stock_entries = frappe.get_all("Stock Entry Detail", filters={
 							"manufacturing_operation": prev_mfg_operation, "t_warehouse": department_wh, 
-							"to_department": doc.current_department, "docstatus": 1, "employee" : ["is", "set"] 
-						}, pluck="parent", group_by = "parent")
+							"to_department": doc.current_department, "docstatus": 1
+						}, or_filters={"employee" : ["is", "set"], "subcontractor" : ["is", "set"] }, pluck="parent", group_by = "parent")
 	for stock_entry in stock_entries:
 		existing_doc = frappe.get_doc("Stock Entry", stock_entry)
 		se_doc = frappe.copy_doc(existing_doc)
@@ -152,6 +153,19 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 			child.manufacturing_operation = manufacturing_operation
 			child.department = doc.current_department
 			child.to_department = doc.next_department
+			child.to_main_slip = None
+			child.main_slip = None
+			child.employee = None
+			child.to_employee = None
+			child.subcontractor = None
+			child.to_subcontractor = None
+		
+		se_doc.to_main_slip = None
+		se_doc.main_slip = None
+		se_doc.employee = None
+		se_doc.to_employee = None
+		se_doc.subcontractor = None
+		se_doc.to_subcontractor = None
 		se_doc.department = doc.current_department
 		se_doc.to_department = doc.next_department
 		se_doc.department_ir = doc.name
@@ -164,12 +178,13 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 def create_operation_for_next_dept(ir_name,docname, next_department, target_doc = None):
 	def set_missing_value(source, target):
 		target.previous_operation = source.operation
+		target.prev_gross_wt = source.received_gross_wt or source.gross_wt or source.prev_gross_wt
 
 	target_doc = get_mapped_doc("Manufacturing Operation", docname,
 			{
 			"Manufacturing Operation" : {
 				"doctype":	"Manufacturing Operation",
-				"field_no_map": ['status','employee','department',"start_time",
+				"field_no_map": ['status','employee','department',"start_time","for_subcontracting", "subcontractor"
 		     					"finish_time", "time_taken", "department_issue_id",
 								"department_receive_id", "department_ir_status", "operation", "previous_operation"]
 			}
@@ -179,6 +194,7 @@ def create_operation_for_next_dept(ir_name,docname, next_department, target_doc 
 	target_doc.department = next_department
 	target_doc.time_taken = None
 	target_doc.save()
+	target_doc.db_set("employee", None)
 	return target_doc.name
 
 @frappe.whitelist()

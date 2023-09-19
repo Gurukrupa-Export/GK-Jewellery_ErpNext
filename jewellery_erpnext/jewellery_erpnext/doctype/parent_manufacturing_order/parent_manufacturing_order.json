@@ -24,6 +24,7 @@
   "rowname",
   "amended_from",
   "column_break_lhbfx",
+  "huid",
   "master_bom",
   "item_category",
   "serial_id_bom",
@@ -61,7 +62,6 @@
   "delivery_details_tab",
   "section_break_k9cm0",
   "delivery_date",
-  "updated_delivery_date",
   "estimated_delivery_date",
   "manufacturing_end_date",
   "column_break_t9v9f",
@@ -467,10 +467,10 @@
    "label": "Order Details"
   },
   {
-   "allow_on_submit": 1,
-   "fieldname": "updated_delivery_date",
-   "fieldtype": "Date",
-   "label": "Updated Delivery Date"
+   "fieldname": "huid",
+   "fieldtype": "Data",
+   "label": "HUID/Certification No",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -489,7 +489,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-09-15 18:27:01.076226",
+ "modified": "2023-09-02 03:35:30.650961",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

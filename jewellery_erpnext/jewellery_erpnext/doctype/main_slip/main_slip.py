@@ -32,7 +32,7 @@ class MainSlip(Document):
 			"24KT": "wax_to_gold_24",
 		}
 		if self.is_tree_reqd:
-			ratio = frappe.db.get_value("Jewellery Settings","Jewellery Settings",field_map.get(self.metal_touch))
+			ratio = frappe.db.get_value("Manufacturing Setting",{"company": self.company},field_map.get(self.metal_touch))
 			self.computed_gold_wt = flt(self.tree_wax_wt) * flt(ratio)
 		if not frappe.db.exists("Material Request",{"main_slip": self.name}) and not self.is_new() and self.computed_gold_wt > 0:
 			create_material_request(self)
@@ -75,7 +75,8 @@ def create_stock_entries(main_slip, actual_qty, metal_loss, metal_type, metal_to
 	if flt(actual_qty) <= 0:
 		return
 	doc = frappe.db.get_value("Main Slip", main_slip, "*")
-	settings = frappe.db.get_value("Jewellery Settings","Jewellery Settings", ["employee_wip", "department_wip", "gold_loss_item"], as_dict=1)
+	settings = frappe.db.get_value("Manufacturing Setting", {"company": doc.company}, ["gold_loss_item"], as_dict=1)
+	settings.department_wip = frappe.db.get_value("Warehouse", {"department": doc.department})
 	create_metal_loss(doc, settings, item, flt(metal_loss))
 	stock_entry = frappe.new_doc("Stock Entry")
 	stock_entry.stock_entry_type = "Material Transfer"
@@ -97,7 +98,7 @@ def create_metal_loss(doc,settings,item,metal_loss):
 		return
 	metal_loss_item = settings.gold_loss_item
 	if not item:
-		frappe.msgprint("Please set item for metal loss in Jewellery Settings")
+		frappe.msgprint("Please set item for metal loss in Manufacturing Setting for selected company")
 		return
 	se = frappe.new_doc("Stock Entry")
 	se.stock_entry_type = "Repack"

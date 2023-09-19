@@ -60,7 +60,6 @@
   "gold_target",
   "diamond_target",
   "budget",
-  "nakshi_from",
   "section_break_7xz6a",
   "navratna",
   "section_break_82",
@@ -99,6 +98,7 @@
   "section_break_y4y2c",
   "section_break_53",
   "remark",
+  "section_break_47",
   "remarks",
   "section_break_26",
   "designer_assignment",
@@ -125,8 +125,7 @@
   "india_states",
   "column_break_zasix",
   "usa",
-  "usa_states",
-  "delivery_days"
+  "usa_states"
  ],
  "fields": [
   {
@@ -536,6 +535,10 @@
    "fieldtype": "Section Break"
   },
   {
+   "fieldname": "section_break_47",
+   "fieldtype": "Section Break"
+  },
+  {
    "fetch_from": "sketch_order_form_detail.remarks",
    "fieldname": "remarks",
    "fieldtype": "Text",
@@ -556,8 +559,7 @@
   {
    "depends_on": "eval:(!in_list(['Unassigned','On Hold'], doc.workflow_state))",
    "fieldname": "section_break_28",
-   "fieldtype": "Section Break",
-   "label": "Rough Sketch Approval (HOD)"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "rough_sketch_approval",
@@ -567,10 +569,9 @@
    "permlevel": 1
   },
   {
-   "depends_on": "eval:(!in_list(['Unassigned','Assigned','On Hold', 'On Hold - Assigned'], doc.workflow_state))",
+   "depends_on": "eval:(!in_list(['Unassigned','Assigned','On Hold', 'On Hold - Assigned', 'Final Assigned', 'On Hold - Final Assigned'], doc.workflow_state))",
    "fieldname": "section_break_30",
-   "fieldtype": "Section Break",
-   "label": "Final Sketch Approval (HOD)"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "final_sketch_approval",
@@ -580,10 +581,9 @@
    "permlevel": 1
   },
   {
-   "depends_on": "eval:(!in_list(['Unassigned','Assigned','On Hold', 'On Hold - Assigned', 'Rough Sketch Approved (HOD)'], doc.workflow_state))",
+   "depends_on": "eval:(!in_list(['Unassigned','Assigned','On Hold', 'On Hold - Assigned', 'Final Assigned', 'On Hold - Final Assigned','Rough Sketch Approval (HOD)','On Hold - Rough Sketch Approval'], doc.workflow_state))",
    "fieldname": "section_break_43",
-   "fieldtype": "Section Break",
-   "label": "Final Sketch Approval (CMO / CPO)"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "final_sketch_approval_cmo",
@@ -796,7 +796,7 @@
    "read_only": 1
   },
   {
-   "fetch_from": "sketch_order_form.due_days",
+   "fetch_from": "sketch_order_form.delivery_days",
    "fieldname": "due_days",
    "fieldtype": "Int",
    "label": "Due Days",
@@ -850,18 +850,12 @@
   {
    "fieldname": "column_break_ng98u",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "nakshi_from",
-   "fieldtype": "Link",
-   "label": "Nakshi From",
-   "options": "Attribute Value"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-06 18:53:34.756579",
+ "modified": "2023-07-29 17:12:32.122311",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order",

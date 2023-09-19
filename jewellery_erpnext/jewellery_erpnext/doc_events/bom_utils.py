@@ -69,13 +69,8 @@ def get_gold_rate(self):
 			item.rate = (
 				flt(self.gold_rate_with_gst)
 				* flt(metal_purity)
-				/ (100)
+				/ (100 + int(gold_gst_rate))
 			)
-			# item.rate = (
-			# 	flt(self.gold_rate_with_gst)
-			# 	* flt(metal_purity)
-			# 	/ (100 + int(gold_gst_rate))
-			# )
 			item.amount = flt(item.quantity) * item.rate
 		# Add the current item's amount to the total amount
 		amount += item.amount
@@ -101,7 +96,8 @@ def get_diamond_rate(self):
 		if not diamond.sieve_size_range:
 			continue
 		det = ss_range.get(diamond.sieve_size_range) or {}
-		det['pcs'] = flt(det.get("pcs")) + diamond.pcs
+		# det['pcs'] = flt(det.get("pcs")) + diamond.pcs
+		det['pcs'] = (flt(det.get("pcs")) + flt(diamond.get("pcs"))) or 1
 		det['quantity'] = flt(flt(det.get("quantity")) + diamond.quantity, 3)
 		det["std_wt"] = flt(flt(det['quantity'],2) / det['pcs'],3)
 		ss_range[diamond.sieve_size_range] = det
@@ -111,7 +107,6 @@ def get_diamond_rate(self):
 		det = ss_range.get(diamond.sieve_size_range) or {}
 		amount = _calculate_diamond_amount(self, diamond, cust_diamond_price_list_type, det)
 		diamond_amount += amount
-		
 	return diamond_amount
 
 
@@ -384,8 +379,8 @@ def set_bom_item_details(self):
 				set_diamond_fields(self, diamond, item)
 
 			# Set Gemstone Fields
-			# for stone in self.gemstone_detail:
-			# 	set_gemstone_fields(self, stone, item)
+			for stone in self.gemstone_detail:
+				set_gemstone_fields(stone, item)
 
 			# Set Finding Fields
 			for finding in self.finding_detail:
@@ -397,29 +392,23 @@ def set_bom_item_details(self):
 def set_diamond_fields(self, diamond, item):
 	doctype = get_doctype_name(self)
 	customer = self.party_name if doctype == "Quotation" else self.customer
-	
-	# if not item.diamond_grade:
-	# 	print(item)
-	# 	diamond_grade_1 = frappe.db.get_value(
-	# 		"Customer Diamond Grade",
-	# 		{"parent": customer, "diamond_quality": item.diamond_quality},
-	# 		"diamond_grade_1",
-	# 	)
-	# 	if diamond_grade_1:
-	# 		diamond.diamond_grade = diamond_grade_1
-	# else:
-	# 	diamond.diamond_grade = item.diamond_grade
-
-
+	if not item.diamond_grade:
+		diamond_grade_1 = frappe.db.get_value(
+			"Customer Diamond Grade",
+			{"parent": customer, "diamond_quality": item.diamond_quality},
+			"diamond_grade_1",
+		)
+		if diamond_grade_1:
+			diamond.diamond_grade = diamond_grade_1
+	else:
+		diamond.diamond_grade = item.diamond_grade
 	if item.diamond_quality:
 		diamond.quality = item.diamond_quality
 	self.save()
-	# return
+	return
 
 
-def set_gemstone_fields(self, stone, item):
-	doctype = get_doctype_name(self)
-	customer = self.party_name if doctype == "Quotation" else self.customer
+def set_gemstone_fields(stone, item):
 	if item.gemstone_type:
 		stone.gemstone_type = item.gemstone_type
 	if item.gemstone_quality:

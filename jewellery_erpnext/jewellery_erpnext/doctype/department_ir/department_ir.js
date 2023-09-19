@@ -39,8 +39,8 @@ frappe.ui.form.on('Department IR', {
 	},
 	receive_against(frm) {
 		if (frm.doc.receive_against) {
-			frappe.db.get_value("Department IR", frm.doc.receive_against, ["current_department", "next_department"], (r)=>{
-				frm.set_value({"previous_department": r.current_department, "current_department": r.next_department})
+			frappe.db.get_value("Department IR", frm.doc.receive_against, ["current_department", "next_department"], (r) => {
+				frm.set_value({ "previous_department": r.current_department, "current_department": r.next_department })
 			})
 			frappe.call({
 				method: "jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir.get_manufacturing_operations_from_department_ir",
@@ -61,6 +61,47 @@ frappe.ui.form.on('Department IR', {
 			frm.refresh_field("department_ir_operation")
 		}
 	},
+	scan_mop(frm) {
+		if (frm.doc.scan_mop) {
+			if (!frm.doc.current_department) {
+				frappe.throw("Please select current department first")
+			}
+			var query_filters = {
+				"company": frm.doc.company,
+				"name": frm.doc.scan_mop
+			}
+			if (frm.doc.type == "Issue") {
+				query_filters["department_ir_status"] = ["not in", ["In-Transit", "Revert"]]
+				query_filters["status"] = ["in", ["Not Started", "Finished"]]
+				query_filters["employee"] = ["is", "not set"]
+				query_filters["subcontractor"] = ["is", "not set"]
+			}
+			else {
+				query_filters["department_ir_status"] = "In-Transit"
+				query_filters["department"] = frm.doc.current_department
+			}
+
+			frappe.db.get_value('Manufacturing Operation', query_filters, ['name', 'manufacturing_work_order', 'status'])
+				.then(r => {
+					let values = r.message;
+					if (values.manufacturing_work_order) {
+						console.log(values.manufacturing_work_order)
+						let row = frm.add_child('department_ir_operation', {
+							"manufacturing_work_order": values.manufacturing_work_order,
+							"manufacturing_operation": values.name,
+							// "status":values.status
+						});
+						frm.refresh_field('department_ir_operation');
+					}
+					else {
+						frappe.throw('Invalid Manufacturing Operation')
+						console.log("values.manufacturing_work_order")
+					}
+					frm.set_value('scan_mop', "")
+				})
+		}
+
+	},
 	get_operations(frm) {
 		if (!frm.doc.current_department) {
 			frappe.throw("Please select current department first")
@@ -69,9 +110,10 @@ frappe.ui.form.on('Department IR', {
 			"company": frm.doc.company
 		}
 		if (frm.doc.type == "Issue") {
-			query_filters["department_ir_status"] = ["not in", ["In-Transit","Revert"]]
-			query_filters["status"] = ["in",["Not Started", "Finished"]]
-			query_filters["employee"] = ["is","not set"]
+			query_filters["department_ir_status"] = ["not in", ["In-Transit", "Revert"]]
+			query_filters["status"] = ["in", ["Not Started", "Finished"]]
+			query_filters["employee"] = ["is", "not set"]
+			query_filters["subcontractor"] = ["is", "not set"]
 		}
 		else {
 			query_filters["department_ir_status"] = "In-Transit"
@@ -81,20 +123,14 @@ frappe.ui.form.on('Department IR', {
 			method: "jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir.get_manufacturing_operations",
 			source_doctype: "Manufacturing Operation",
 			target: frm,
-			setters: {		
+			setters: {
 				manufacturing_work_order: undefined,
 				company: frm.doc.company || undefined,
-				department: frm.doc.current_department 
+				department: frm.doc.current_department
 			},
 			get_query_filters: query_filters,
-			size: "extra-large",
-		});
-		// setTimeout(function() {
-		// 	// Set the "Department" field as read-only using jQuery
-		// 	var departmentField = $("input[data-fieldname='department']");
-		// 	departmentField.prop("readonly", true);
-		//   }, 500);
-		
+			size: "extra-large"
+		})
 	}
 });
 

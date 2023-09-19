@@ -56,14 +56,22 @@ def make_cad_order(source_name, target_doc=None, parent_doc = None):
 			}
 		},target_doc, set_missing_values
 	)
-	print('parent_doc: ',parent_doc)
-	print('doc: ',doc)
+
+	doc.service_type = parent_doc.service_type
 	doc.parcel_place = parent_doc.parcel_place
-	print('doc.parcel_place: ', doc.parcel_place)
-	print('parent_doc.parcel_place: ', parent_doc.parcel_place,)
+	doc.company = parent_doc.company
+	doc.form_remarks = parent_doc.remarks
+	doc.stepping = parent_doc.stepping
+	doc.fusion = parent_doc.fusion
+	doc.drops = parent_doc.drops
+	doc.coin = parent_doc.coin
+	doc.gold_wire = parent_doc.gold_wire
+	doc.gold_ball = parent_doc.gold_ball
+	doc.flows = parent_doc.flows
+	doc.nagas = parent_doc.nagas
+	doc.india = parent_doc.india
+	doc.usa = parent_doc.usa
+	doc.india_states = parent_doc.india_states
+	doc.design_attributes = parent_doc.design_attributes
 	doc.save()
-	# doc.service_type = parent_doc.service_type
-	# doc.company = parent_doc.company
-	# doc.form_remarks = parent_doc.remarks
-	# doc.save()
 	return doc.name
