@@ -17,7 +17,6 @@ class SerialNoandDesignCodeOrderForm(Document):
 def create_serial_and_design_order(self):
 	doclist = []
 	for row in self.order_details:
-		print(row.name)
 		docname = make_serial_and_design_order(row.name, parent_doc = self)
 		doclist.append(get_link_to_form("Serial No and Design Code Order", docname))
 		
@@ -28,18 +27,15 @@ def create_serial_and_design_order(self):
 		frappe.msgprint(msg)
 
 def delete_auto_created_serial_and_design_order(self):
-	for row in frappe.get_all("Serial No and Design Code Order", filters={"serial_no_and_design_code_order_form": self.name}):
+	for row in frappe.get_all("Serial No and Design Code Order", filters={"serial_and_design_id_order_form": self.name}):
 		frappe.delete_doc("Serial No and Design Code Order", row.name)
 
 def make_serial_and_design_order(source_name, target_doc=None, parent_doc = None):
 	def set_missing_values(source, target):
 		target.serial_and_design_id_order_form_detail = source.name
-		
-		
 		target.serial_and_design_id_order_form = source.parent
-
 		target.index = source.idx
-	
+
 	doc = get_mapped_doc(
 		"Serial No and Design Code Order Form Detail",
 		source_name,
@@ -49,11 +45,12 @@ def make_serial_and_design_order(source_name, target_doc=None, parent_doc = None
 			}
 		},target_doc, set_missing_values
 	)
-	
+
+	for entity in parent_doc.get("service_type", []):
+		doc.append("service_type", {"service_type1": entity.service_type1})
 	doc.company = parent_doc.company
-	# doc.salesman_name = parent_doc.salesman_name
-	doc.service_type = parent_doc.service_type
-	# doc.parcel_place = parent_doc.parcel_place
+	doc.salesman_name = parent_doc.salesman_name
+	doc.parcel_place = parent_doc.parcel_place
 	doc.form_remarks = parent_doc.remarks
 	doc.save()
 	return doc.name

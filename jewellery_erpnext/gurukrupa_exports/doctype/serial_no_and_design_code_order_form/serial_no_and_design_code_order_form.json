@@ -109,13 +109,15 @@
    "fieldname": "service_type",
    "fieldtype": "Table MultiSelect",
    "label": "Service Type",
-   "options": "Service Type 2"
+   "options": "Service Type 2",
+   "reqd": 1
   },
   {
    "fieldname": "parcel_place",
    "fieldtype": "Table MultiSelect",
    "label": "Shipping Territory",
-   "options": "Territory Multi Select"
+   "options": "Territory Multi Select",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_16",
@@ -187,7 +189,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-19 18:19:49.083001",
+ "modified": "2023-07-30 00:23:14.563129",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Serial No and Design Code Order Form",

@@ -1,11 +1,11 @@
 {
- "actions": [],
- "allow_rename": 1,
- "creation": "2022-05-06 15:13:33.595294",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
+  "actions": [],
+  "allow_rename": 1,
+  "creation": "2022-05-06 15:13:33.595294",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
   "design_type",
   "tag__design_id",
   "item_code",
@@ -16,12 +16,6 @@
   "category",
   "subcategory",
   "estimated_duedate",
-  "section_break_ssuip",
-  "only_variant",
-  "column_break_zi1m7",
-  "suffix_of_varinat",
-  "column_break_v7nhd",
-  "template_and_variant",
   "section_break_21",
   "reference_design_code_1",
   "reference_serial_no_1",
@@ -84,7 +78,7 @@
    "fieldname": "design_type",
    "fieldtype": "Select",
    "label": "Design Type",
-   "options": "\nNew Design\nMod\nFusion\nSimilar"
+  "options": "\nNew Design\nMod\nFusion\nSimilar"
   },
   {
    "depends_on": "eval: ((doc.design_type==\"Mod\")||(doc.design_type==\"Similar\"))",
@@ -413,7 +407,7 @@
    "fieldtype": "Section Break"
   },
   {
-   "default": "0",
+  "default": "0",
    "fieldname": "navratna",
    "fieldtype": "Check",
    "label": "Navratna"
@@ -458,49 +452,19 @@
   {
    "fieldname": "section_break_sbwbp",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "section_break_ssuip",
-   "fieldtype": "Section Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "only_variant",
-   "fieldtype": "Check",
-   "label": "Only Variant"
-  },
-  {
-   "fieldname": "column_break_zi1m7",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "suffix_of_varinat",
-   "fieldtype": "Check",
-   "label": "Suffix Of varinat"
-  },
-  {
-   "fieldname": "column_break_v7nhd",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "template_and_variant",
-   "fieldtype": "Check",
-   "label": "Template and Variant"
   }
- ],
- "hide_toolbar": 1,
- "index_web_pages_for_search": 1,
- "istable": 1,
- "links": [],
- "modified": "2023-09-26 13:08:39.276107",
- "modified_by": "Administrator",
- "module": "Gurukrupa Exports",
- "name": "Sketch Order Form Detail",
- "owner": "Administrator",
- "permissions": [],
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
-}
+  ],
+  "hide_toolbar": 1,
+  "index_web_pages_for_search": 1,
+  "istable": 1,
+  "links": [],
+  "modified": "2023-07-26 14:37:09.491444",
+  "modified_by": "Administrator",
+  "module": "Gurukrupa Exports",
+  "name": "Sketch Order Form Detail",
+  "owner": "Administrator",
+  "permissions": [],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": []
+  }

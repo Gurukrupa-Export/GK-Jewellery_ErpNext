@@ -8,7 +8,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "dust_name"
+  "dust_name",
+  "item_code"
  ],
  "fields": [
   {
@@ -16,11 +17,17 @@
    "fieldtype": "Data",
    "label": "Dust Name",
    "unique": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-07-19 18:31:52.862331",
+ "modified": "2023-09-19 15:19:44.974294",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Dust Type",
