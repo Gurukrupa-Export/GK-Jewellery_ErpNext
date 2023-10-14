@@ -38,6 +38,7 @@ class EmployeeIR(Document):
 		self.validate_gross_wt()
 		self.update_main_slip()
 		if not self.is_new():
+			print('HERE')
 			self.validate_qc("Warn")
 
 	def after_insert(self):

@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-09-22 09:30:34.155517",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "master_bom",
+  "weight_label",
+  "from_tolerance_weight",
+  "to_tolerance_weight",
+  "product_weight"
+ ],
+ "fields": [
+  {
+   "fieldname": "weight_label",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Weight Label",
+   "options": "\nGross Weight\nDiamond Weight\nGemstone Weight\nOther Weight"
+  },
+  {
+   "fieldname": "from_tolerance_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "From Tolerance Weight"
+  },
+  {
+   "fieldname": "to_tolerance_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "To Tolerance Weight"
+  },
+  {
+   "fieldname": "product_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Product Weight"
+  },
+  {
+   "fieldname": "master_bom",
+   "fieldtype": "Link",
+   "label": "Master BOM",
+   "options": "BOM"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-09-22 11:57:14.039411",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "Weight Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

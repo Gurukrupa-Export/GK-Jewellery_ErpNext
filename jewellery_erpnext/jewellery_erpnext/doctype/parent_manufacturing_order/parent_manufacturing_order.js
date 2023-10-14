@@ -21,8 +21,33 @@ frappe.ui.form.on('Parent Manufacturing Order', {
 				frm.trigger('item_code')
 			}
 		})
-	}
+	},
+	// onload(frm){
+	// 	if (cur_frm.doc.weight_details.length ==0 && cur_frm.doc.docstatus == 0){
+	// 		frappe.call({
+	// 			method: 'jewellery_erpnext.jewellery_erpnext.doctype.parent_manufacturing_order.parent_manufacturing_order.get_weight',
+	// 			args: {
+	// 				'master_bom': cur_frm.doc.master_bom,
+	// 			},
+	// 			callback: function(r) {
+	// 				if (!r.exc) {
+	// 					for (var i = 0; i < r.message.length; i++) {
+	// 						let row = frm.add_child('weight_details', {
+	// 							weight_label: r.message[i][0],
+	// 							from_tolerance_weight: r.message[i][1],
+	// 							to_tolerance_weight: r.message[i][2] 
+	// 						});
+	// 					}
+	// 					frm.refresh_field('weight_details');
+	// 				}
+	// 			}
+	// 		});
+	// 	}
+	// }
 });
+
+
+
 
 function set_filters_on_parent_table_fields(frm, fields) {
 	fields.map(function (field) {

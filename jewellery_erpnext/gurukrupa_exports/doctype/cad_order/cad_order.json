@@ -32,6 +32,10 @@
   "section_break_10",
   "cad_order_form",
   "design_by",
+  "item_type",
+  "suffix_of_varinat",
+  "only_variant",
+  "template_and_variant",
   "column_break_2",
   "cad_order_form_detail",
   "design_type",
@@ -1225,12 +1229,45 @@
    "fieldname": "usa",
    "fieldtype": "Check",
    "label": "USA"
+  },
+  {
+   "default": "0",
+   "fetch_from": "cad_order_form_detail.suffix_of_variant",
+   "fieldname": "suffix_of_varinat",
+   "fieldtype": "Check",
+   "label": "Suffix Of Varinat",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "cad_order_form_detail.only_variant",
+   "fieldname": "only_variant",
+   "fieldtype": "Check",
+   "label": "Only Variant",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "cad_order_form_detail.template_an_variant",
+   "fieldname": "template_and_variant",
+   "fieldtype": "Check",
+   "label": "Template and Variant",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:((doc.design_type=='Mod'))",
+   "fetch_from": "cad_order_form_detail.item_type",
+   "fieldname": "item_type",
+   "fieldtype": "Select",
+   "label": "Item Type",
+   "options": "\nOnly Variant\nSuffix Of Variant\nTemplate and Variant",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-29 17:32:27.986491",
+ "modified": "2023-09-29 12:53:26.725842",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order",
@@ -1246,6 +1283,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
    "share": 1,
    "write": 1
   }

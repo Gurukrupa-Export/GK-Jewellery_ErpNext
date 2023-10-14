@@ -8,6 +8,68 @@ from frappe.model.mapper import get_mapped_doc
 from jewellery_erpnext.utils import update_existing
 
 class ParentManufacturingOrder(Document):
+	def onload(self):
+		self.weight_details=[]
+		# self.save()
+		master_bom = self.master_bom
+		if master_bom == '':
+			frappe.throw('Master BOM is Missing')
+		if master_bom and len(self.weight_details) == 0:
+			all_submited_mwo = frappe.db.get_list('Manufacturing Work Order',filters={'docstatus':1,'manufacturing_order':self.name},pluck='name')
+			
+			total_gross_wt = []
+			total_diamon_wt = []
+			total_gemstone_wt = []
+			total_other_wt = []
+
+			for j in all_submited_mwo:
+				all_wt = frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':j},['gross_wt','diamond_wt','gemstone_wt','other_wt'],as_dict=1,order_by='creation DESC')
+				total_gross_wt.append(all_wt['gross_wt'])
+				total_diamon_wt.append(all_wt['diamond_wt'])
+				total_gemstone_wt.append(all_wt['gemstone_wt'])
+				total_other_wt.append(all_wt['other_wt'])
+
+			weight_dict = {
+				"gross_weight":sum(total_gross_wt),
+				"diamond_weight":sum(total_diamon_wt),
+				"gemstone_weight":sum(total_gemstone_wt),
+				"other_weight":sum(total_other_wt),
+			}
+	
+			db_data = frappe.db.sql(
+				f"""select gross_weight ,diamond_weight,gemstone_weight,other_weight from tabBOM tb where name = '{master_bom}'"""
+			,as_dict=1)
+			for i in db_data[0].keys():
+				filed_lable = i.split('_')[0].capitalize() + ' ' + i.split('_')[1].capitalize()
+				row = self.append('weight_details', {})
+				row.weight_label = filed_lable
+				row.from_tolerance_weight = db_data[0][i] - db_data[0][i] * 0.025
+				row.to_tolerance_weight = db_data[0][i] + db_data[0][i] * 0.025
+				row.product_weight = weight_dict[i]
+			# self.save()
+	
+
+			
+			
+			# for j in all_submited_mwo:
+				
+			# 	gross_wt = frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':j},['gross_wt'],as_dict=1,order_by='creation DESC')['gross_wt']
+			# 	if gross_wt == 0:
+			# 		gross_wt = frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':j},['prev_gross_wt'],as_dict=1,order_by='creation DESC')['prev_gross_wt']
+			# 	print(j)
+				# frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':self.name},['name','gross_wt'],as_dict=1,order_by='creation DESC')
+				# if i == 'gross_weight':
+				# 	total_weight = frappe.db.get_list('Manufacturing Work Order',filters={'docstatus':1,'manufacturing_order':self.name},pluck='gross_wt')
+				# if i == 'diamond_weight':
+				# 	total_weight = frappe.db.get_list('Manufacturing Work Order',filters={'docstatus':1,'manufacturing_order':self.name},pluck='diamond_wt')
+				# if i == 'gemstone_weight':
+				# 	total_weight = frappe.db.get_list('Manufacturing Work Order',filters={'docstatus':1,'manufacturing_order':self.name},pluck='gemstone_wt')
+				# if i == 'other_weight':
+				# 	total_weight = frappe.db.get_list('Manufacturing Work Order',filters={'docstatus':1,'manufacturing_order':self.name},pluck='other_wt')
+				# print(f'total_weight=-------------------{total_weight}')
+				# row.product_weight = frappe.db.get_list('Manufacturing Work Order',filters={'docstatus':1,'manufacturing_order':self.name},pluck=db_data[0][i])
+				# row.product_weight = total_weight
+
 	def after_insert(self):
 		if self.serial_no:
 			serial_bom = frappe.db.exists("BOM",{"tag_no":self.serial_no})
@@ -118,7 +180,7 @@ def create_manufacturing_work_order(self):
 		doc.metal_type = row.metal_type
 		doc.metal_purity = row.metal_purity
 		doc.metal_colour = row.metal_colour
-		doc.seq = int(self.name.split("-")[-1])
+		doc.seq = (self.name.split("-")[-1])
 		doc.department = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"default_department")
 		doc.auto_created = 1
 		doc.save()
@@ -142,3 +204,20 @@ def create_manufacturing_work_order(self):
 	fg_doc.for_fg = 1
 	fg_doc.auto_created = 1
 	fg_doc.save()
+
+# @frappe.whitelist()
+# def get_weight(master_bom):
+# 	if master_bom == '':
+# 		frappe.throw('Master BOM is Missing')
+# 	db_data = frappe.db.sql(
+# 		f"""select gross_weight ,diamond_weight,gemstone_weight,other_weight from tabBOM tb where name = '{master_bom}'"""
+# 	,as_dict=1)
+	
+# 	all_data = []
+# 	for i in db_data[0].keys():
+# 		filed_lable = i.split('_')[0].capitalize() + ' ' + i.split('_')[1].capitalize()
+# 		from_gross_weight = db_data[0][i] - db_data[0][i] * 0.025
+# 		to_gross_weight = db_data[0][i] + db_data[0][i] * 0.025
+# 		all_data.append([filed_lable,from_gross_weight,to_gross_weight])
+	
+# 	return all_data

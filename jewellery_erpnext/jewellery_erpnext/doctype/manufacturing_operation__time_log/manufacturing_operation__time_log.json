@@ -1,0 +1,95 @@
+{
+ "actions": [],
+ "creation": "2023-09-25 14:46:47.842705",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "from_time",
+  "to_time",
+  "column_break_2",
+  "time_in_mins",
+  "time_in_hour",
+  "time_in_days",
+  "completed_qty",
+  "operation"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "from_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "From Time"
+  },
+  {
+   "fieldname": "to_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "To Time"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "time_in_hour",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Time In Hour",
+   "read_only": 1
+  },
+  {
+   "fieldname": "time_in_days",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Time In Days",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "completed_qty",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Completed Qty"
+  },
+  {
+   "fieldname": "operation",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Operation",
+   "no_copy": 1,
+   "options": "Operation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "time_in_mins",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Time In Mins"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-09-25 15:54:59.858776",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Manufacturing Operation  Time Log",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

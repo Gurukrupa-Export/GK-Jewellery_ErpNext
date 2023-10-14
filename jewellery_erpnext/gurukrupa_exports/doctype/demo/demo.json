@@ -8,12 +8,15 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "company",
   "item_category",
   "order_form_type",
   "customer_diamond",
   "column_break_lrkdx",
+  "customer",
   "item_subcategory",
-  "order_form_id",
+  "cad_order_form_id",
+  "sketch_order_form_id",
   "customer_stone",
   "section_break_patrf",
   "bom_diamond_detail",
@@ -24,19 +27,22 @@
    "fieldname": "item_category",
    "fieldtype": "Link",
    "label": "Item Category",
-   "options": "Attribute Value"
+   "options": "Attribute Value",
+   "read_only": 1
   },
   {
    "fieldname": "item_subcategory",
    "fieldtype": "Link",
    "label": "Item Subcategory",
-   "options": "Attribute Value"
+   "options": "Attribute Value",
+   "read_only": 1
   },
   {
    "fieldname": "order_form_type",
    "fieldtype": "Select",
    "label": "Order Form Type",
-   "options": "\nCAD Order Form\nSketch Order Form"
+   "options": "\nCAD Order Form\nSketch Order Form",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_patrf",
@@ -57,12 +63,6 @@
    "options": "BOM Gemstone Detail"
   },
   {
-   "fieldname": "order_form_id",
-   "fieldtype": "Dynamic Link",
-   "label": "Order Form ID",
-   "options": "order_form_type"
-  },
-  {
    "fieldname": "column_break_lrkdx",
    "fieldtype": "Column Break"
   },
@@ -77,11 +77,41 @@
    "fieldname": "customer_diamond",
    "fieldtype": "Check",
    "label": "Customer Diamond"
+  },
+  {
+   "depends_on": "eval:doc.order_form_type == 'CAD Order Form'",
+   "fieldname": "cad_order_form_id",
+   "fieldtype": "Link",
+   "label": "CAD Order Form ID",
+   "options": "CAD Order Form",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.order_form_type == 'Sketch Order Form'",
+   "fieldname": "sketch_order_form_id",
+   "fieldtype": "Link",
+   "label": "Sketch Order Form ID",
+   "options": "Sketch Order Form",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-18 10:49:46.688749",
+ "modified": "2023-09-26 12:08:12.414173",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Demo",

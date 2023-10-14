@@ -3,7 +3,7 @@ import frappe
 @frappe.whitelist()
 def get_context(employee):
     employee_detail = []
-    for i in frappe.get_list('Employee',['name','employee_name','department','designation']):
+    for i in frappe.get_list('Employee',['name','employee_name','department','designation','relieving_date']):
         if i['name'] == employee:
             employee_detail.append(i)
             break

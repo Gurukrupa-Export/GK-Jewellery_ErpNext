@@ -1,7 +1,8 @@
 {
+ "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:REF-{####}",
+ "autoname": "format:MOSDC-{parent_reference_item}",
  "creation": "2023-09-19 10:06:51.794055",
  "default_view": "List",
  "doctype": "DocType",
@@ -10,7 +11,7 @@
  "field_order": [
   "parent_reference_item",
   "section_break_w9zry",
-  "reference_item_table"
+  "item_table"
  ],
  "fields": [
   {
@@ -24,15 +25,15 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "reference_item_table",
+   "fieldname": "item_table",
    "fieldtype": "Table",
    "label": "Reference Item Table",
-   "options": "Reference Item Table"
+   "options": "Reference Design Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-19 10:08:22.505775",
+ "modified": "2023-09-20 16:23:31.442760",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Reference Items",
@@ -48,6 +49,32 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "permlevel": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
    "share": 1,
    "write": 1
   }

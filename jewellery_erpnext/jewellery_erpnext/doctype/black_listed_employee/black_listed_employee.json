@@ -12,6 +12,7 @@
   "date",
   "candidate_photo",
   "column_break_z5exq",
+  "exited_employee",
   "candidate_name",
   "show_candidate_photo",
   "section_break_rmvwy",
@@ -34,14 +35,16 @@
   {
    "fieldname": "date",
    "fieldtype": "Date",
-   "label": "Date"
+   "label": "Date",
+   "reqd": 1
   },
   {
    "fieldname": "candidate_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_preview": 1,
-   "label": "Candidate Name"
+   "label": "Candidate Name",
+   "reqd": 1
   },
   {
    "fieldname": "candidate_photo",
@@ -51,12 +54,14 @@
   {
    "fieldname": "date_of_theft",
    "fieldtype": "Date",
-   "label": "Date of Theft "
+   "label": "Date of Theft ",
+   "reqd": 1
   },
   {
    "fieldname": "theft_from_which_company",
    "fieldtype": "Data",
-   "label": "Theft from which Company"
+   "label": "Theft from Company",
+   "reqd": 1
   },
   {
    "fieldname": "department",
@@ -71,14 +76,18 @@
   {
    "fieldname": "theft_description",
    "fieldtype": "Long Text",
-   "label": "Theft Description"
+   "label": "Theft Description",
+   "reqd": 1
   },
   {
    "fieldname": "aadhar_number",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_preview": 1,
-   "label": "Aadhar Number"
+   "in_standard_filter": 1,
+   "label": "Aadhar Number",
+   "length": 12,
+   "reqd": 1
   },
   {
    "fieldname": "aadhar_photo",
@@ -88,7 +97,7 @@
   {
    "fieldname": "information_source",
    "fieldtype": "Long Text",
-   "label": "Information Source"
+   "label": "Source of Information "
   },
   {
    "fieldname": "show_candidate_photo",
@@ -135,11 +144,17 @@
    "fieldtype": "Select",
    "label": "Series",
    "options": "BL-EMP-"
+  },
+  {
+   "fieldname": "exited_employee",
+   "fieldtype": "Link",
+   "label": "Exited Employee",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-11 16:20:02.828407",
+ "modified": "2023-09-22 14:43:24.405147",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "BLACK LISTED EMPLOYEE",

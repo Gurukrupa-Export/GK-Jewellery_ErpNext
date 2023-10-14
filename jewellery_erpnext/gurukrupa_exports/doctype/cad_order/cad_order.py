@@ -15,15 +15,134 @@ class CADOrder(Document):
 
     
 def create_line_items(self):
-	# if self.workflow_state == 'Approved' and not self.item:
-	item = create_item_from_cad_order(self.name)
-	frappe.db.set_value(self.doctype, self.name, "item", item)
-	frappe.msgprint(_("New Item Created: {0}".format(get_link_to_form("Item",item))))
+	# or self.design_type in ['New Design','Fusion','Similar']
+	if (self.design_type == 'Mod' and self.item_type == 'Template and Variant') or  (self.design_type == 'Mod' and self.item_type == 'Suffix Of Varinat'):
 
-def create_item_from_cad_order(source_name, target_doc=None):
+		item_template = create_item_template_from_cad_order(self)
+		updatet_item_template(self,item_template)
+		# item_variant = create_item_variant_from_cad_order(item_template,self.name)
+		# update_item_variant(self,item_variant,item_template)
+		# frappe.msgprint(_("New Item Created: {0}".format(get_link_to_form("Item",item_variant))))
+	if (self.design_type == 'Mod' and self.item_type == "Only Variant"):
+		item_variant = create_item_only_variant_from_cad_order(self,self.name)
+		frappe.msgprint(_("New Item Created: {0}".format(get_link_to_form("Item",item_variant[0]))))
+		
+		frappe.db.set_value('Item',item_variant[0],{
+			"is_design_code":1,
+			"variant_of" : item_variant[1]
+		})
+
+	# elif (self.design_type == 'Mod' and self.item_type == "Suffix Of Variant"):
+	# 	item_variant = create_item_only_sufix_of_variant_from_cad_order(self,self.name)
+		# frappe.db.set_value(self.doctype, self.name, "item", item_template)
+	# item = create_item_from_cad_order(self.name)
+	# frappe.db.set_value(self.doctype, self.name, "item", item)
+
+	# create_reference_doc(self,item)
+	
+
+	# frappe.msgprint(_("New Item Created: {0}".format(get_link_to_form("Item",item_template))))
+
+def updatet_item_template(self,item_template):
+	frappe.db.set_value('Item',item_template,{
+		"is_design_code":0,
+		"item_code":item_template
+	})
+
+def update_item_variant(self,item_variant,item_template):
+	frappe.db.set_value('Item',item_variant,{
+		"is_design_code":1,
+		"variant_of" : item_template
+	})
+
+
+
+def create_reference_doc(self,item):
+	parent_doc = frappe.db.get_value('Reference Design Code',{'design_code':self.design_id},'parent')
+	if parent_doc == None:
+		parent_doc = frappe.db.get_value('Reference Design Code',{'reference_design_code':self.design_id},'parent')
+	if parent_doc:
+		parent_doc_value = frappe.get_doc('Reference Items', parent_doc)
+		new_row = parent_doc_value.append("item_table", {})
+		new_row.design_code = item
+		new_row.reference_design_code = self.design_id
+		parent_doc_value.save()
+
+	else:
+		new_target_doc = frappe.new_doc("Reference Items")
+		new_target_doc.parent_reference_item = self.design_id
+
+		child_table_data = [
+			{
+				"design_code": item,
+				"reference_design_code": self.design_id
+			},
+		]
+		
+		for data in child_table_data:
+			new_target_doc.append("item_table", data)
+			
+		
+		new_target_doc.insert(ignore_permissions=True)
+		new_target_doc.save()
+
+
+
+def create_item_template_from_cad_order(source_name, target_doc=None):
+	
+	if source_name.item_type == 'Template and Variant':
+		print('if')
+		item_code = frappe.db.get_list('Item',filters={'item_category':source_name.category},fields=['name'],order_by='creation DESC')
+		print(item_code)
+	elif source_name.item_type == 'Suffix Of Varinat':
+		print('elif')
+	else:
+		print('else')
+	frappe.throw('HOLD')
+		
+	
 	def post_process(source, target):
-		target.disabled = 1
+		print(target)
 		target.is_design_code = 1
+		target.has_variants = 1
+		if source.designer_assignment:
+			target.designer = source.designer_assignment[0].designer
+
+	doc = get_mapped_doc(
+		"CAD Order",
+		source_name.name,
+		{
+			"CAD Order": {
+				"doctype": "Item",
+				"field_map": {
+					"category": "item_category",
+					"subcategory": "item_subcategory",
+					"setting_type": "setting_type",
+					"stepping":"stepping",
+					"fusion":"fusion",
+					"drops":"drops",
+					"coin":"coin",
+					"gold_wire":"gold_wire",
+					"gold_ball":"gold_ball",
+					"flows":"flows",
+					"nagas":"nagas",
+					"design_attributes":"design_attribute",
+					"india":"india",
+					"india_states":"india_states",
+					"usa":"usa",
+					"usa_states":"usa_states",
+				} 
+			}
+		},target_doc, post_process
+	)
+	doc.save()
+	return doc.name
+
+def create_item_variant_from_cad_order(item_template,source_name, target_doc=None):
+	def post_process(source, target):
+		target.order_form_type = 'CAD Order'
+		target.order_form_id = source_name
+		target.item_code = f'{item_template}-001'
 		if source.designer_assignment:
 			target.designer = source.designer_assignment[0].designer
 
@@ -49,13 +168,109 @@ def create_item_from_cad_order(source_name, target_doc=None):
 					"india":"india",
 					"india_states":"india_states",
 					"usa":"usa",
-					"usa_states":"usa_states"
+					"usa_states":"usa_states",
 				} 
 			}
 		},target_doc, post_process
 	)
 	doc.save()
 	return doc.name
+
+def create_item_only_variant_from_cad_order(self,source_name, target_doc=None):
+
+	db_data = frappe.db.get_list('Item',filters={'item_category':self.category},fields=['name','variant_of'],order_by='creation desc')[0]
+	if db_data !=[]:
+		index = int(db_data['name'].split('-')[1]) + 1
+		suffix = "%.3i" % index
+	else:
+		suffix = "001"
+	item_code = db_data['variant_of'] + '-' + suffix
+	
+	def post_process(source, target):
+		target.order_form_type = 'CAD Order'
+		target.order_form_id = source_name
+		target.item_code = item_code
+		if source.designer_assignment:
+			target.designer = source.designer_assignment[0].designer
+
+	doc = get_mapped_doc(
+		"CAD Order",
+		source_name,
+		{
+			"CAD Order": {
+				"doctype": "Item",
+				"field_map": {
+					"category": "item_category",
+					"subcategory": "item_subcategory",
+					"setting_type": "setting_type",
+					"stepping":"stepping",
+					"fusion":"fusion",
+					"drops":"drops",
+					"coin":"coin",
+					"gold_wire":"gold_wire",
+					"gold_ball":"gold_ball",
+					"flows":"flows",
+					"nagas":"nagas",
+					"design_attributes":"design_attribute",
+					"india":"india",
+					"india_states":"india_states",
+					"usa":"usa",
+					"usa_states":"usa_states",
+				} 
+			}
+		},target_doc, post_process
+	)
+	# frappe.throw('HOLD')
+	doc.save()
+	return doc.name,db_data['variant_of']
+
+def create_item_only_sufix_of_variant_from_cad_order(self,source_name, target_doc=None):
+
+	db_data = frappe.db.get_list('Item',filters={'item_category':self.category},fields=['name','variant_of'],order_by='creation desc')[0]
+	if db_data !=[]:
+		index = int(db_data['name'].split('-')[1]) + 1
+		suffix = "%.3i" % index
+	else:
+		suffix = "001"
+	item_code = db_data['variant_of'] + '-' + suffix
+	
+	def post_process(source, target):
+		target.order_form_type = 'CAD Order'
+		target.order_form_id = source_name
+		target.item_code = item_code
+		if source.designer_assignment:
+			target.designer = source.designer_assignment[0].designer
+
+	doc = get_mapped_doc(
+		"CAD Order",
+		source_name,
+		{
+			"CAD Order": {
+				"doctype": "Item",
+				"field_map": {
+					"category": "item_category",
+					"subcategory": "item_subcategory",
+					"setting_type": "setting_type",
+					"stepping":"stepping",
+					"fusion":"fusion",
+					"drops":"drops",
+					"coin":"coin",
+					"gold_wire":"gold_wire",
+					"gold_ball":"gold_ball",
+					"flows":"flows",
+					"nagas":"nagas",
+					"design_attributes":"design_attribute",
+					"india":"india",
+					"india_states":"india_states",
+					"usa":"usa",
+					"usa_states":"usa_states",
+				} 
+			}
+		},target_doc, post_process
+	)
+
+	doc.save()
+	return doc.name,db_data['variant_of']
 
 @frappe.whitelist()
 def make_quotation(source_name, target_doc=None):

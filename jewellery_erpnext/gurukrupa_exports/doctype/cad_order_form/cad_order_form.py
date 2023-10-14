@@ -47,6 +47,7 @@ def make_cad_order(source_name, target_doc=None, parent_doc = None):
 		target.cad_order_form = source.parent
 		target.index = source.idx
 
+# 'bom-des -type-01'
 	doc = get_mapped_doc(
 		"CAD Order Form Detail",
 		source_name,

@@ -12,7 +12,7 @@
   "department",
   "designation",
   "date_of_joining",
-  "last_working_days",
+  "relieving_date",
   "total_length_of_service",
   "reason_for_leaving",
   "reasons_for_leaving",
@@ -80,23 +80,14 @@
   },
   {
    "fieldname": "date_of_joining",
-   "fieldtype": "Date",
-   "label": "Date of Joining"
-  },
-  {
-   "fieldname": "last_working_days",
-   "fieldtype": "Date",
-   "label": "Last Working Days"
-  },
-  {
-   "fieldname": "total_length_of_service",
-   "fieldtype": "Small Text",
-   "label": "Total Length of Service"
+   "fieldtype": "Link",
+   "label": "Date of Joining",
+   "options": "Employee"
   },
   {
    "fieldname": "reason_for_leaving",
    "fieldtype": "Small Text",
-   "label": "Reason for Leaving"
+   "label": "What is the reason for leaving?"
   },
   {
    "fieldname": "reasons_for_leaving",
@@ -152,7 +143,7 @@
   {
    "fieldname": "q6",
    "fieldtype": "Long Text",
-   "label": "Have you spoken with anyone, either your director or any of the partners about your career goals?"
+   "label": "Have you spoken with anyone, either your collogue, manager, director or any of the business partners about your career goals?"
   },
   {
    "fieldname": "section_break_7fqik",
@@ -161,7 +152,7 @@
   {
    "fieldname": "q7",
    "fieldtype": "Select",
-   "label": "In your opinion, have there been adequate career opportunities available within company?",
+   "label": "In your opinion, have there been adequate career opportunities available within this company?",
    "options": "Yes\nNo"
   },
   {
@@ -171,17 +162,18 @@
   {
    "fieldname": "q8",
    "fieldtype": "Read Only",
-   "label": "What types of career opportunities are important to you? (Select all that apply)"
+   "label": "What types of career opportunities are important to you?"
   },
   {
+   "depends_on": "eval:doc.other",
    "fieldname": "q9",
    "fieldtype": "Long Text",
-   "label": "If you selected other, please elaborate."
+   "label": "If you have selected other, please elaborate."
   },
   {
    "fieldname": "job_satisfaction",
    "fieldtype": "Read Only",
-   "label": "JOB SATISFACTION"
+   "label": "Rate the following points, based on your experiences during your tenure of service!"
   },
   {
    "fieldname": "job1",
@@ -191,7 +183,7 @@
   {
    "fieldname": "job2",
    "fieldtype": "Rating",
-   "label": "Opportunity for Achieving Goals"
+   "label": "Opportunities for Achieving Professional Goals"
   },
   {
    "fieldname": "job3",
@@ -201,17 +193,17 @@
   {
    "fieldname": "job4",
    "fieldtype": "Rating",
-   "label": "Director/ Manager"
+   "label": "Empathy from Manager/Director"
   },
   {
    "fieldname": "job5",
    "fieldtype": "Rating",
-   "label": "Pay"
+   "label": "Pay Parity Experience"
   },
   {
    "fieldname": "job6",
    "fieldtype": "Rating",
-   "label": "Benefits"
+   "label": "Employee Benefits"
   },
   {
    "fieldname": "section_break_ofair",
@@ -220,7 +212,7 @@
   {
    "fieldname": "q10",
    "fieldtype": "Long Text",
-   "label": "What did you enjoy most about your job?"
+   "label": "What did you enjoy the most about your job during your tenure of service?"
   },
   {
    "fieldname": "section_break_2yymg",
@@ -229,27 +221,27 @@
   {
    "fieldname": "q11",
    "fieldtype": "Long Text",
-   "label": "What did you enjoy least about your job?"
+   "label": "What did you enjoy the least about your job during your tenure of service?"
   },
   {
    "fieldname": "q12",
    "fieldtype": "Long Text",
-   "label": "What makes Acme Global Company a good place to work?"
+   "label": "What makes a company like Gurukrupa Exports a good place to work?"
   },
   {
    "fieldname": "q13",
    "fieldtype": "Long Text",
-   "label": "What makes the company poor place to work?"
+   "label": "What makes this company a poor place to work?"
   },
   {
    "fieldname": "q14",
    "fieldtype": "Long Text",
-   "label": "What recommendation would you have for making the company as a whole a better place to work?"
+   "label": "What recommendation would you suggest for making this company a better place to work?"
   },
   {
    "fieldname": "q15",
    "fieldtype": "Select",
-   "label": "Would you have stayed if a more satisfactory arrangement could have been worked out?",
+   "label": "Would you have stayed if a more satisfactory arrangement could have been provided?",
    "options": "Yes\nNo"
   },
   {
@@ -266,54 +258,65 @@
    "default": "0",
    "fieldname": "promotional_opportunities",
    "fieldtype": "Check",
-   "label": "Promotional Opportunities"
+   "label": " Advancement Opportunities"
   },
   {
    "default": "0",
    "fieldname": "position_rotations",
    "fieldtype": "Check",
-   "label": "Position Rotations"
+   "label": " Job Rotation Opportunities"
   },
   {
    "default": "0",
    "fieldname": "increased_responsiblities",
    "fieldtype": "Check",
-   "label": "Increased Responsiblities"
+   "label": " Diverse Roles with Multiple Responsibilities"
   },
   {
    "default": "0",
    "fieldname": "special_projects",
    "fieldtype": "Check",
-   "label": "Special Projects"
+   "label": " Involvement in Special Projects"
   },
   {
    "default": "0",
    "fieldname": "overseas",
    "fieldtype": "Check",
-   "label": "Overseas"
+   "label": " International Career Opportunities"
   },
   {
    "default": "0",
    "fieldname": "not_looking_for_any_progression",
    "fieldtype": "Check",
-   "label": "Not looking for any progression"
+   "label": " Not Interested in Career Progression"
   },
   {
    "default": "0",
    "fieldname": "other",
    "fieldtype": "Check",
-   "label": "Other"
+   "label": " Other (please specify):"
   },
   {
    "fieldname": "employee",
    "fieldtype": "Link",
    "label": "Employee Code",
    "options": "Employee"
+  },
+  {
+   "fieldname": "relieving_date",
+   "fieldtype": "Date",
+   "label": "Relieving Date",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "total_length_of_service",
+   "fieldtype": "Data",
+   "label": "Tenure of Service (YY/MM/DY)"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-06 16:26:33.851744",
+ "modified": "2023-09-23 11:36:12.627478",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Employee Exit Questionnaire",

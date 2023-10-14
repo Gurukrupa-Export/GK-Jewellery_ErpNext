@@ -1,12 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-08-28 09:49:12.769814",
+ "autoname": "format:{name1}",
+ "creation": "2023-09-21 12:53:49.776370",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "name1",
   "api_url"
  ],
  "fields": [
@@ -14,23 +16,30 @@
    "fieldname": "api_url",
    "fieldtype": "Data",
    "label": "API URL"
+  },
+  {
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "label": "Name"
   }
  ],
  "index_web_pages_for_search": 1,
- "issingle": 1,
  "links": [],
- "modified": "2023-08-28 09:49:12.769814",
+ "modified": "2023-09-21 12:56:20.302841",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Gold Price Scrape Settings",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
    "create": 1,
    "delete": 1,
    "email": 1,
+   "export": 1,
    "print": 1,
    "read": 1,
+   "report": 1,
    "role": "System Manager",
    "share": 1,
    "write": 1

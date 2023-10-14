@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestReferenceItemTable(FrappeTestCase):
+class TestReferenceDesignCode(FrappeTestCase):
 	pass
