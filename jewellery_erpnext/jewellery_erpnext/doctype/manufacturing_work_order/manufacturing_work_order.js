@@ -38,19 +38,5 @@ frappe.ui.form.on('Manufacturing Work Order', {
         });
         dialog.show()
         // dialog.$wrapper.find('.modal-dialog').css("max-width", "90%");
-    },
-    // onload:function(frm){
-    //     frappe.call({
-    //         method: 'jewellery_erpnext.jewellery_erpnext.doctype.manufacturing_work_order.manufacturing_work_order.get_weight',
-    //         args: {
-    //             'manufacturing_work_order': cur_frm.doc.name,
-    //         },
-    //         callback: function(r) {
-    //             if (!r.exc) {
-    //                 console.log(r.message)
-    //             }
-    //         }
-    //     });
-    // }
-
+    }
 });

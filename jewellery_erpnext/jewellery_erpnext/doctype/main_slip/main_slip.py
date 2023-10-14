@@ -79,12 +79,12 @@ def create_stock_entries(main_slip, actual_qty, metal_loss, metal_type, metal_to
 	settings.department_wip = frappe.db.get_value("Warehouse", {"department": doc.department})
 	create_metal_loss(doc, settings, item, flt(metal_loss))
 	stock_entry = frappe.new_doc("Stock Entry")
-	stock_entry.stock_entry_type = "Material Transfer"
+	stock_entry.stock_entry_type = "Material Transfer to Department"
 	stock_entry.inventory_type = "Regular Stock"
 	stock_entry.append("items",{
 		"item_code": item,
 		"qty": flt(actual_qty),
-		"s_warehouse": settings.department_wip,
+		"s_warehouse": doc.warehouse,
 		"t_warehouse": settings.department_wip,
 		"main_slip": main_slip,
 		"to_department": doc.department,
@@ -106,7 +106,7 @@ def create_metal_loss(doc,settings,item,metal_loss):
 	se.append("items",{
 		"item_code": item,
 		"qty": metal_loss,
-		"s_warehouse": settings.department_wip,
+		"s_warehouse": doc.warehouse,
 		"t_warehouse": None,
 		"main_slip": doc.name,
 		"to_department": doc.department,
@@ -116,7 +116,7 @@ def create_metal_loss(doc,settings,item,metal_loss):
 		"item_code": metal_loss_item,
 		"qty": metal_loss,
 		"s_warehouse": None,
-		"t_warehouse": settings.department_wip,
+		"t_warehouse": doc.warehouse,
 		"main_slip": doc.name,
 		"to_department": doc.department,
 		"manufacturer": doc.manufacturer

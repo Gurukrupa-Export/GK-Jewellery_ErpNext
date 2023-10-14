@@ -107,7 +107,7 @@ class ProductCertification(Document):
 
 def create_stock_entry(doc):
 	se_doc = frappe.new_doc("Stock Entry")
-	se_doc.stock_entry_type = get_stock_entry_type(doc.service_type, type)
+	se_doc.stock_entry_type = get_stock_entry_type(doc.service_type, doc.type)
 	se_doc.company = doc.company
 	se_doc.product_certification = doc.name
 	s_warehouse = frappe.db.exists("Warehouse",{"department": doc.department})

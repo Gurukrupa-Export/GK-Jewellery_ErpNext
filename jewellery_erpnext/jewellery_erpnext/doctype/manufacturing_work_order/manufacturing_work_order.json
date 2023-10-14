@@ -411,7 +411,6 @@
    "label": "Weight Details"
   },
   {
-   "allow_on_submit": 1,
    "fieldname": "gross_wt",
    "fieldtype": "Float",
    "label": "Gross Wt"
@@ -534,7 +533,7 @@
    "link_fieldname": "manufacturing_work_order"
   }
  ],
- "modified": "2023-09-25 18:06:51.814278",
+ "modified": "2023-09-03 04:27:46.771157",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Work Order",

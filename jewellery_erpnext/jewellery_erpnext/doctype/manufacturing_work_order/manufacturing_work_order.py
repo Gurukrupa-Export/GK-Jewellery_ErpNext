@@ -11,25 +11,6 @@ from jewellery_erpnext.utils import set_values_in_bulk
 
 
 class ManufacturingWorkOrder(Document):
-	def onload(self):
-		docstatus = frappe.db.get_value('Manufacturing Work Order',self.name,'docstatus')
-		
-		if docstatus == 1:
-			db_data = frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':self.name},['name','gross_wt','net_wt','diamond_wt','gemstone_wt','other_wt','received_gross_wt','received_net_wt','loss_wt','diamond_wt_in_gram','gemstone_wt_in_gram','diamond_pcs','gemstone_pcs'],as_dict=1,order_by='creation DESC')
-			gross_wt = db_data['gross_wt']
-			if gross_wt == 0:
-				gross_wt = frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':self.name},['name','prev_gross_wt'],as_dict=1,order_by='creation DESC')['prev_gross_wt']
-			self.gross_wt=gross_wt
-			self.net_wt = db_data['net_wt']
-			self.diamond_wt = db_data['diamond_wt']
-			self.gemstone_wt = db_data['gemstone_wt']
-			self.other_wt = db_data['other_wt']
-			self.received_gross_wt = db_data['received_gross_wt']
-			self.received_net_wt = db_data['received_net_wt']
-			self.diamond_wt_in_gram = db_data['diamond_wt_in_gram']
-			self.diamond_pcs = db_data['diamond_pcs']
-			self.gemstone_pcs = db_data['gemstone_pcs']
-
 	def autoname(self):
 		if self.for_fg:
 			self.name = make_autoname("MWO-.abbr.-.item_code.-.seq.-.##", doc=self)
@@ -74,10 +55,8 @@ def create_manufacturing_operation(doc):
 	status = "Not Started"
 	if doc.for_fg:
 		department, operation = frappe.db.get_value("Department Operation", {"is_last_operation":1,"company":doc.company}, ["department","name"]) or ["",""]
-		status = "Not Started"
 	if doc.split_from:
 		department = doc.department
-		status = "Not Started"
 		operation = None
 	mop.status = status
 	mop.type = "Manufacturing Work Order"
@@ -110,26 +89,3 @@ def create_split_work_order(docname, company, count = 1):
 	if pending_operations:	#to prevent this workorder from showing in any IR doc
 		set_values_in_bulk("Manufacturing Operation", pending_operations, {"status": "Finished"})
 	frappe.db.set_value("Manufacturing Work Order", docname, "status", "Closed")
-
-# @frappe.whitelist()
-# def get_weight(manufacturing_work_order):
-# 	docstatus = frappe.db.get_value('Manufacturing Work Order',manufacturing_work_order,'docstatus')
-# 	if docstatus == 1:
-# 		db_data = frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':manufacturing_work_order},['name','gross_wt','net_wt','diamond_wt','gemstone_wt','other_wt','received_gross_wt','received_net_wt','loss_wt','diamond_wt_in_gram','gemstone_wt_in_gram','diamond_pcs','gemstone_pcs'],as_dict=1,order_by='creation DESC')
-# 		gross_wt = db_data['gross_wt']
-# 		if gross_wt == 0:
-# 			gross_wt = frappe.db.get_value('Manufacturing Operation',{'manufacturing_work_order':manufacturing_work_order},['name','prev_gross_wt'],as_dict=1,order_by='creation DESC')['prev_gross_wt']
-			
-# 		frappe.db.set_value('Manufacturing Work Order',manufacturing_work_order,{
-# 			'gross_wt':gross_wt,
-# 			'net_wt':db_data['net_wt'],
-# 			'diamond_wt':db_data['diamond_wt'],
-# 			'gemstone_wt':db_data['gemstone_wt'],
-# 			'other_wt':db_data['other_wt'],
-# 			'received_gross_wt':db_data['received_gross_wt'],
-# 			'received_net_wt':db_data['received_net_wt'],
-# 			'diamond_wt_in_gram':db_data['diamond_wt_in_gram'],
-# 			'diamond_pcs':db_data['diamond_pcs'],
-# 			'gemstone_pcs':db_data['gemstone_pcs']
-# 			})
-# 		return db_data

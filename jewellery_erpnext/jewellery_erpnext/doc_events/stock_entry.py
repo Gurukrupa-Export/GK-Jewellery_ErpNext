@@ -26,7 +26,7 @@ def validate(self, method):
 					item.serial_no = serial_no
 					break
 
-	if self.stock_entry_type == 'Material Transfer for Manufacture':
+	if self.purpose == 'Material Transfer for Manufacture':
 		for row in self.items:
 			# Set Purity For Items
 			if not row.metal_purity:
@@ -50,7 +50,7 @@ def validate(self, method):
 			# Set Operation Card In Child Table
 			row.operation_card = self.operation_card
 
-	if self.stock_entry_type == "Material Transfer":
+	if self.purpose == "Material Transfer":
 		validate_metal_properties(self)
 	validate_main_slip_warehouse(self)
 
@@ -95,14 +95,13 @@ def on_cancel(self, method=None):
 def onsubmit(self, method):
 	validate_items(self)
 	update_manufacturing_operation(self)
-	# update_manufacturing_work_order(self)
 	update_main_slip(self)
 	
 	# update_material_request_status(self)
 	# create_finished_bom(self)
 
 def update_main_slip(doc, is_cancelled=False):
-	if doc.stock_entry_type != "Material Transfer":
+	if doc.purpose != "Material Transfer":
 		return
 	main_slip_map = frappe._dict()
 	for entry in doc.items:
@@ -151,7 +150,7 @@ def allow_zero_valuation(self):
 
 def update_material_request_status(self):
 	try:
-		if self.stock_entry_type != "Material Transfer for Manufacture": return
+		if self.purpose != "Material Transfer for Manufacture": return
 		mr_doc = frappe.db.get_value('Material Request', {'docstatus':0, 'job_card': self.job_card}, 'name')
 		frappe.msgprint(mr_doc)
 		if mr_doc:
@@ -312,7 +311,7 @@ def get_bom_scrap_material(self, qty):
 def update_manufacturing_operation(doc, is_cancelled=False):
 	if isinstance(doc, str):
 		doc = frappe.get_doc("Stock Entry",doc)
-	if doc.stock_entry_type not in ["Material Transfer", "Material Receipt"] or doc.auto_created:
+	if doc.purpose not in ["Material Transfer", "Material Receipt"] or doc.auto_created:
 		return
 	item_wt_map = frappe._dict()
 	field_map = {
@@ -326,25 +325,16 @@ def update_manufacturing_operation(doc, is_cancelled=False):
 		if not entry.manufacturing_operation:
 			continue
 		variant_of = frappe.db.get_value("Item",entry.item_code, "variant_of")
-		# D
 		fieldname = field_map.get(variant_of, "other_wt")
-		# diamond_wt
 		wt = item_wt_map.setdefault(entry.manufacturing_operation, frappe._dict())
 		qty = entry.qty if not is_cancelled else -entry.qty
-		pcs = entry.pcs if not is_cancelled else -entry.pcs
 		weight_in_gram = flt(wt.get(fieldname)) + qty*0.2 if entry.uom == "cts" else qty
 		weight_in_cts = flt(wt.get(fieldname)) + qty
 		wt[fieldname] = weight_in_cts
-		
 		if variant_of == 'D':
 			wt["diamond_wt_in_gram"] = weight_in_gram
-			diamond_pcs = flt(wt.get('diamond_pcs')) + int(pcs)
-			wt['diamond_pcs'] = diamond_pcs
 		elif variant_of == 'G':
-			wt["gemstone_wt_in_grame"] = weight_in_gram
-			gemstone_pcs = flt(wt.get('gemstone_pcs')) + int(pcs)
-			wt['diamond_pcs'] = gemstone_pcs
-
+			wt["gemstone_wt_in_gram"] = weight_in_gram
 		wt['gross_wt'] = weight_in_gram
 		item_wt_map[entry.manufacturing_operation] = wt
 
@@ -352,39 +342,6 @@ def update_manufacturing_operation(doc, is_cancelled=False):
 		_values = { key: f'{key} + {value}' for key,value in values.items() if key != "finding_wt"}
 		update_existing("Manufacturing Operation", manufacturing_operation, _values)
 
-def update_manufacturing_work_order(doc, is_cancelled=False):
-	if isinstance(doc, str):
-		doc = frappe.get_doc("Stock Entry",doc)
-	if doc.stock_entry_type not in ["Material Transfer", "Material Receipt"] or doc.auto_created:
-		return
-	item_wt_map = frappe._dict()
-	field_map = {
-		'F': "finding_wt",
-		'G': "gemstone_wt",
-		'D': "diamond_wt",
-		'M': "net_wt",
-		'O': "other_wt"
-	}
-	for entry in doc.items:
-		if not entry.manufacturing_work_order:
-			continue
-		variant_of = frappe.db.get_value("Item",entry.item_code, "variant_of")
-		fieldname = field_map.get(variant_of, "other_wt")
-		wt = item_wt_map.setdefault(entry.manufacturing_work_order, frappe._dict())
-		qty = entry.qty if not is_cancelled else -entry.qty
-		weight_in_gram = flt(wt.get(fieldname)) + qty*0.2 if entry.uom == "cts" else qty
-		weight_in_cts = flt(wt.get(fieldname)) + qty
-		wt[fieldname] = weight_in_cts
-		if variant_of == 'D':
-			wt["diamond_wt_in_gram"] = weight_in_gram
-		elif variant_of == 'G':
-			wt["gemstone_wt_in_grame"] = weight_in_gram
-		wt['gross_wt'] = weight_in_gram
-		item_wt_map[entry.manufacturing_work_order] = wt
-
-	for manufacturing_work_order, values in item_wt_map.items():
-		_values = { key: f'{key} + {value}' for key,value in values.items() if key != "finding_wt"}
-		update_existing("Manufacturing Work Order", manufacturing_work_order, _values)
 
 @frappe.whitelist()
 def make_stock_in_entry(source_name, target_doc=None):

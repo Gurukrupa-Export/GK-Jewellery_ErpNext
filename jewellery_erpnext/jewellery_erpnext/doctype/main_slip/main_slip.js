@@ -61,7 +61,7 @@ frappe.ui.form.on('Main Slip', {
         frappe.db.get_value("Manufacturing Setting", frm.doc.company, ["powder_value","water_value","boric_value","special_powder_boric_value"], (r)=> {
             frm.set_value("water_weight",  ( frm.doc.powder_wt * r.water_value) / r.powder_value)
             frm.set_value("boric_powder_weight",   ( frm.doc.powder_wt * r.boric_value ) / r.powder_value)
-            frm.set_value("special_powder_weight",  ( frm.doc.powder_wt * r.powder_value ) / r.powder_value)
+            frm.set_value("special_powder_weight",  ( frm.doc.powder_wt * r.special_powder_boric_value ) / r.powder_value)
         })
     },
     tree_wax_wt(frm) {

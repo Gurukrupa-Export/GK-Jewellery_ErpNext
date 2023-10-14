@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{serial_and_design_id_order_form}-{index}",
+ "autoname": "format:{serial_and_design_code_order_form}-{index}",
  "creation": "2023-07-29 23:02:26.538752",
  "default_view": "List",
  "doctype": "DocType",
@@ -9,76 +9,49 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
+  "department",
+  "column_break_ttfni",
+  "branch",
+  "salesman_name",
+  "section_break_6lm2c",
+  "customer_code",
+  "order_date",
+  "delivery_date",
+  "est_delivery_date",
+  "project",
+  "parcel_place",
+  "system_due_date",
+  "column_break_2",
+  "po_no",
+  "order_type",
+  "diamond_quality",
+  "due_days",
+  "service_type",
+  "modification",
+  "section_break_17",
   "serial_and_design_code_order_form",
+  "column_break_11",
   "serial_and_design_code_order_form_detail",
   "index",
-  "order_type",
-  "design_by",
-  "column_break_2",
   "amended_from",
-  "order_date",
-  "project",
-  "branch",
-  "due_days",
-  "system_due_date",
-  "estimated_duedate",
-  "column_break_11",
-  "customer_code",
-  "po_no",
-  "salesman_name",
-  "service_type",
-  "parcel_place",
-  "section_break_17",
   "scan_serial_no",
-  "column_break_19",
-  "customer_diamond_quality",
   "section_break_21",
-  "tag_no",
   "item",
+  "design_code_bom",
+  "column_break_bhugk",
+  "tag_no",
   "bom",
-  "modification",
-  "delivery_date",
-  "diamond_quality",
-  "column_break_29",
-  "item_image",
-  "image_preview",
-  "section_break_32",
-  "design_image1",
-  "image_preview1",
-  "column_break_35",
-  "design_image2",
-  "image_preview2",
-  "column_break_38",
-  "design_image3",
-  "image_preview3",
-  "column_break_41",
-  "design_image4",
-  "image_preview4",
   "section_break_41",
   "category",
   "subcategory",
   "setting_type",
-  "column_break_45",
-  "purity",
   "qty",
+  "column_break_45",
+  "metal_type",
+  "metal_touch",
+  "metal_purity",
   "metal_colour",
   "section_break_49",
-  "gemstone_type1",
-  "column_break_51",
-  "gemstone_type2",
-  "column_break_53",
-  "gemstone_type3",
-  "column_break_55",
-  "gemstone_type4",
-  "section_break_54",
-  "gemstone_type5",
-  "column_break_59",
-  "gemstone_type6",
-  "column_break_61",
-  "gemstone_type7",
-  "column_break_63",
-  "gemstone_type8",
-  "section_break_59",
   "gold_target",
   "diamond_target",
   "product_size",
@@ -128,8 +101,37 @@
   "back_belt",
   "back_belt_length",
   "section_break_fgvjt",
-  "form_remarks",
-  "remarks"
+  "navratna",
+  "section_break_jsffo",
+  "gemstone_type1",
+  "gemstone_type5",
+  "column_break_51",
+  "gemstone_type2",
+  "gemstone_type6",
+  "column_break_53",
+  "gemstone_type3",
+  "gemstone_type7",
+  "column_break_55",
+  "gemstone_type4",
+  "gemstone_type8",
+  "section_break_cczi4",
+  "item_image",
+  "image_preview",
+  "column_break_exrfc",
+  "design_image1",
+  "image_preview1",
+  "column_break_35",
+  "design_image2",
+  "image_preview2",
+  "column_break_38",
+  "design_image3",
+  "image_preview3",
+  "column_break_41",
+  "design_image4",
+  "image_preview4",
+  "section_break_zw9nc",
+  "remarks",
+  "form_remarks"
  ],
  "fields": [
   {
@@ -142,22 +144,27 @@
   {
    "fieldname": "serial_and_design_code_order_form",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Serial No and Design Code Order Form",
-   "options": "Serial No and Design Code Order Form"
+   "options": "Serial No and Design Code Order Form",
+   "read_only": 1
   },
   {
    "fieldname": "serial_and_design_code_order_form_detail",
    "fieldtype": "Link",
    "label": "Serial No and Design Code Order Form Detail",
-   "options": "Serial No and Design Code Order Form Detail"
+   "options": "Serial No and Design Code Order Form Detail",
+   "read_only": 1
   },
   {
    "fieldname": "index",
    "fieldtype": "Int",
-   "label": "Index"
+   "hidden": 1,
+   "label": "Index",
+   "read_only": 1
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.stock_type",
+   "fetch_from": "serial_and_design_code_order_form.stock_type",
    "fieldname": "order_type",
    "fieldtype": "Select",
    "label": "Order Type",
@@ -177,7 +184,7 @@
    "read_only": 1
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.order_date",
+   "fetch_from": "serial_and_design_code_order_form.order_date",
    "fieldname": "order_date",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -194,19 +201,19 @@
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
-   "options": "Branch",
-   "read_only": 1
+   "options": "Branch"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.due_days",
+   "fetch_from": "serial_and_design_code_order_form.due_days",
    "fieldname": "due_days",
    "fieldtype": "Int",
    "label": "Due Days"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.system_due_date",
+   "fetch_from": "serial_and_design_code_order_form.system_due_date",
    "fieldname": "system_due_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "label": "System Due Date"
   },
   {
@@ -214,24 +221,24 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.customer_code",
+   "fetch_from": "serial_and_design_code_order_form.customer_code",
    "fieldname": "customer_code",
    "fieldtype": "Link",
    "label": "Customer Code",
    "options": "Customer"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.po_no",
+   "fetch_from": "serial_and_design_code_order_form.po_no",
    "fieldname": "po_no",
    "fieldtype": "Data",
    "label": "Customer PO No"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.salesman_name",
+   "fetch_from": "serial_and_design_code_order_form.salesman_name",
    "fieldname": "salesman_name",
    "fieldtype": "Link",
-   "label": "Salesman Name",
-   "options": "Employee"
+   "label": "Sales Person",
+   "options": "Sales Person"
   },
   {
    "fieldname": "service_type",
@@ -241,20 +248,21 @@
    "read_only": 1
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.parcel_place",
+   "fetch_from": "serial_and_design_code_order_form.parcel_place",
    "fieldname": "parcel_place",
-   "fieldtype": "Link",
-   "label": "Parcel Place",
-   "options": "Parcel Place List"
+   "fieldtype": "Table MultiSelect",
+   "label": "Shipping Territory",
+   "options": "Territory Multi Select"
   },
   {
    "fieldname": "section_break_17",
    "fieldtype": "Section Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form.scan_serial_no",
+   "fetch_from": "serial_and_design_code_order_form.scan_serial_no",
    "fieldname": "scan_serial_no",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Scan Tag No"
   },
   {
@@ -262,67 +270,67 @@
    "fieldtype": "Section Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.tag_no",
+   "fetch_from": "serial_and_design_code_order_form_detail.tag_no",
    "fieldname": "tag_no",
    "fieldtype": "Link",
    "label": "Serial No",
    "options": "Serial No"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.item",
+   "fetch_from": "serial_and_design_code_order_form_detail.item",
    "fieldname": "item",
    "fieldtype": "Link",
    "label": "Design Code",
    "options": "Item"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.bom",
+   "fetch_from": "serial_and_design_code_order_form_detail.bom",
    "fieldname": "bom",
    "fieldtype": "Link",
-   "label": "BOM",
+   "label": "Serial No BOM",
    "options": "BOM"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.modification",
+   "fetch_from": "serial_and_design_code_order_form_detail.modification",
    "fieldname": "modification",
    "fieldtype": "Select",
    "label": "Modification",
    "options": "Yes\nNo"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.delivery_date",
+   "fetch_from": "serial_and_design_code_order_form_detail.delivery_date",
    "fieldname": "delivery_date",
    "fieldtype": "Date",
    "label": "Delivery Date"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.diamond_quality",
+   "fetch_from": "serial_and_design_code_order_form_detail.diamond_quality",
    "fieldname": "diamond_quality",
    "fieldtype": "Link",
    "label": "Diamond Quality",
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.item_image",
+   "fetch_from": "serial_and_design_code_order_form_detail.item_image",
    "fieldname": "item_image",
    "fieldtype": "Attach Image",
    "label": "Item Image"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.item_image",
+   "fetch_from": "serial_and_design_code_order_form_detail.item_image",
    "fieldname": "image_preview",
    "fieldtype": "Image",
    "label": "Image Preview",
    "options": "item_image"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image1",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image1",
    "fieldname": "design_image1",
    "fieldtype": "Attach Image",
    "label": "Design Image1"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image1",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image1",
    "fieldname": "image_preview1",
    "fieldtype": "Image",
    "label": "Image Preview1",
@@ -333,13 +341,13 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image2",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image2",
    "fieldname": "design_image2",
    "fieldtype": "Attach Image",
    "label": "Design Image2"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image2",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image2",
    "fieldname": "image_preview2",
    "fieldtype": "Image",
    "label": "Image Preview2",
@@ -350,13 +358,13 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image3",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image3",
    "fieldname": "design_image3",
    "fieldtype": "Attach Image",
    "label": "Design Image3"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image3",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image3",
    "fieldname": "image_preview3",
    "fieldtype": "Image",
    "label": "Image Preview3",
@@ -367,13 +375,13 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image4",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image4",
    "fieldname": "design_image4",
    "fieldtype": "Attach Image",
    "label": "Design Image4"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.design_image4",
+   "fetch_from": "serial_and_design_code_order_form_detail.design_image4",
    "fieldname": "image_preview4",
    "fieldtype": "Image",
    "label": "Image Preview4",
@@ -384,21 +392,21 @@
    "fieldtype": "Section Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.category",
+   "fetch_from": "serial_and_design_code_order_form_detail.category",
    "fieldname": "category",
    "fieldtype": "Link",
-   "label": "Category",
+   "label": "Item Category",
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.subcategory",
+   "fetch_from": "serial_and_design_code_order_form_detail.subcategory",
    "fieldname": "subcategory",
    "fieldtype": "Link",
-   "label": "Subcategory",
+   "label": "Item Subcategory",
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.setting_type",
+   "fetch_from": "serial_and_design_code_order_form_detail.setting_type",
    "fieldname": "setting_type",
    "fieldtype": "Link",
    "label": "Setting Type",
@@ -409,13 +417,13 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.qty",
+   "fetch_from": "serial_and_design_code_order_form_detail.qty",
    "fieldname": "qty",
    "fieldtype": "Int",
    "label": "No of Pcs"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.metal_colour",
+   "fetch_from": "serial_and_design_code_order_form_detail.metal_colour",
    "fieldname": "metal_colour",
    "fieldtype": "Link",
    "label": "Metal Colour ",
@@ -426,7 +434,7 @@
    "fieldtype": "Section Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type1",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type1",
    "fieldname": "gemstone_type1",
    "fieldtype": "Link",
    "label": "Gemstone Type1",
@@ -437,7 +445,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type2",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type2",
    "fieldname": "gemstone_type2",
    "fieldtype": "Link",
    "label": "Gemstone Type2",
@@ -448,7 +456,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type3",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type3",
    "fieldname": "gemstone_type3",
    "fieldtype": "Link",
    "label": "Gemstone Type3",
@@ -459,35 +467,35 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type4",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type4",
    "fieldname": "gemstone_type4",
    "fieldtype": "Link",
    "label": "Gemstone Type4",
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type5",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type5",
    "fieldname": "gemstone_type5",
    "fieldtype": "Link",
    "label": "Gemstone Type5",
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type6",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type6",
    "fieldname": "gemstone_type6",
    "fieldtype": "Link",
    "label": "Gemstone Type6",
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type7",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type7",
    "fieldname": "gemstone_type7",
    "fieldtype": "Link",
    "label": "Gemstone Type7",
    "options": "Attribute Value"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.gemstone_type8",
+   "fetch_from": "serial_and_design_code_order_form_detail.gemstone_type8",
    "fieldname": "gemstone_type8",
    "fieldtype": "Link",
    "label": "Gemstone Type8",
@@ -935,76 +943,88 @@
   {
    "fieldname": "form_remarks",
    "fieldtype": "Text",
-   "label": "Order Form Remarks",
+   "label": "Remarks",
    "read_only": 1
   },
   {
    "fieldname": "remarks",
    "fieldtype": "Text",
-   "label": "Order Remarks",
-   "read_only": 1
+   "label": "Order Remarks"
   },
   {
-   "fieldname": "design_by",
-   "fieldtype": "Select",
-   "label": "Design By",
-   "options": "\nConcept by Design\nCustomer Design"
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
   },
   {
-   "fieldname": "estimated_duedate",
-   "fieldtype": "Date",
-   "label": "Estimated Due Date"
-  },
-  {
-   "fieldname": "column_break_19",
+   "fieldname": "column_break_ttfni",
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.diamond_quality",
-   "fieldname": "customer_diamond_quality",
+   "fieldname": "section_break_6lm2c",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "est_delivery_date",
+   "fieldtype": "Date",
+   "label": "Est. Delivery Date"
+  },
+  {
+   "fieldname": "section_break_zw9nc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_exrfc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_cczi4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "navratna",
+   "fieldtype": "Check",
+   "label": "Navratna"
+  },
+  {
+   "fieldname": "metal_type",
    "fieldtype": "Link",
-   "label": "Customer Diamond Quality",
+   "label": "Metal Type",
    "options": "Attribute Value"
   },
   {
-   "fieldname": "column_break_29",
+   "fieldname": "metal_touch",
+   "fieldtype": "Link",
+   "label": "Metal Touch",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "metal_purity",
+   "fieldtype": "Link",
+   "label": "Metal Purity",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "column_break_bhugk",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_32",
-   "fieldtype": "Section Break"
+   "fieldname": "design_code_bom",
+   "fieldtype": "Link",
+   "label": "Design Code BOM",
+   "options": "BOM"
   },
   {
-   "fetch_from": "serial_and_design_id_order_form_detail.purity",
-   "fieldname": "purity",
-   "fieldtype": "Data",
-   "label": "Purity"
-  },
-  {
-   "fieldname": "section_break_54",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_59",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_61",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_63",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_break_59",
+   "fieldname": "section_break_jsffo",
    "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-19 18:27:20.439240",
+ "modified": "2023-07-30 00:18:37.926330",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Serial No and Design Code Order",

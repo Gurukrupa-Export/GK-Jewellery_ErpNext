@@ -38,7 +38,6 @@ class EmployeeIR(Document):
 		self.validate_gross_wt()
 		self.update_main_slip()
 		if not self.is_new():
-			print('HERE')
 			self.validate_qc("Warn")
 
 	def after_insert(self):
@@ -245,6 +244,7 @@ def create_stock_entry(doc, row, difference_wt=0):
 					loss[child.item_code]["qty"] = child.qty
 
 			if doc.type == "Issue":
+				se_doc.stock_entry_type = 'Material Transfer to Subcontractor' if doc.subcontracting == "Yes" else "Material Transfer to Employee"
 				child.s_warehouse = department_wh
 				child.t_warehouse = employee_wh
 				if doc.subcontracting == "Yes":
@@ -257,6 +257,7 @@ def create_stock_entry(doc, row, difference_wt=0):
 				child.main_slip = None
 				child.to_main_slip = doc.main_slip if item == child.item_code else None
 			else:
+				se_doc.stock_entry_type = 'Material Transfer to Department'
 				child.s_warehouse = employee_wh
 				child.t_warehouse = department_wh
 				if doc.subcontracting == "Yes":
@@ -267,7 +268,7 @@ def create_stock_entry(doc, row, difference_wt=0):
 					child.employee = doc.employee
 				child.to_main_slip = None
 				child.main_slip = doc.main_slip if item == child.item_code else None
-			child.qty = child.qty + (difference_wt if metal_item == child.item_code else 0)
+			child.qty = child.qty + (difference_wt if (metal_item == child.item_code) and difference_wt < 0 else 0)
 			if child.qty < 0:
 				frappe.throw(_("Qty cannot be negative"))
 			child.manufacturing_operation = row.manufacturing_operation
@@ -292,17 +293,14 @@ def create_stock_entry(doc, row, difference_wt=0):
 		se_doc.save()
 		se_doc.submit()
 
-	if (metal_item in existing_items) and difference_wt < 0:
-		if not doc.main_slip:
-			frappe.throw(_("Unable to book metal loss as no main slip has been found for this operation."))
-		convert_pure_metal(row.manufacturing_work_order, doc.main_slip, abs(difference_wt), employee_wh, employee_wh, reverse=True)
-
-	if (metal_item not in existing_items) and difference_wt > 0:
+	if difference_wt != 0:
 		if not doc.main_slip:
 			frappe.throw(_("Cannot add weight without Main Slip"))
-		convert_pure_metal(row.manufacturing_work_order, doc.main_slip, difference_wt, employee_wh, employee_wh)
+		if doc.subcontracting == "Yes":
+			convert_pure_metal(row.manufacturing_work_order, doc.main_slip, abs(difference_wt), employee_wh, employee_wh, reverse=(difference_wt < 0))
+
 		se_doc = frappe.new_doc("Stock Entry")
-		se_doc.stock_entry_type = "Material Transfer"
+		se_doc.stock_entry_type = "Material Transfer to Department"
 		se_doc.purpose = "Material Transfer"
 		se_doc.manufacturing_order = frappe.db.get_value("Manufacturing Work Order",row.manufacturing_work_order, "manufacturing_order")
 		se_doc.manufacturing_work_order = row.manufacturing_work_order
@@ -325,7 +323,7 @@ def create_stock_entry(doc, row, difference_wt=0):
 			"subcontractor": doc.subcontractor,
 			"to_main_slip": None,
 			"main_slip": doc.main_slip,
-			"qty": difference_wt,
+			"qty": abs(difference_wt),
 			"manufacturing_operation": row.manufacturing_operation,
 			"department": doc.department,
 			"to_department": doc.department,

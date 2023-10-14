@@ -69,3 +69,10 @@ def get_value(doctype, filters, fields, default=None, debug=0):
 		return res[0][0] or default
 	
 	return default
+
+@frappe.whitelist()
+def db_get_value(doctype, docname, fields):
+	# this is created to bypass permission issue during db call from client script
+	import json
+	fields = json.loads(fields)
+	return frappe.db.get_value(doctype, docname, fields, as_dict=1)

@@ -99,7 +99,7 @@ def set_attribute_and_value_in_description(self):
 	if self.variant_of:
 		description_value = "<b><u>" + self.variant_of + "</u></b><br/>"
 		for d in self.get('attributes'):
-			description_value += d.attribute +" : "+ str(d.attribute_value) + "<br/>"
+			description_value += d.attribute +" : "+ d.attribute_value + "<br/>"
 		self.description = description_value
 
 @frappe.whitelist()

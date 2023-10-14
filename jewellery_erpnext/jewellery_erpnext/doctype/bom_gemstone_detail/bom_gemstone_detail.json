@@ -72,8 +72,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": " Quality",
-   "options": "Attribute Value",
-   "reqd": 1
+   "options": "Attribute Value"
   },
   {
    "default": "Real",
@@ -81,8 +80,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": " Grade",
-   "options": "Attribute Value",
-   "reqd": 1
+   "options": "Attribute Value"
   },
   {
    "default": "0",
@@ -166,7 +164,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-16 14:27:26.683107",
+ "modified": "2023-10-03 16:53:30.322338",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "BOM Gemstone Detail",

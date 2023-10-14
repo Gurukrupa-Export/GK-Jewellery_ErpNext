@@ -2,6 +2,24 @@ frappe.ui.form.on('Stock Entry', {
     refresh(frm) {
         frm.trigger("get_items_from_customer_goods")
     },
+    validate(frm) {
+        $.each(frm.doc.items || [], function(i, row) {
+            row.inventory_type = frm.doc.inventory_type;
+            row.customer = frm.doc._customer;
+            row.branch = frm.doc.branch;
+            row.department = frm.doc.department;
+            row.to_department = frm.doc.to_department;
+            row.main_slip = frm.doc.main_slip;
+            row.to_main_slip = frm.doc.to_main_slip;
+            row.employee = frm.doc.employee;
+            row.to_employee = frm.doc.to_employee;
+            row.subcontractor = frm.doc.subcontractor
+            row.to_subcontractor = frm.doc.to_subcontractor
+            row.project = frm.doc.project;
+            row.manufacturing_operation = frm.doc.manufacturing_operation
+        })
+        refresh_field("items");
+    },
     get_items_from_customer_goods(frm) {
         if (frm.doc.docstatus===0 && frm.doc.stock_entry_type == "Customer Goods Issue") {
             frm.add_custom_button(__('Customer Goods Received'), function() {

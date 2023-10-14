@@ -47,7 +47,6 @@ def make_cad_order(source_name, target_doc=None, parent_doc = None):
 		target.cad_order_form = source.parent
 		target.index = source.idx
 
-# 'bom-des -type-01'
 	doc = get_mapped_doc(
 		"CAD Order Form Detail",
 		source_name,
@@ -58,7 +57,8 @@ def make_cad_order(source_name, target_doc=None, parent_doc = None):
 		},target_doc, set_missing_values
 	)
 
-	doc.service_type = parent_doc.service_type
+	for entity in parent_doc.get("service_type",[]):
+		doc.append("service_type", {"service_type1": entity.service_type1})
 	doc.parcel_place = parent_doc.parcel_place
 	doc.company = parent_doc.company
 	doc.form_remarks = parent_doc.remarks

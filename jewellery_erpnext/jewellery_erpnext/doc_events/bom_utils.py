@@ -66,15 +66,10 @@ def get_gold_rate(self):
 			item.amount = 0
 		else:
 			# Calculate the amount using the gold rate, metal purity and GST rate
-			# item.rate = (
-			# 	flt(self.gold_rate_with_gst)
-			# 	* flt(metal_purity)
-			# 	/ (100 + int(gold_gst_rate))
-			# )
 			item.rate = (
 				flt(self.gold_rate_with_gst)
 				* flt(metal_purity)
-				/ (100)
+				/ (100 + int(gold_gst_rate))
 			)
 			item.amount = flt(item.quantity) * item.rate
 		# Add the current item's amount to the total amount
@@ -384,8 +379,8 @@ def set_bom_item_details(self):
 				set_diamond_fields(self, diamond, item)
 
 			# Set Gemstone Fields
-			# for stone in self.gemstone_detail:
-			# 	set_gemstone_fields(stone, item)
+			for stone in self.gemstone_detail:
+				set_gemstone_fields(stone, item)
 
 			# Set Finding Fields
 			for finding in self.finding_detail:
@@ -397,23 +392,17 @@ def set_bom_item_details(self):
 def set_diamond_fields(self, diamond, item):
 	doctype = get_doctype_name(self)
 	customer = self.party_name if doctype == "Quotation" else self.customer
-	
-	# if not item.diamond_grade:
-	# 	print('IF')
-	# 	diamond_grade_1 = frappe.db.get_value(
-	# 		"Customer Diamond Grade",
-	# 		{"parent": customer, "diamond_quality": item.diamond_quality},
-	# 		"diamond_grade_1",
-	# 	)
-		
-	# 	if diamond_grade_1:
-	# 		print('IF IF')
-	# 		diamond.diamond_grade = diamond_grade_1
-	# else:
-	# 	print('ELSE')
-	# 	diamond.diamond_grade = item.diamond_grade
-	if item.diamond_quality:
-		print('LAST IF')
+	if not item.get("diamond_grade"):
+		diamond_grade_1 = frappe.db.get_value(
+			"Customer Diamond Grade",
+			{"parent": customer, "diamond_quality": item.diamond_quality},
+			"diamond_grade_1",
+		)
+		if diamond_grade_1:
+			diamond.diamond_grade = diamond_grade_1
+	else:
+		diamond.diamond_grade = item.diamond_grade
+	if item.get("diamond_quality"):
 		diamond.quality = item.diamond_quality
 	self.save()
 	return

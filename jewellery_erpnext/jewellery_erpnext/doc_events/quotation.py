@@ -67,6 +67,7 @@ def create_quotation_bom(self, row, bom):
 		diamond_grade_1 = frappe.db.get_value('Customer Diamond Grade', 
 								{'parent': doc.customer, 'diamond_quality': row.diamond_quality}, 
 								'diamond_grade_1')
+
 		if diamond_grade_1: diamond.diamond_grade = diamond_grade_1
 		if row.diamond_quality: diamond.quality = row.diamond_quality
 	# This Save will Call before_save and validate method in BOM and Rates Will be Calculated as diamond_quality is calculated too

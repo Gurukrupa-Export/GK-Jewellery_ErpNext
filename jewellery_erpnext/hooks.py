@@ -23,7 +23,8 @@ doctype_js = {
 	"Sales Order"                  : "public/js/doctype_js/sales_order.js",
 	"Manufacturer"                 : "public/js/doctype_js/manufacturer.js",
     "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js",
-    "Supplier"                     : "public/js/doctype_js/supplier.js"
+    "Supplier"                     : "public/js/doctype_js/supplier.js",
+    "Material Request"			   : "public/js/doctype_js/material_request.js"
 }
 
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
@@ -105,7 +106,8 @@ fixtures = [
 		"filters": [["dt", "in", [
             "Stock Entry", "Warehouse", "Quotation Item", "Sales Order Item",
             "Sales Order", "Quotation", "Stock Entry Detail", "Quality Inspection Template",
-            "Purchase Order", "Purchase Order Item", "Material Request", "Supplier", "Serial No"
+            "Purchase Order", "Purchase Order Item", "Material Request", "Supplier", "Serial No",
+            "Material Request", "Material Request Item", "Item Group"
             ]], ["is_system_generated",'=',0]]
 	},
     {
@@ -113,6 +115,9 @@ fixtures = [
 		"filters": [["doc_type", "in", [
             "Quality Inspection Template"
             ]], ["is_system_generated",'=',0], ["module","=","Jewellery Erpnext"]]
+	},
+    {
+		"dt": "Stock Entry Type"
 	}
 ]
 

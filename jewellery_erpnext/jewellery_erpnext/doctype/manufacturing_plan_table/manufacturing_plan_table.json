@@ -79,6 +79,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "produced_qty",
    "fieldtype": "Int",
    "label": "Produced Qty",
@@ -161,7 +162,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-08-22 11:00:16.728199",
+ "modified": "2023-09-21 01:06:10.039581",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Plan Table",

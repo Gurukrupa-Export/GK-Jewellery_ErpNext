@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "PMO-.#####",
+ "autoname": "PMO-.abbr.-.item_code.-.####",
  "creation": "2023-03-03 22:09:50.290798",
  "default_view": "List",
  "doctype": "DocType",
@@ -71,9 +71,7 @@
   "images_tab",
   "section_break_1xrgj",
   "finish_good_image",
-  "preview",
-  "tab_break_x8c1l",
-  "weight_details"
+  "preview"
  ],
  "fields": [
   {
@@ -473,18 +471,6 @@
    "fieldtype": "Data",
    "label": "HUID/Certification No",
    "read_only": 1
-  },
-  {
-   "fieldname": "tab_break_x8c1l",
-   "fieldtype": "Tab Break",
-   "label": "Weight"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "weight_details",
-   "fieldtype": "Table",
-   "label": "Weight Details",
-   "options": "Weight Details"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -503,7 +489,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-09-27 09:14:03.779087",
+ "modified": "2023-09-02 03:35:30.650961",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

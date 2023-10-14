@@ -20,9 +20,7 @@ class DepartmentIR(Document):
 		if self.type == "Issue":
 			filters["status"] = ["in",["Finished","Revert"]]
 			filters["department"]= self.current_department
-		records = frappe.get_list("Manufacturing Operation",filters,["name","gross_wt",],order_by="creation DESC")
-		# sorted_results = sorted(records, key=lambda x: x.get('start_time'))
-		# print(sorted_results)
+		records = frappe.get_list("Manufacturing Operation",filters,["name","gross_wt"])
 		self.department_ir_operation = []
 		if records:
 			for row in records:
@@ -98,6 +96,7 @@ def update_stock_entry_dimensions(doc, row, manufacturing_operation, for_employe
 	for stock_entry in stock_entries:
 		rows = frappe.get_all("Stock Entry Detail", {"parent": stock_entry}, pluck = "name")
 		set_values_in_bulk("Stock Entry Detail", rows, values)
+		values[scrub(doc.doctype)] = doc.name
 		frappe.db.set_value("Stock Entry", stock_entry, values)
 		update_manufacturing_operation(stock_entry)
 
@@ -113,6 +112,7 @@ def create_stock_entry(doc, row):
 	for stock_entry in stock_entries:
 		existing_doc = frappe.get_doc("Stock Entry", stock_entry)
 		se_doc = frappe.copy_doc(existing_doc)
+		se_doc.stock_entry_type = 'Material Transfer to Department'
 		for child in se_doc.items:
 			child.s_warehouse = in_transit_wh
 			child.t_warehouse = department_wh
@@ -147,6 +147,7 @@ def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 	for stock_entry in stock_entries:
 		existing_doc = frappe.get_doc("Stock Entry", stock_entry)
 		se_doc = frappe.copy_doc(existing_doc)
+		se_doc.stock_entry_type = 'Material Transfer to Department'
 		for child in se_doc.items:
 			child.t_warehouse = in_transit_wh
 			child.s_warehouse = department_wh
@@ -200,17 +201,16 @@ def create_operation_for_next_dept(ir_name,docname, next_department, target_doc 
 	return target_doc.name
 
 @frappe.whitelist()
-def get_manufacturing_operation(source_name, target_doc=None):
+def get_manufacturing_operations(source_name, target_doc=None):
 	if not target_doc:
 		target_doc = frappe.new_doc("Department IR")
 	elif isinstance(target_doc, str):
 		target_doc = frappe.get_doc(json.loads(target_doc))
-
+	
 	operation = frappe.db.get_value("Manufacturing Operation", source_name, ["gross_wt","manufacturing_work_order"],as_dict=1)
 	if not target_doc.get("department_ir_operation",{"manufacturing_work_order": operation["manufacturing_work_order"]}):
 		target_doc.append("department_ir_operation",{"manufacturing_operation":source_name, 
 					      "manufacturing_work_order": operation["manufacturing_work_order"]})
-	
 	return target_doc
 
 @frappe.whitelist()

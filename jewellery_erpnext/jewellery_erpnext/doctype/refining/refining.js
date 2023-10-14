@@ -2,35 +2,329 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Refining', {
+	setup(frm) {
+		filter_fields_based_on_company(frm, 'refining_department')
+		filter_fields_based_on_company(frm, 'department')
+		filter_items(frm, "recovered_diamond", "D")
+		filter_items(frm, "recovered_gemstone", "G")
+		filter_items(frm, "refined_gold", "M")
+
+		filter_recovery_source(frm, "department", "refining_department_detail")
+		filter_recovery_source(frm, "operation", "refining_operation_detail")
+
+	},
+	refresh(frm) {
+		set_html(frm)
+		transfer_dust_btn(frm)
+
+		// for purity link field
+		frm.set_query("metal_purity", function (doc) {
+			return {
+				query: 'jewellery_erpnext.query.item_attribute_query',
+				filters: { 'item_attribute': "Metal Purity" }
+			}
+		})
+	},
+	validate(frm) {
+		if (!frm.doc.multiple_operation) {
+			frm.clear_table("refining_operation_details")
+			frm.refresh_field("refining_operation_details")
+		}
+		else if (!frm.doc.multiple_department) {
+			frm.clear_table("refining_department_detail")
+			frm.refresh_field("refining_department_detail")
+		}
+		else {
+			frm.set_value("department", null)
+			frm.set_value("employee", null)
+			frm.set_value("operation", null)
+		}
+	},
+	previous_refining(frm) {
+		frappe.db.get_doc('Refining', frm.doc.previous_refining)
+			.then(doc => {
+				console.log(doc)
+				if (doc.docstatus === 1 && dust_received === 1) {
+					frm.set_value('refining_department', doc.refining_department)
+					frm.set_value('source_warehouse', doc.refining_warehouse)
+					frm.set_value('item_code', doc.recovered_item)
+					frm.set_value('dust_weight', doc.fine_weight)
+				}
+				else {
+					frappe.throw(`Previous Refining Is not Complete Yet : ${frm.doc.previous_refining}`)
+				}
+			})
+	},
+	date_from(frm) {
+		var today = frappe.datetime.now_date();
+		var entered_date = frm.doc.date_from;
+		if (entered_date > today) {
+			frappe.msgprint("Future dates are not allowed!");
+			frm.set_value("date_from", today);
+		}
+		else if (entered_date > frm.doc.date_to) {
+			frappe.msgprint("'Date From' cannot be after 'Date To'");
+			frm.set_value("date_from", frm.doc.date_to);
+		}
+	},
+	date_to(frm) {
+		var today = frappe.datetime.now_date();
+		var entered_date = frm.doc.date_to;
+		if (entered_date > today) {
+			frappe.msgprint("Future dates are not allowed!");
+			frm.set_value("date_to", today);
+		}
+		else if (entered_date < frm.doc.date_from) {
+			frappe.msgprint("'Date To' cannot be before 'Date From'");
+			frm.set_value("date_to", frm.doc.date_from);
+		}
+	},
+	metal_purity(frm) {
+		if (frm.doc.metal_purity > 100 || frm.doc.metal_purity < 0) {
+			frappe.msgprint("metal_purity must be between 0 to 100")
+			frm.set_value("metal_purity", 0)
+		}
+		let fine_weight = flt(frm.doc.refining_gold_weight) * flt(frm.doc.metal_purity) / 100
+		frm.set_value("fine_weight", fine_weight)
+	},
+	refining_gold_weight(frm) {
+		frm.trigger("metal_purity")
+	},
+	refining_type(frm) {
+		set_series(frm)
+		set_html(frm)
+		transfer_dust_btn(frm)
+	},
+	refining_department(frm) {
+		frappe.db.get_value("Warehouse", { "department": frm.doc.refining_department }, "name")
+			.then(r => {
+				console.log(r.message.name) // Open
+				frm.set_value("refining_warehouse", r.message.name)
+			})
+	},
+	scan_barcode(frm) {
+		get_item_by_serial_no(frm)
+	},
 	get_parent_production_order(frm) {
+		if (!frm.doc.refining_department) {
+			frappe.throw("Please select refining department first")
+		}
 		var query_filters = {
-			"department": frm.doc.department
+			"company": frm.doc.company
 		}
 		if (frm.doc.refining_type == "Parent Manufacturing Order") {
+			query_filters["department_ir_status"] = ["not in", ["In-Transit", "Revert"]]
 			query_filters["status"] = ["in", ["Not Started"]]
-			// query_filters["operation"] = ["is", "not set"]
-			// else {
-			// 	query_filters["subcontractor"] = ["is", "not set"]
-			// }
+			// query_filters["employee"] = ["is", "not set"]
+			// query_filters["subcontractor"] = ["is", "not set"]
 		}
-		// else {
-		// 	query_filters["status"] = ["in", ["On Hold", "WIP", "QC Completed"]]
-		// 	query_filters["operation"] = frm.doc.operation
-		// 	if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
-		// 	if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor
-		// }
+		else {
+			query_filters["department_ir_status"] = "In-Transit"
+			query_filters["department"] = frm.doc.refining_department
+		}
 		erpnext.utils.map_current_doc({
 			method: "jewellery_erpnext.jewellery_erpnext.doctype.refining.refining.get_manufacturing_operations",
-			source_doctype: "Manufacturing Work Order",
+			source_doctype: "Manufacturing Operation",
 			target: frm,
 			setters: {
-				// manufacturing_work_order: undefined,
-				company: frm.doc.company || undefined,
-				department: frm.doc.department || undefined,
+				manufacturing_work_order: undefined,
 				manufacturing_order: undefined,
+				department: frm.doc.refining_department || undefined,
+				company: frm.doc.company || undefined,
 			},
 			get_query_filters: query_filters,
-			size: "extra-large",
+			size: "extra-large"
+		})
+	},
+	department(frm) {
+
+		if (frm.doc.employee) {
+			get_source_warehouse(frm, "employee", frm.doc.employee)
+		}
+		else if (frm.doc.operation) {
+			get_source_warehouse(frm, "custom_manufacturing_operation", frm.doc.operation)
+		}
+		else {
+			get_source_warehouse(frm, "department", frm.doc.department)
+		}
+
+	},
+	operation() {
+		if (frm.doc.employee) {
+			get_source_warehouse(frm, "employee", frm.doc.employee)
+		}
+		else {
+			get_source_warehouse(frm, "custom_manufacturing_operation", frm.doc.operation)
+		}
+	},
+	employee(frm) {
+		get_source_warehouse(frm, "employee", frm.doc.employee)
+
+	},
+});
+
+function set_series(frm){
+	if (frm.doc.refining_type === 'Parent Manufacturing Order'){
+		frm.set_value('naming_series','RFN-PMO-.YY.-.#####')
+		frm.refresh_field('naming_series')
+	}	
+	else if (frm.doc.refining_type === 'Serial Number'){
+		frm.set_value('naming_series','RFN-SRN-.YY.-.#####')
+		frm.refresh_field('naming_series')
+	}
+	else if (frm.doc.refining_type === 'Recovery Material'){
+		frm.set_value('naming_series','RFN-RCM-.YY.-.#####')
+		frm.refresh_field('naming_series')
+	}
+	else if (frm.doc.refining_type === 'Re-Refining Material'){
+		frm.set_value('naming_series','RFN-RER-.YY.-.#####')
+		frm.refresh_field('naming_series')
+	}
+}
+
+function set_html(frm) {
+	frm.get_field("raw_material_table").$wrapper.html("")
+	if (!frm.doc.__islocal) {
+		//ToDo: add function for stock entry detail for normal manufacturing operations
+	}
+	else {
+		frm.get_field("raw_material_table").$wrapper.html("")
+	}
+	if (frm.doc.refining_type === 'Parent Manufacturing Order') {
+		frappe.call({
+			method: "get_linked_stock_entries",
+			doc: frm.doc,
+			args: {
+				"docname": frm.doc.name,
+			},
+			callback: function (r) {
+				frm.get_field("raw_material_table").$wrapper.html(r.message)
+			}
 		})
 	}
-});
+}
+
+
+function get_item_by_serial_no(frm) {
+	if (frm.doc.scan_barcode) {
+		if (!frm.doc.refining_department) {
+			frappe.throw("Please select refining department first")
+		}
+		var query_filters = {
+			"company": frm.doc.company,
+			"name": frm.doc.scan_barcode,
+			"warehouse": frm.doc.refining_warehouse,
+			"status": 'Active'
+		}
+
+		frappe.db.get_value('Serial No', query_filters, ['name', 'item_code'])
+			.then(r => {
+				let values = r.message;
+				console.log(values)
+				if (values.name) {
+					add_child_in_serial_number(frm, values)
+					frm.refresh_field('refining_serial_no_detail');
+				}
+				else {
+					frappe.throw('Invalid Serial No')
+				}
+				frm.set_value('scan_barcode', "")
+			})
+	}
+}
+
+async function add_child_in_serial_number(frm, values) {
+	try {
+		const r = await frappe.db.get_value('BOM', { "item": values.item_code }, ['name', 'metal_weight']);
+
+		let metal_weight = 1;
+		if (r.message.metal_weight) {
+			metal_weight = r.message.metal_weight;
+		}
+		frm.add_child('refining_serial_no_detail', {
+			"serial_number": values.name,
+			"item_code": values.item_code,
+			"metal_weight": flt(metal_weight)
+		});
+		frm.refresh_field('refining_serial_no_detail');
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+function filter_fields_based_on_company(frm, field_name) {
+	frm.set_query(field_name, function () {
+		return {
+			filters: { 'company': frm.doc.company, 'is_group': 0 }
+		}
+	})
+}
+
+function filter_items(frm, table_name, varient) {
+	let field = 'item'
+	if (varient == 'M') {
+		field = 'item_code'
+	}
+	frm.set_query(field, table_name, function (doc, cdt, cdn) {
+		let d = locals[cdt][cdn];
+		return {
+			filters: {
+				'variant_of': varient,
+			}
+		}
+	});
+}
+
+function get_source_warehouse(frm, type, name) {
+	let filters = {}
+	filters[type] = name
+	frappe.db.get_value("Warehouse", filters, "name")
+		.then(r => {
+			console.log(r.message.name) // Open
+			if (r.message.name){
+				frm.set_value("source_warehouse", r.message.name)
+			}
+			else{
+				frappe.throw(`No Warehouse Found for ${type}: ${name}`)
+			}
+		})
+}
+
+function transfer_dust_btn(frm) {
+	if (frm.doc.refining_type == "Recovery Material") {
+		if (!frm.doc.__islocal && !frm.doc.dust_received) {
+			frm.add_custom_button(__("Transfer Dust"), () => {
+
+				frm.call("create_dust_receive_entry")
+					.then(r => {
+						if (r.message) {
+							frm.set_value("dust_received", 1)
+							for (let field of ['refining_type', 'dustname', 'refining_department',
+							 'department', 'operation', 'employee']) {
+								frm.set_df_property(field, "read_only", 1);
+								frm.save()
+								// frappe.msgprint('Dust Received in Refining')
+							}
+						}
+					})
+
+			}).addClass("btn-primary")
+		}
+	}
+	else {
+		frm.remove_custom_button('Transfer Dust');
+	}
+
+}
+
+function filter_recovery_source(frm, field_name, table_name) {
+
+	frm.set_query(field_name, table_name, function (doc, cdt, cdn) {
+		let d = locals[cdt][cdn];
+		return {
+			filters: {
+				'company': frm.doc.company,
+			}
+		}
+	});
+}

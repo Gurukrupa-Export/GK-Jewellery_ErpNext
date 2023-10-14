@@ -16,14 +16,7 @@
   "tag_no",
   "serial_no_bom",
   "diamond_quality",
-  "section_break_ejdon",
-  "item_type",
-  "only_variant",
-  "column_break_arpiy",
-  "suffix_of_variant",
-  "column_break_n0ym5",
-  "template_an_variant",
-  "section_break_mefyp",
+  "section_break_8",
   "reference_designid",
   "reference_design_id_2",
   "reference_design_id_3",
@@ -102,7 +95,6 @@
   "customer_gold",
   "column_break_orxpd",
   "customer_diamond",
-  "cust_dia",
   "column_break_l45o3",
   "customer_stone",
   "section_break_iwhfe",
@@ -208,6 +200,10 @@
    "in_preview": 1,
    "label": "Image Preview 1",
    "options": "design_image_1"
+  },
+  {
+   "fieldname": "section_break_8",
+   "fieldtype": "Section Break"
   },
   {
    "depends_on": "eval:((doc.design_type==\"Fusion\")||(doc.design_type==\"Similar\"))",
@@ -928,68 +924,12 @@
   {
    "fieldname": "column_break_qtvgq",
    "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:((doc.customer_diamond == 'Yes') || (doc.customer_stone == 'Yes'))",
-   "fieldname": "cust_dia",
-   "fieldtype": "Link",
-   "label": "Customer All Goods",
-   "options": "Demo"
-  },
-  {
-   "fieldname": "section_break_mefyp",
-   "fieldtype": "Section Break"
-  },
-  {
-   "default": "0",
-   "depends_on": "eval:((doc.design_type==\"Mod\"))",
-   "fieldname": "only_variant",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Only Variant"
-  },
-  {
-   "fieldname": "column_break_arpiy",
-   "fieldtype": "Column Break",
-   "hidden": 1
-  },
-  {
-   "fieldname": "column_break_n0ym5",
-   "fieldtype": "Column Break",
-   "hidden": 1
-  },
-  {
-   "default": "0",
-   "depends_on": "eval:((doc.design_type==\"Mod\"))",
-   "fieldname": "suffix_of_variant",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Suffix Of varinat"
-  },
-  {
-   "default": "0",
-   "depends_on": "eval:((doc.design_type==\"Mod\"))",
-   "fieldname": "template_an_variant",
-   "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Template and Variant"
-  },
-  {
-   "fieldname": "section_break_ejdon",
-   "fieldtype": "Section Break"
-  },
-  {
-   "depends_on": "eval:((doc.design_type==\"Mod\"))",
-   "fieldname": "item_type",
-   "fieldtype": "Select",
-   "label": "Item Type",
-   "options": "\nOnly Variant\nSuffix Of Variant\nTemplate and Variant"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-29 12:54:59.078923",
+ "modified": "2023-07-31 10:39:55.486620",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order Form Detail",
