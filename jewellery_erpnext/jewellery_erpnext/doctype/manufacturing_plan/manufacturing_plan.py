@@ -59,7 +59,7 @@ class ManufacturingPlan(Document):
 		items = frappe.db.sql(f"""select soi.name as docname, soi.parent as sales_order, soi.item_code, itm.mould as mould_no,
 		 			(soi.qty - soi.manufacturing_order_qty) as pending_qty
 					from `tabSales Order Item` soi left join `tabItem` itm on soi.item_code = itm.name
-					where soi.parent in ('{"', '".join(sales_orders)}') and soi.qty > soi.manufacturing_order_qty""", as_dict=1)
+					where soi.parent in ('{"', '".join(sales_orders)}') and soi.qty > soi.manufacturing_order_qty order by soi.item_code""", as_dict=1)
 		self.manufacturing_plan_table = []
 		for item_row in items:
 			item_row['manufacturing_order_qty'] = item_row.get("pending_qty")

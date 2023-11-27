@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:AB-{####}",
+ "creation": "2023-10-23 17:43:55.785729",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "image",
+  "column_break_yil7x",
+  "image_preview",
+  "section_break_xbnue",
+  "product_codes",
+  "design_ref__vendor_ref_code",
+  "date",
+  "mfg_complexity_code",
+  "section_break_hkbqq",
+  "collection_name",
+  "approval_design_head",
+  "approval_category_manager",
+  "section_break_8lfzm",
+  "design_remarks",
+  "section_break_uhk4h",
+  "gold_karatage",
+  "gold_colour",
+  "gold_weight",
+  "section_break_ymkaf",
+  "designer",
+  "vendor",
+  "section_break_etcy8",
+  "diamond_caratage",
+  "rosecut_caratage",
+  "colorstone_quality",
+  "colorstone_caratage",
+  "synthetic",
+  "section_break_uxwxx",
+  "details_specifications",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "image"
+  },
+  {
+   "fieldname": "column_break_yil7x",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_xbnue",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "product_codes",
+   "fieldtype": "Data",
+   "label": "product_codes"
+  },
+  {
+   "fieldname": "design_ref__vendor_ref_code",
+   "fieldtype": "Data",
+   "label": "design_ref__vendor_ref_code"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "date"
+  },
+  {
+   "fieldname": "mfg_complexity_code",
+   "fieldtype": "Data",
+   "label": "mfg_complexity_code"
+  },
+  {
+   "fieldname": "section_break_hkbqq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "collection_name",
+   "fieldtype": "Data",
+   "label": "collection_name"
+  },
+  {
+   "fieldname": "approval_design_head",
+   "fieldtype": "Data",
+   "label": "approval_design_head"
+  },
+  {
+   "fieldname": "approval_category_manager",
+   "fieldtype": "Data",
+   "label": "approval_category_manager"
+  },
+  {
+   "fieldname": "section_break_8lfzm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "design_remarks",
+   "fieldtype": "Data",
+   "label": "design_remarks"
+  },
+  {
+   "fieldname": "section_break_uhk4h",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "gold_karatage",
+   "fieldtype": "Data",
+   "label": "gold_karatage"
+  },
+  {
+   "fieldname": "gold_colour",
+   "fieldtype": "Data",
+   "label": "gold_colour"
+  },
+  {
+   "fieldname": "gold_weight",
+   "fieldtype": "Data",
+   "label": "gold_weight"
+  },
+  {
+   "fieldname": "section_break_ymkaf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "designer",
+   "fieldtype": "Data",
+   "label": "designer"
+  },
+  {
+   "fieldname": "vendor",
+   "fieldtype": "Data",
+   "label": "vendor"
+  },
+  {
+   "fieldname": "section_break_etcy8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "diamond_caratage",
+   "fieldtype": "Data",
+   "label": "diamond_caratage"
+  },
+  {
+   "fieldname": "rosecut_caratage",
+   "fieldtype": "Data",
+   "label": "rosecut_caratage"
+  },
+  {
+   "fieldname": "colorstone_quality",
+   "fieldtype": "Data",
+   "label": "colorstone_quality"
+  },
+  {
+   "fieldname": "colorstone_caratage",
+   "fieldtype": "Data",
+   "label": "colorstone_caratage"
+  },
+  {
+   "fieldname": "synthetic",
+   "fieldtype": "Data",
+   "label": "synthetic"
+  },
+  {
+   "fieldname": "section_break_uxwxx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "details_specifications",
+   "fieldtype": "Data",
+   "label": "details_specifications"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Data",
+   "label": "remarks"
+  },
+  {
+   "fieldname": "image_preview",
+   "fieldtype": "Attach Image",
+   "label": "image_preview",
+   "options": "image"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-10-24 11:53:16.059495",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "AB Design Specification Sheet",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

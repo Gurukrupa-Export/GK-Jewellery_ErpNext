@@ -14,7 +14,9 @@
   {
    "fieldname": "designer",
    "fieldtype": "Link",
+   "in_filter": 1,
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Designer",
    "options": "Employee",
    "reqd": 1
@@ -36,7 +38,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-24 14:10:06.091241",
+ "modified": "2023-11-21 11:46:39.753997",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Designer Assignment - CAD",

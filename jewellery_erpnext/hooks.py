@@ -24,7 +24,9 @@ doctype_js = {
 	"Manufacturer"                 : "public/js/doctype_js/manufacturer.js",
     "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js",
     "Supplier"                     : "public/js/doctype_js/supplier.js",
-    "Material Request"			   : "public/js/doctype_js/material_request.js"
+    "Material Request"			   : "public/js/doctype_js/material_request.js",
+    "Timesheet"			     	   : "public/js/doctype_js/timesheet.js",
+    "Purchase Order"			   : "public/js/doctype_js/purchase_order.js",
 }
 
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
@@ -120,7 +122,7 @@ fixtures = [
 		"dt": "Stock Entry Type"
 	}
 ]
-
+include = ["jewellery_erpnext.jewellery_erpnext.doc_events.purchase_order.get_supplier_details"]
 # from erpnext.stock import get_item_details 
 # from jewellery_erpnext.erpnext_override import get_price_list_rate_for
 # get_item_details.get_price_list_rate_for = get_price_list_rate_for

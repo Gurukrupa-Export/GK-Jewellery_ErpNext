@@ -105,6 +105,25 @@ frappe.ui.form.on('Employee IR', {
 		var query_filters = {
 			"department": frm.doc.department
 		}
+		
+		if (frm.doc.main_slip){
+			var metal_purity = frm.doc.main_slip.match(/(\d+\.\d+)/);
+			query_filters["metal_purity"] = metal_purity[0]
+
+		
+			frappe.call({
+				method: 'jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_value',
+				args: {
+					'main_slip': frm.doc.main_slip,
+				},
+				callback: function(r) {
+					if (!r.exc) {
+						console.log(r.message)
+					}
+				}
+			});
+		}
+		
 		if (frm.doc.type == "Issue") {
 			query_filters["status"] = ["in", ["Not Started"]]
 			query_filters["operation"] = ["is", "not set"]
@@ -121,6 +140,7 @@ frappe.ui.form.on('Employee IR', {
 			if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
 			if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor
 		}
+		// console.log(query_filters)
 		erpnext.utils.map_current_doc({
 			method: "jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_manufacturing_operations",
 			source_doctype: "Manufacturing Operation",

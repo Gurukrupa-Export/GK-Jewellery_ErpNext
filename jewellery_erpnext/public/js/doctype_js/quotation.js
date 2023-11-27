@@ -35,17 +35,17 @@ frappe.ui.form.on('Quotation', {
                 }
             })
         }, __("Get Items From"))
-        frm.add_custom_button(__("Serial No and Design Code Order"), function(){
+        frm.add_custom_button(__("Repairing Order"), function(){
             erpnext.utils.map_current_doc({
-                method: "jewellery_erpnext.gurukrupa_exports.doctype.serial_no_and_design_code_order.serial_no_and_design_code_order.make_quotation",
-                source_doctype: "Serial No and Design Code Order",
+                method: "jewellery_erpnext.gurukrupa_exports.doctype.repairing_order.repairing_order.make_quotation",
+                source_doctype: "Repairing Order",
                 target: me.frm,
                 setters: [
                     {
-                        label: "Serial No and Design Code Order Form",
-                        fieldname: "serial_and_design_id_order_form",
+                        label: "Repairing Order Form",
+                        fieldname: "serial_and_design_code_order_form",
                         fieldtype: "Link",
-                        options: "Serial No and Design Code Order Form"
+                        options: "Repairing Order Form"
                     },
                     {
                         label: "Customer",

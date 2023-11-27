@@ -34,11 +34,12 @@
    "depends_on": "eval:doc.price_list=='MRP Price List'",
    "fieldname": "gold_mrp_preset",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gold MRP Preset",
    "options": "Gold MRP Preset"
   },
   {
-   "depends_on": "eval:(doc.price_list=='MRP Price List') || (doc.price_list == 'Export')",
+   "depends_on": "eval:(doc.price_list == 'Export')",
    "fieldname": "usd_per_ounce",
    "fieldtype": "Float",
    "label": "USD Per Gram"
@@ -68,7 +69,6 @@
    "options": "Company"
   },
   {
-   "depends_on": "eval:(doc.price_list !='MRP Price List') && (doc.price_list != 'Export')",
    "fieldname": "rate",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -89,6 +89,7 @@
    "depends_on": "eval:doc.price_list=='MRP Price List'",
    "fieldname": "gold_mrp_price_details",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Gold MRP Price Details",
    "options": "Gold MRP Price Details"
   },
@@ -105,7 +106,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-09-21 14:09:26.020547",
+ "modified": "2023-11-21 10:12:05.820177",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Gold Price List",

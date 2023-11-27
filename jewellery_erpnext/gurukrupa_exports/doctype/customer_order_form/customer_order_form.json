@@ -1,0 +1,341 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:ORD/T/{#####}",
+ "creation": "2023-10-27 09:24:02.490579",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "workflow_state",
+  "customer_code",
+  "column_break_riio8",
+  "titan_code",
+  "section_break_fkzec",
+  "design_code",
+  "bom",
+  "column_break_vdz8n",
+  "serial_no",
+  "serial_no_bom",
+  "section_break_oortm",
+  "item_category",
+  "productivity",
+  "column_break_tipf2",
+  "titan_category",
+  "item_subcategory",
+  "setting_type",
+  "section_break_iadlw",
+  "metal_type",
+  "metal_touch",
+  "column_break_1cdrv",
+  "metal_colour",
+  "metal_purity",
+  "section_break_1e4re",
+  "product_size",
+  "diamond_quality",
+  "stone",
+  "finding",
+  "column_break_5egwg",
+  "chain",
+  "rhodium",
+  "enamal",
+  "qty",
+  "cust_modi",
+  "gemstone_quality",
+  "gemstone_type",
+  "section_break_0qvw9",
+  "titan_order_form_details",
+  "tab_break_ee8gu",
+  "image",
+  "image_preview",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "titan_code",
+   "fieldtype": "Data",
+   "label": "Titan Code"
+  },
+  {
+   "fetch_from": "bom.metal_type_",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "label": "Metal Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "metal_touch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Metal Touch",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "bom.metal_purity",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_purity",
+   "fieldtype": "Link",
+   "label": "Metal Purity",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "design_code.item_category",
+   "fieldname": "item_category",
+   "fieldtype": "Link",
+   "label": "Item Category",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "design_code.item_subcategory",
+   "fieldname": "item_subcategory",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Subcategory",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "design_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Design Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "section_break_fkzec",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_vdz8n",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_oortm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_tipf2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_iadlw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_1cdrv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "bom.metal_colour",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_colour",
+   "fieldtype": "Link",
+   "label": "Metal Colour",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "cust_modi",
+   "fieldtype": "Select",
+   "label": "Cust_Modi",
+   "options": "No\nYes"
+  },
+  {
+   "fetch_from": "bom.product_size",
+   "fetch_if_empty": 1,
+   "fieldname": "product_size",
+   "fieldtype": "Data",
+   "label": "Product Size"
+  },
+  {
+   "fieldname": "diamond_quality",
+   "fieldtype": "Link",
+   "label": "Diamond Quality",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_quality",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Quality",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "stone",
+   "fieldtype": "Link",
+   "label": "Stone",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "finding",
+   "fieldtype": "Link",
+   "label": "Finding",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "design_code.setting_type",
+   "fetch_if_empty": 1,
+   "fieldname": "setting_type",
+   "fieldtype": "Link",
+   "label": "Setting Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "design_code.tag_no",
+   "fetch_if_empty": 1,
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "label": "Serial No",
+   "options": "Serial No"
+  },
+  {
+   "fetch_from": "design_code.master_bom",
+   "fetch_if_empty": 1,
+   "fieldname": "bom",
+   "fieldtype": "Link",
+   "label": "Design Code BOM",
+   "options": "BOM"
+  },
+  {
+   "fetch_if_empty": 1,
+   "fieldname": "serial_no_bom",
+   "fieldtype": "Link",
+   "label": "Serial No BOM",
+   "options": "BOM"
+  },
+  {
+   "fetch_from": "bom.rhodium",
+   "fieldname": "rhodium",
+   "fieldtype": "Select",
+   "label": "Rhodium",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fetch_from": "bom.enamal",
+   "fieldname": "enamal",
+   "fieldtype": "Link",
+   "label": "Enamal",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "section_break_0qvw9",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Titan Order Form Details"
+  },
+  {
+   "fieldname": "titan_order_form_details",
+   "fieldtype": "Table",
+   "label": "Titan Order Form Details",
+   "options": "Titan Order Form Details"
+  },
+  {
+   "fieldname": "column_break_riio8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "titan_category",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Titan Category",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "tab_break_ee8gu",
+   "fieldtype": "Tab Break",
+   "label": "Image"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "image_preview",
+   "fieldtype": "Image",
+   "label": "Image Preview",
+   "options": "image"
+  },
+  {
+   "fieldname": "workflow_state",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Workflow State",
+   "options": "Workflow State"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Customer Order Form",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_code",
+   "fieldtype": "Link",
+   "label": "Customer Code",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "productivity",
+   "fieldtype": "Select",
+   "label": "Productivity",
+   "options": "\nPlain\nStudded"
+  },
+  {
+   "fieldname": "chain",
+   "fieldtype": "Select",
+   "label": "Chain",
+   "options": "No\nYes"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Int",
+   "label": "No. of Pcs"
+  },
+  {
+   "fieldname": "section_break_1e4re",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_5egwg",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2023-11-27 09:44:58.499222",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "Customer Order Form",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

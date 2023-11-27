@@ -1,4 +1,5 @@
 {
+ "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
@@ -19,7 +20,8 @@
   "section_break_7",
   "subcategory",
   "section_break_9",
-  "finding_subcategory"
+  "finding_subcategory",
+  "finding_subcategory_2"
  ],
  "fields": [
   {
@@ -73,8 +75,7 @@
    "fieldname": "subcategory",
    "fieldtype": "Table",
    "label": "Subcategory",
-   "options": "Making Charge Price Item Subcategory",
-   "reqd": 1
+   "options": "Making Charge Price Item Subcategory"
   },
   {
    "fieldname": "section_break_9",
@@ -93,11 +94,17 @@
    "label": "Supplier",
    "options": "Supplier",
    "reqd": 1
+  },
+  {
+   "fieldname": "finding_subcategory_2",
+   "fieldtype": "Table",
+   "label": "Finding Subcategory 2",
+   "options": "Making Charge Price Finding Subcategory 2"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-14 14:45:55.864899",
+ "modified": "2023-11-24 12:33:08.724294",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Supplier Price List",

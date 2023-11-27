@@ -26,3 +26,13 @@ def on_cancel(doc, method=None):
     pass
     # update_existing("Manufacturing Plan Table", doc.rowname, "manufacturing_order_qty", f"manufacturing_order_qty - {doc.qty}")
     # update_existing("Sales Order Item", doc.sales_order_item, "manufacturing_order_qty", f"manufacturing_order_qty - {doc.qty}")
+
+
+@frappe.whitelist()
+def get_supplier_details(item_code,supplier):
+	if supplier=='None':
+		frappe.throw('Select Supplier First')
+	item_name = frappe.db.sql(f"""select attribute_value  from `tabItem Variant Attribute` tiva WHERE parent  = '{item_code}' and attribute ='Finding Sub-Category'""",as_dict=1)[0]['attribute_value']
+	supplier_price_list = frappe.db.sql(f"""select name from `tabSupplier Price List` tspl WHERE supplier='{supplier}' order BY creation desc""",as_dict=1)[0]['name']
+	wastage = frappe.db.sql(f"""select wastage from `tabMaking Charge Price Finding Subcategory` tmcpfs WHERE parent = '{supplier_price_list}' and subcategory = '{item_name}'""",as_dict=1)[0]['wastage']
+	return wastage
