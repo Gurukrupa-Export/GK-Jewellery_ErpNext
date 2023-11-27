@@ -16,7 +16,6 @@
   "is_stone_shape",
   "is_collection",
   "is_finding_size",
-  "is_design_attribute",
   "column_break_11",
   "is_metal_purity",
   "is_diamond_sieve_size_range",
@@ -55,8 +54,7 @@
   "finding_dimension",
   "finding_size_and_weights",
   "subcategory",
-  "section_break_15",
-  "customer_attributes_table_tab"
+  "section_break_15"
  ],
  "fields": [
   {
@@ -142,7 +140,7 @@
    "label": "Is Subcategory"
   },
   {
-   "depends_on": "eval:(doc.is_subcategory==1 || doc.is_sub_setting_type==1 || doc.is_design_attribute==1 )",
+   "depends_on": "eval:(doc.is_subcategory==1 || doc.is_sub_setting_type==1)",
    "fieldname": "parent_attribute_value",
    "fieldtype": "Link",
    "label": "Parent Attribute Value",
@@ -235,7 +233,6 @@
   {
    "fieldname": "item_attributes",
    "fieldtype": "Table",
-   "ignore_user_permissions": 1,
    "label": "Item Attributes",
    "options": "Attribute Value Item Attribute Detail"
   },
@@ -340,23 +337,11 @@
    "fieldtype": "Link",
    "label": "Metal Touch",
    "options": "Attribute Value"
-  },
-  {
-   "default": "0",
-   "fieldname": "is_design_attribute",
-   "fieldtype": "Check",
-   "label": "Is Design Attribute"
-  },
-  {
-   "fieldname": "customer_attributes_table_tab",
-   "fieldtype": "Table",
-   "label": "Customer Attributes Table",
-   "options": "Customer Attributes Table"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-03 12:34:39.834378",
+ "modified": "2023-03-22 12:07:36.488239",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Attribute Value",

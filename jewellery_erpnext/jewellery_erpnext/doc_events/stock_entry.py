@@ -345,13 +345,17 @@ def update_manufacturing_operation(doc, is_cancelled=False):
 
 @frappe.whitelist()
 def make_stock_in_entry(source_name, target_doc=None):
+	print("@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", source_name, target_doc)
 	def set_missing_values(source, target):
 		if target.stock_entry_type == "Customer Goods Received":
 			target.stock_entry_type = "Customer Goods Issue"
 			target.purpose = "Material Issue"
-		elif target.stoc_entry_type == "Customer Goods Issue":
+		elif target.stock_entry_type == "Customer Goods Issue":
 			target.stock_entry_type = "Customer Goods Received"
 			target.purpose = "Material Receipt"
+		elif source.stock_entry_type == "Customer Goods Transfer":
+			target.stock_entry_type = "Customer Goods Transfer"
+			target.purpose = "Material Transfer"
 		target.set_missing_values()
 
 	def update_item(source_doc, target_doc, source_parent):
@@ -412,3 +416,44 @@ def convert_metal_purity(from_item: dict, to_item: dict, s_warehouse, t_warehous
 	})
 	doc.save()
 	doc.submit()
+
+
+@frappe.whitelist()
+def make_mr_on_return(source_name, target_doc=None):
+	def set_missing_values(source, target):
+		if source.stock_entry_type == "Customer Goods Transfer":
+			target.material_request_type = "Material Transfer"
+		target.set_missing_values()
+
+	def update_item(source_doc, target_doc, source_parent):
+		target_doc.from_warehouse = source_doc.t_warehouse
+
+		ref_se = frappe.get_doc("Stock Entry", source_parent.outgoing_stock_entry)
+		for wh in ref_se.items:
+			if wh.item_code == source_doc.item_code:
+				target_wh = wh.s_warehouse
+
+		target_doc.warehouse = target_wh
+		target_doc.qty = source_doc.qty
+
+	doclist = get_mapped_doc(
+		"Stock Entry",
+		source_name,
+		{
+			"Stock Entry": {
+				"doctype": "Material Request",
+			},
+			"Stock Entry Detail": {
+				"doctype": "Material Request Item",
+				"field_map": {
+					"custom_serial_no": "serial_no",
+					"custom_batch_no": "batch_no",
+				},
+				"postprocess": update_item,
+			},
+		},
+		target_doc,
+		set_missing_values,
+	)
+
+	return doclist

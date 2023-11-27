@@ -57,10 +57,10 @@ class DepartmentIR(Document):
 		for row in self.department_ir_operation:
 			create_stock_entry(self, row)
 			in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": self.company},"in_transit")
-			# values["gross_wt"] = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation,
-			# 					   "s_warehouse": in_transit_wh, "docstatus":1}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
-			# res = get_material_wt(self, row.manufacturing_operation)
-			# values.update(res)
+			values["gross_wt"] = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation,
+								   "s_warehouse": in_transit_wh, "docstatus":1}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
+			res = get_material_wt(self, row.manufacturing_operation)
+			values.update(res)
 			frappe.db.set_value("Manufacturing Operation", row.manufacturing_operation, values)
 			frappe.db.set_value("Manufacturing Work Order", row.manufacturing_work_order, 'department', self.current_department)
 

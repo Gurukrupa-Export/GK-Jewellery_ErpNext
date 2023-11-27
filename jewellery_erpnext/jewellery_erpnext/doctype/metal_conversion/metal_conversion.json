@@ -1,0 +1,162 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-11-07 15:31:38.997166",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "department",
+  "customer_received_voucher",
+  "batch_no",
+  "metal_type",
+  "base_purity",
+  "base_metal_wt",
+  "total_weight",
+  "making_type",
+  "column_break_aw0qk",
+  "date",
+  "manager",
+  "mix_metal",
+  "to_purity",
+  "mix_weight",
+  "wastage_per",
+  "wastage_wt",
+  "total_received_wt",
+  "section_break_6lpva",
+  "item_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "customer_received_voucher",
+   "fieldtype": "Link",
+   "label": "Customer Received Voucher",
+   "options": "Stock Entry"
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Link",
+   "label": "Batch No",
+   "options": "Batch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "metal_type",
+   "fieldtype": "Select",
+   "label": "Metal Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "base_purity",
+   "fieldtype": "Select",
+   "label": "Base Purity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "base_metal_wt",
+   "fieldtype": "Float",
+   "label": "Base Metal Weight",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "label": "Total Weight",
+   "read_only": 1
+  },
+  {
+   "fieldname": "making_type",
+   "fieldtype": "Select",
+   "label": "Making Type",
+   "options": "\nMaking\nWastage Receive\nCustomer Wastage"
+  },
+  {
+   "fieldname": "column_break_aw0qk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "manager",
+   "fieldtype": "Link",
+   "label": "Manager",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "mix_metal",
+   "fieldtype": "Link",
+   "label": "Mix Metal",
+   "options": "Item"
+  },
+  {
+   "fieldname": "to_purity",
+   "fieldtype": "Select",
+   "label": "To Purity"
+  },
+  {
+   "fieldname": "mix_weight",
+   "fieldtype": "Data",
+   "label": "Mix Weight"
+  },
+  {
+   "fieldname": "wastage_per",
+   "fieldtype": "Data",
+   "label": "Wastage per"
+  },
+  {
+   "fieldname": "wastage_wt",
+   "fieldtype": "Data",
+   "label": "Wastage Wt"
+  },
+  {
+   "fieldname": "total_received_wt",
+   "fieldtype": "Data",
+   "label": "Total Received Wt"
+  },
+  {
+   "fieldname": "section_break_6lpva",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "item_details",
+   "fieldtype": "HTML",
+   "label": "Item Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-11-17 17:35:21.295694",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Metal Conversion",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

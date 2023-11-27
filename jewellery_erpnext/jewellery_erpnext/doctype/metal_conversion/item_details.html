@@ -1,0 +1,25 @@
+<table class="table table-bordered table-hover" width='100%' style="border: 1px solid #d1d8dd;border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th style="border: 1px solid #d1d8dd; font-size: 12px;">Item Code</th>
+            <th style="border: 1px solid #d1d8dd; font-size: 11px;">Metal Purity</th>
+            <th style="border: 1px solid #d1d8dd; font-size: 11px;">Metal Colour</th>
+            <th style="border: 1px solid #d1d8dd; font-size: 11px;">Metal Touch</th>
+            <th style="border: 1px solid #d1d8dd; font-size: 11px;">Qty</th>
+            <!-- <th style="border: 1px solid #d1d8dd; font-size: 11px;">Remaining Qty</th> -->
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in data %}
+        <tr>
+            
+            <td style="border: 1px solid #d1d8dd; font-size: 12px;padding:0.25rem">{{ item.item_code }}</td>
+            <td style="border: 1px solid #d1d8dd; font-size: 11px;padding:0.25rem">{{ item.metal_purity }}</td>
+            <td style="border: 1px solid #d1d8dd; font-size: 11px;padding:0.25rem">{{ item.metal_colour }}</td>
+            <td style="border: 1px solid #d1d8dd; font-size: 11px;padding:0.25rem">{{ item.metal_touch}}</td>
+            <td style="border: 1px solid #d1d8dd; font-size: 11px;padding:0.25rem">{{ item.qty}} </td>
+            <!-- <td style="border: 1px solid #d1d8dd; font-size: 11px;padding:0.25rem">{{ item.remaining_qty}} </td> -->
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>

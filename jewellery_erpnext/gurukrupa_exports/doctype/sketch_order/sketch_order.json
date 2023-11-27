@@ -60,8 +60,24 @@
   "gold_target",
   "diamond_target",
   "budget",
+  "section_break_7xz6a",
+  "navratna",
   "section_break_82",
   "gemstone_type1",
+  "column_break_43",
+  "gemstone_type2",
+  "column_break_45",
+  "gemstone_type3",
+  "column_break_47",
+  "gemstone_type4",
+  "column_break_49",
+  "gemstone_type5",
+  "column_break_51",
+  "gemstone_type6",
+  "column_break_53",
+  "gemstone_type7",
+  "column_break_55",
+  "gemstone_type8",
   "section_break_q9yyc",
   "design_image",
   "image",
@@ -94,13 +110,22 @@
   "final_sketch_approval_cmo",
   "design_attribute_tab",
   "design_attributes",
+  "creativity_tab",
+  "stepping",
+  "fusion",
+  "drops",
+  "coin",
+  "column_break_77",
+  "gold_wire",
+  "gold_ball",
+  "flows",
+  "nagas",
   "territories_tab",
   "india",
   "india_states",
   "column_break_zasix",
   "usa",
-  "usa_states",
-  "delivery_days"
+  "usa_states"
  ],
  "fields": [
   {
@@ -429,6 +454,83 @@
    "read_only": 1
   },
   {
+   "fieldname": "column_break_43",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gemstone_type2",
+   "fieldtype": "Link",
+   "label": "Gemstone Type2",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_45",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gemstone_type3",
+   "fieldtype": "Link",
+   "label": "Gemstone Type3",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_47",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gemstone_type4",
+   "fieldtype": "Link",
+   "label": "Gemstone Type4",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_49",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "gemstone_type5",
+   "fieldtype": "Link",
+   "label": "Gemstone Type5",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_51",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gemstone_type6",
+   "fieldtype": "Link",
+   "label": "Gemstone Type6",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_53",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gemstone_type7",
+   "fieldtype": "Link",
+   "label": "Gemstone Type7",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_55",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gemstone_type8",
+   "fieldtype": "Link",
+   "label": "Gemstone Type8",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
    "fieldname": "section_break_53",
    "fieldtype": "Section Break"
   },
@@ -501,6 +603,66 @@
    "fieldname": "remark",
    "fieldtype": "Text",
    "label": "Remarks",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "stepping",
+   "fieldtype": "Check",
+   "label": "Stepping",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "fusion",
+   "fieldtype": "Check",
+   "label": "Fusion",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "drops",
+   "fieldtype": "Check",
+   "label": "Drops",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "coin",
+   "fieldtype": "Check",
+   "label": "Coin",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_77",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_wire",
+   "fieldtype": "Check",
+   "label": "Gold Wire (dat)",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_ball",
+   "fieldtype": "Check",
+   "label": "Gold Ball",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "flows",
+   "fieldtype": "Check",
+   "label": "Flows",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "nagas",
+   "fieldtype": "Check",
+   "label": "Nagas",
    "read_only": 1
   },
   {
@@ -587,6 +749,17 @@
    "fieldtype": "Column Break"
   },
   {
+   "fieldname": "section_break_7xz6a",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "navratna",
+   "fieldtype": "Check",
+   "label": "Navratna",
+   "read_only": 1
+  },
+  {
    "fieldname": "est_delivery_date",
    "fieldtype": "Date",
    "label": "Est. Delivery Date",
@@ -642,6 +815,11 @@
    "read_only": 1
   },
   {
+   "fieldname": "creativity_tab",
+   "fieldtype": "Tab Break",
+   "label": "Creativity"
+  },
+  {
    "default": "0",
    "fieldname": "india",
    "fieldtype": "Check",
@@ -677,7 +855,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-11-25 12:27:28.236536",
+ "modified": "2023-07-29 17:12:32.122311",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order",

@@ -23,6 +23,16 @@ class QC(Document):
 				status = "QC Pending"
 			else:
 				status = "QC Completed"
+		elif self.status == "Rejected":
+			existing_doc = frappe.get_doc("QC", self.name)
+			qc_doc = frappe.copy_doc(existing_doc)
+			qc_doc.previous_qc = self.name
+			qc_doc.save()
+			frappe.db.set_value("QC",qc_doc.name,'status','Pending')
+			self.duplicate_qc = qc_doc.name
+			self.save()
+
+
 		frappe.db.set_value("Manufacturing Operation",self.manufacturing_operation, {"status": status})
 
 	def validate(self):
@@ -85,6 +95,7 @@ class QC(Document):
 			result = self.min_max_criteria_passed(reading)
 
 		reading.status = "Accepted" if result else "Rejected"
+		
 
 	def min_max_criteria_passed(self, reading):
 		"""Determine whether all readings fall in the acceptable range."""

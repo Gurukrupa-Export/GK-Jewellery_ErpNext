@@ -7,7 +7,6 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "customer_code",
   "design_by",
   "design_id",
   "bom",
@@ -17,9 +16,6 @@
   "tag_no",
   "serial_no_bom",
   "diamond_quality",
-  "titan_code",
-  "section_break_hdjhs",
-  "item_type",
   "section_break_8",
   "reference_designid",
   "reference_design_id_2",
@@ -52,7 +48,7 @@
   "height",
   "breadth",
   "section_break_45",
-  "changeable_type",
+  "stone_changeable",
   "column_break_26",
   "screw_type",
   "hook_type",
@@ -73,6 +69,7 @@
   "vanki_type",
   "total_length",
   "rhodium",
+  "gemstone_quality",
   "column_break_29",
   "chain",
   "chain_type",
@@ -84,6 +81,7 @@
   "total_mugappu",
   "kadi_to_mugappu",
   "space_between_mugappu",
+  "detachable",
   "2_in_1",
   "enamal",
   "column_break_21",
@@ -99,10 +97,24 @@
   "customer_diamond",
   "column_break_l45o3",
   "customer_stone",
-  "section_break_ydvby",
+  "section_break_iwhfe",
+  "navratna",
+  "section_break_gfna4",
   "gemstone_type1",
-  "column_break_fyooh",
-  "gemstone_quality",
+  "column_break_2a0ll",
+  "gemstone_type2",
+  "column_break_7yrv9",
+  "gemstone_type3",
+  "column_break_rxppo",
+  "gemstone_type4",
+  "column_break_pq1ea",
+  "gemstone_type5",
+  "column_break_ebkb9",
+  "gemstone_type6",
+  "column_break_jlhmy",
+  "gemstone_type7",
+  "column_break_o1r63",
+  "gemstone_type8",
   "column_break_13",
   "design_image_1",
   "image_preview_1",
@@ -368,6 +380,7 @@
    "fetch_if_empty": 1,
    "fieldname": "gold_target",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Gold Target"
   },
   {
@@ -375,6 +388,7 @@
    "fetch_if_empty": 1,
    "fieldname": "diamond_target",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Diamond Target"
   },
   {
@@ -386,6 +400,7 @@
    "fetch_if_empty": 1,
    "fieldname": "product_size",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Product Size"
   },
   {
@@ -432,6 +447,14 @@
   {
    "fieldname": "section_break_45",
    "fieldtype": "Section Break"
+  },
+  {
+   "fetch_if_empty": 1,
+   "fieldname": "stone_changeable",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Stone Changeable",
+   "options": "Attribute Value"
   },
   {
    "fieldname": "column_break_26",
@@ -571,12 +594,14 @@
   {
    "fieldname": "rhodium",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Rhodium",
    "options": "\nYes\nNo"
   },
   {
    "fieldname": "gemstone_quality",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Quality",
    "options": "Attribute Value"
   },
@@ -660,6 +685,15 @@
    "label": "Space between Mugappu"
   },
   {
+   "fetch_from": "bom.detachable",
+   "fetch_if_empty": 1,
+   "fieldname": "detachable",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Detachable",
+   "options": "Attribute Value"
+  },
+  {
    "fetch_from": "bom.2_in_1",
    "fetch_if_empty": 1,
    "fieldname": "2_in_1",
@@ -687,6 +721,7 @@
    "fetch_if_empty": 1,
    "fieldname": "customer_sample",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Customer Sample",
    "options": "Attribute Value"
   },
@@ -698,20 +733,23 @@
   {
    "fieldname": "customer_gold",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Customer Gold",
-   "options": "\nNo\nYes"
+   "options": "No\nYes"
   },
   {
    "fieldname": "customer_diamond",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Customer Diamond ",
-   "options": "\nNo\nYes"
+   "options": "No\nYes"
   },
   {
    "fieldname": "customer_stone",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Customer Stone",
-   "options": "\nNo\nYes"
+   "options": "No\nYes"
   },
   {
    "fieldname": "column_break_21",
@@ -742,14 +780,63 @@
   {
    "fieldname": "remarks",
    "fieldtype": "Text",
-   "hidden": 1,
    "in_list_view": 1,
    "label": "Order Remarks"
   },
   {
    "fieldname": "gemstone_type1",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type1",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type2",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type2",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type3",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type3",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type4",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type4",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type5",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type5",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type6",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type6",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type7",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type7",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "gemstone_type8",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Gemstone Type8",
    "options": "Attribute Value"
   },
   {
@@ -792,53 +879,57 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "column_break_qtvgq",
+   "fieldname": "section_break_iwhfe",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "navratna",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Navratna"
+  },
+  {
+   "fieldname": "section_break_gfna4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_2a0ll",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval: doc.design_type == 'Mod'",
-   "fieldname": "item_type",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "Item Type",
-   "options": "\nSuffix Of Variant\nOnly Variant"
+   "fieldname": "column_break_7yrv9",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_hdjhs",
+   "fieldname": "column_break_rxppo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_pq1ea",
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.customer_code == 'CU0010'",
-   "fieldname": "titan_code",
-   "fieldtype": "Data",
-   "label": "Titan Code"
+   "fieldname": "column_break_ebkb9",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "customer_code",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Customer Code",
-   "options": "Customer"
+   "fieldname": "column_break_jlhmy",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_ydvby",
-   "fieldtype": "Section Break"
+   "fieldname": "column_break_o1r63",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "changeable_type",
-   "fieldtype": "Link",
-   "label": "Changeable Type",
-   "options": "Attribute Value"
-  },
-  {
-   "fieldname": "column_break_fyooh",
+   "fieldname": "column_break_qtvgq",
    "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-11-25 09:20:31.634508",
+ "modified": "2023-07-31 10:39:55.486620",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order Form Detail",

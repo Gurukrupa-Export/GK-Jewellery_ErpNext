@@ -60,15 +60,60 @@ frappe.ui.form.on('Employee IR', {
 		frm.clear_table("department_ir_operation")
 		frm.refresh_field("department_ir_operation")
 	},
-	scan_mop(frm) {
-		if (frm.doc.scan_mop) {
+	// scan_mop(frm) {
+	// 	if (frm.doc.scan_mop) {
+	// 		var query_filters = {
+	// 			"department": frm.doc.department,
+	// 			"name": frm.doc.scan_mop
+	// 		}
+	// 		if (frm.doc.type == "Issue") {
+	// 			query_filters["status"] = ["in", ["Not Started"]]
+	// 			query_filters["operation"] = ["is", "not set"]
+	// 			query_filters["department_ir_status"] = ["=", "Received"]
+
+	// 			if (frm.doc.subcontracting == "Yes") {
+	// 				query_filters["employee"] = ["is","not set"]
+	// 			}
+	// 			else {
+	// 				query_filters["subcontractor"] = ["is","not set"]
+	// 			}
+	// 		}
+	// 		else {
+	// 			query_filters["status"] = ["in", ["On Hold", "WIP", "QC Completed"]]
+	// 			query_filters["operation"] = frm.doc.operation
+	// 			if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
+	// 			if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor
+	// 		}
+
+	// 		frappe.db.get_value('Manufacturing Operation', query_filters, ['name', 'manufacturing_work_order', 'status'])
+	// 			.then(r => {
+	// 				let values = r.message;
+	// 				if (values.manufacturing_work_order) {
+	// 					let row = frm.add_child('employee_ir_operations', {
+	// 						"manufacturing_work_order": values.manufacturing_work_order,
+	// 						"manufacturing_operation": values.name,
+	// 						// "status":values.status
+	// 					});
+	// 					frm.refresh_field('employee_ir_operations');
+	// 				}
+	// 				else {
+	// 					frappe.throw('Invalid Manufacturing Operation')
+	// 				}
+	// 				frm.set_value('scan_mop', "")
+	// 			})
+	// 	}
+	// },
+	scan_mwo(frm) {
+		if (frm.doc.scan_mwo) {
 			var query_filters = {
 				"department": frm.doc.department,
-				"name": frm.doc.scan_mop
+				"manufacturing_work_order": frm.doc.scan_mwo
 			}
 			if (frm.doc.type == "Issue") {
 				query_filters["status"] = ["in", ["Not Started"]]
 				query_filters["operation"] = ["is", "not set"]
+				// query_filters["department_ir_status"] = ["=", "Received"]
+
 				if (frm.doc.subcontracting == "Yes") {
 					query_filters["employee"] = ["is","not set"]
 				}
@@ -82,10 +127,11 @@ frappe.ui.form.on('Employee IR', {
 				if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
 				if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor
 			}
-
+		
 			frappe.db.get_value('Manufacturing Operation', query_filters, ['name', 'manufacturing_work_order', 'status'])
 				.then(r => {
 					let values = r.message;
+					
 					if (values.manufacturing_work_order) {
 						let row = frm.add_child('employee_ir_operations', {
 							"manufacturing_work_order": values.manufacturing_work_order,
@@ -95,9 +141,9 @@ frappe.ui.form.on('Employee IR', {
 						frm.refresh_field('employee_ir_operations');
 					}
 					else {
-						frappe.throw('Invalid Manufacturing Operation')
+						frappe.throw('No Manufacturing Operation Found')
 					}
-					frm.set_value('scan_mop', "")
+					frm.set_value('scan_mwo', "")
 				})
 		}
 	},
@@ -105,28 +151,10 @@ frappe.ui.form.on('Employee IR', {
 		var query_filters = {
 			"department": frm.doc.department
 		}
-		
-		if (frm.doc.main_slip){
-			var metal_purity = frm.doc.main_slip.match(/(\d+\.\d+)/);
-			query_filters["metal_purity"] = metal_purity[0]
-
-		
-			frappe.call({
-				method: 'jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_value',
-				args: {
-					'main_slip': frm.doc.main_slip,
-				},
-				callback: function(r) {
-					if (!r.exc) {
-						console.log(r.message)
-					}
-				}
-			});
-		}
-		
 		if (frm.doc.type == "Issue") {
 			query_filters["status"] = ["in", ["Not Started"]]
 			query_filters["operation"] = ["is", "not set"]
+			// query_filters["department_ir_status"] = ["=", "Received"]
 			if (frm.doc.subcontracting == "Yes") {
 				query_filters["employee"] = ["is", "not set"]
 			}
@@ -140,7 +168,6 @@ frappe.ui.form.on('Employee IR', {
 			if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
 			if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor
 		}
-		// console.log(query_filters)
 		erpnext.utils.map_current_doc({
 			method: "jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_manufacturing_operations",
 			source_doctype: "Manufacturing Operation",

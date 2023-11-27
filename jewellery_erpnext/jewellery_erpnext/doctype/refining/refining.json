@@ -21,13 +21,13 @@
   "column_break_06oji",
   "parent_manufacturing_order",
   "get_parent_production_order",
+  "scan_barcode",
   "manufacturing_work_order",
+  "refining_serial_no_detail",
+  "is_subconracting",
   "section_break_qzsfj",
   "multiple_operation",
   "multiple_department",
-  "scan_barcode",
-  "refining_serial_no_detail",
-  "is_subconracting",
   "subcontracting_order",
   "subcontracting_purchase_order",
   "department",
@@ -54,10 +54,14 @@
   "refined_gold",
   "refining_operation_detail",
   "refining_department_detail",
+  "section_break_yyriq",
   "gross_pure_weight",
   "refined_fine_weight",
   "refining_loss",
-  "amended_from"
+  "column_break_j9j42",
+  "gross_dust_weight",
+  "amended_from",
+  "stock_entry"
  ],
  "fields": [
   {
@@ -181,8 +185,8 @@
    "depends_on": "eval:  ['Recovery Material'].includes(doc.refining_type)",
    "fieldname": "dustname",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Dust Type",
-   "mandatory_depends_on": "eval:  ['Recovery Material','Re-Refining Material'].includes(doc.refining_type)",
    "options": "Dust Type"
   },
   {
@@ -207,13 +211,14 @@
    "depends_on": "eval:  ['Recovery Material','Re-Refining Material'].includes(doc.refining_type)",
    "fieldname": "dust_weight",
    "fieldtype": "Float",
-   "label": "Dust Weight",
-   "mandatory_depends_on": "eval:  ['Recovery Material','Re-Refining Material'].includes(doc.refining_type)"
+   "hidden": 1,
+   "label": "Dust Weight"
   },
   {
    "depends_on": "eval:doc.refining_type == 'Recovery Material'",
    "fieldname": "after_burn_weight",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "After Burn Weight"
   },
   {
@@ -221,6 +226,7 @@
    "depends_on": "eval:(doc.refining_type == 'Recovery Material' || doc.refining_type == 'Serial Number') && doc.is_subconracting == 0",
    "fieldname": "powder_weight",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Powder Weight"
   },
   {
@@ -228,6 +234,7 @@
    "depends_on": "eval:  ['Recovery Material','Re-Refining Material','Serial Number'].includes(doc.refining_type) && doc.is_subconracting == 0",
    "fieldname": "refining_gold_weight",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Refining Gold Weight"
   },
   {
@@ -235,6 +242,7 @@
    "depends_on": "eval:  ['Recovery Material','Re-Refining Material','Serial Number'].includes(doc.refining_type) && doc.is_subconracting == 0",
    "fieldname": "fine_weight",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Fine Weight"
   },
   {
@@ -242,11 +250,11 @@
    "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.refining_type == 'Parent Manufacturing Order' || doc.refining_type == 'Serial Number'",
    "fieldname": "refined_gold",
    "fieldtype": "Table",
    "label": "Recovered Metal",
-   "options": "Refined Gold"
+   "options": "Refined Gold",
+   "reqd": 1
   },
   {
    "depends_on": "eval:doc.refining_type == 'Recovery Material' && doc.multiple_operation == 1",
@@ -337,10 +345,9 @@
    "fetch_if_empty": 1,
    "fieldname": "item_code",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Item Code",
-   "mandatory_depends_on": "eval:  ['Re-Refining Material'].includes(doc.refining_type)",
-   "options": "Item",
-   "read_only_depends_on": "eval:  ['Recovery Material'].includes(doc.refining_type)"
+   "options": "Item"
   },
   {
    "depends_on": "eval:  ['Recovery Material','Re-Refining Material'].includes(doc.refining_type)",
@@ -357,8 +364,7 @@
    "fieldname": "dust_received",
    "fieldtype": "Check",
    "label": "Dust Received",
-   "no_copy": 1,
-   "read_only": 1
+   "no_copy": 1
   },
   {
    "fieldname": "section_break_fkogf",
@@ -373,6 +379,7 @@
    "depends_on": "eval:  ['Recovery Material','Re-Refining Material','Serial Number'].includes(doc.refining_type) && doc.is_subconracting == 0",
    "fieldname": "metal_purity",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Metal Purity",
    "options": "Attribute Value"
   },
@@ -401,12 +408,40 @@
    "label": "Series",
    "options": "RFN-PMO-.YY.-.#####\nRFN-SRN-.YY.-.#####\nRFN-RCM-.YY.-.#####\nRFN-RER-.YY.-.#####",
    "read_only": 1
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "no_copy": 1,
+   "options": "Stock Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gross_dust_weight",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Gross Dust Weight",
+   "precision": "3"
+  },
+  {
+   "fieldname": "section_break_yyriq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_j9j42",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2023-10-04 14:31:08.873229",
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "custom_refining"
+  }
+ ],
+ "modified": "2023-11-09 17:23:17.065360",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Refining",

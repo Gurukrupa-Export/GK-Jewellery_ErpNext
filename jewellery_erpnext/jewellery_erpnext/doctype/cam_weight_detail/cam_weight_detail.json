@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-11-20 11:07:45.813797",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cad_numbering_file",
+  "support_cam_file",
+  "mop_reference",
+  "mop_series"
+ ],
+ "fields": [
+  {
+   "fieldname": "cad_numbering_file",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "CAD numbering File"
+  },
+  {
+   "fieldname": "support_cam_file",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Support CAM File"
+  },
+  {
+   "fieldname": "mop_reference",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "MOP Reference",
+   "options": "Manufacturing Operation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mop_series",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "MOP Series",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-11-20 16:28:22.802054",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Cam Weight Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

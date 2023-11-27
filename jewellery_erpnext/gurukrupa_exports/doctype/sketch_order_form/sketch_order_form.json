@@ -33,6 +33,18 @@
   "concept_type",
   "design_attributes",
   "colour_stone",
+  "section_break13",
+  "creativity_type",
+  "stepping",
+  "fusion",
+  "drops",
+  "coin",
+  "column_break_19",
+  "gold_wire",
+  "gold_ball",
+  "flows",
+  "nagas",
+  "section_break_9",
   "territories_tab",
   "india",
   "india_states",
@@ -166,11 +178,88 @@
    "options": "Sketch Order Form Color Stone"
   },
   {
+   "depends_on": "eval:(doc.design_by == 'Concept by Designer')",
+   "fieldname": "section_break13",
+   "fieldtype": "Section Break",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "fieldname": "creativity_type",
+   "fieldtype": "Tab Break",
+   "label": "Creativity",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "stepping",
+   "fieldtype": "Check",
+   "label": "Stepping",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "fusion",
+   "fieldtype": "Check",
+   "label": "Fusion",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "drops",
+   "fieldtype": "Check",
+   "label": "Drops",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "coin",
+   "fieldtype": "Check",
+   "label": "Coin",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_wire",
+   "fieldtype": "Check",
+   "label": "Gold Wire (dat)",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_ball",
+   "fieldtype": "Check",
+   "label": "Gold Ball",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "flows",
+   "fieldtype": "Check",
+   "label": "Flows",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
+   "default": "0",
+   "fieldname": "nagas",
+   "fieldtype": "Check",
+   "label": "Nagas",
+   "mandatory_depends_on": "eval: doc.design_by=='Concept by Designer'"
+  },
+  {
    "depends_on": "eval:((doc.order_date != null) &&\n(doc.due_days != null) && \n(doc.delivery_date != null) && \n(doc.customer_code != null) && \n(doc.order_type != null) && \n(doc.salesman_name != null))",
    "fieldname": "order_details",
    "fieldtype": "Table",
    "label": "Order Details",
    "options": "Sketch Order Form Detail"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "amended_from",
@@ -230,7 +319,6 @@
   {
    "fieldname": "remarks",
    "fieldtype": "Text",
-   "hidden": 1,
    "label": "Remarks"
   },
   {
@@ -241,8 +329,7 @@
    "fieldname": "design_attributes",
    "fieldtype": "Table",
    "label": "Design Attributes",
-   "options": "Design Attributes",
-   "reqd": 1
+   "options": "Design Attributes"
   },
   {
    "fieldname": "due_days",
@@ -259,8 +346,7 @@
    "link_fieldname": "sketch_order_form"
   }
  ],
- "make_attachments_public": 1,
- "modified": "2023-11-10 09:31:13.164534",
+ "modified": "2023-07-29 12:54:04.104402",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form",

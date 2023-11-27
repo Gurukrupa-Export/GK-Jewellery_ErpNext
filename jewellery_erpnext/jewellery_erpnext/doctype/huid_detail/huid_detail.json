@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "huid",
+  "certification_no",
   "date"
  ],
  "fields": [
@@ -14,19 +15,25 @@
    "fieldname": "huid",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "HUID/Certification No"
+   "label": "HUID"
   },
   {
    "fieldname": "date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Date"
+  },
+  {
+   "fieldname": "certification_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Certification No"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-03 03:43:14.510412",
+ "modified": "2023-10-17 18:23:06.041890",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "HUID Detail",

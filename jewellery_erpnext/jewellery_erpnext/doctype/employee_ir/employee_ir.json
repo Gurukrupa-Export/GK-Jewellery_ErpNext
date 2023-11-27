@@ -40,6 +40,7 @@
   "get_operations",
   "column_break_aasjr",
   "scan_mop",
+  "scan_mwo",
   "section_break_shn6x",
   "employee_ir_operations",
   "amended_from"
@@ -252,7 +253,15 @@
    "depends_on": "eval: doc.docstatus != 1",
    "fieldname": "scan_mop",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Scan MOP",
+   "options": "Barcode"
+  },
+  {
+   "depends_on": "eval: doc.docstatus != 1",
+   "fieldname": "scan_mwo",
+   "fieldtype": "Data",
+   "label": "Scan MWO",
    "options": "Barcode"
   }
  ],
@@ -272,7 +281,7 @@
    "link_fieldname": "employee_ir"
   }
  ],
- "modified": "2023-09-13 12:16:16.779665",
+ "modified": "2023-11-03 19:56:54.039166",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Employee IR",

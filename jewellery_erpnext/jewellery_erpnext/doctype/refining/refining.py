@@ -11,9 +11,10 @@ from jewellery_erpnext.utils import get_item_from_attribute
 
 class Refining(Document):
 	def validate(self):
-		self.check_overlap()
+		# self.check_overlap()
 		self.set_fine_weight()
 		self.set_gross_pure_weight()
+
 
 		self.refining_loss = self.gross_pure_weight - self.refined_fine_weight
 		
@@ -21,8 +22,6 @@ class Refining(Document):
 			frappe.throw('Please Select Refining Department')
 
 		if self.refining_type == 'Recovery Material':
-			if not self.dustname:
-				frappe.throw('Please Select Dust type First')
 
 			if self.multiple_department and self.multiple_operation:
 				frappe.throw('Chose any one For Multiple Operations or For Multiple Department')
@@ -71,44 +70,50 @@ class Refining(Document):
 					f"Document is overlapping with <b><a href='/app/refining/{name[0][0]}'>{name[0][0]}</b>"
 				)
 
-	def set_fine_weight(self):
-		self.fine_weight = flt(self.refining_gold_weight) * flt(self.metal_purity) / 100
-
 	def set_gross_pure_weight(self):
 		gross_pure_weight = 0
-		for row in self.refined_gold:
-			gross_pure_weight += row.pure_weight
-
+		if self.refining_type == "Parent Manufacturing Order" and len(self.manufacturing_work_order) > 0:
+			for row in self.manufacturing_work_order:
+				if row.metal_weight:
+					gross_pure_weight += row.metal_weight
+		elif self.refining_type == "Serial Number" and len(self.refining_serial_no_detail) > 0:
+			for row in self.refining_serial_no_detail:
+				if row.pure_weight:
+					gross_pure_weight += row.pure_weight
 		self.gross_pure_weight = gross_pure_weight
+
+	def set_fine_weight(self):
+		total_pure_weight = 0
+		if len(self.refined_gold) > 0:
+			for row in self.refined_gold:
+				if row.pure_weight:
+					total_pure_weight += row.pure_weight
+		self.refined_fine_weight = total_pure_weight
 
 	@frappe.whitelist()
 	def create_dust_receive_entry(self):
-		if self.dust_weight <= 0:
-			frappe.throw("Dust Weight Cannot Be Zero")
-		se = frappe.get_doc({
-			"doctype": "Stock Entry",
-			"stock_entry_type": "Material Transfer to Department",
-			"custom_refining":self.name,
-			# "manufacturing_work_order": row.manufacturing_work_order,
-			"inventory_type": "Regular Stock",
-			"auto_created":1
-		})
-
 		if not self.multiple_operation and not self.multiple_department:
 			if self.department:
-				append_se_items(self,se,"single")
+				mr_se = dust_receipt_entry(self,"single")
+				test_create_transfer_entry(self,"refining_department_detail",mr_se)
+				# create_transfer_entry(self,"single")
 			elif self.employee:
-				append_se_items(self,se,"single")
+				mr_se = dust_receipt_entry(self,"single")
+				test_create_transfer_entry(self,"refining_department_detail",mr_se)
+				# create_transfer_entry(self,"single")
 			else:
 				frappe.throw("Please Select Department or Employee")
+
 		elif not self.multiple_operation and self.multiple_department:
-			append_se_items(self,se,"refining_department_detail")
+			if len(self.refining_department_detail) > 0:
+				mr_se = dust_receipt_entry(self,"refining_department_detail")
+				test_create_transfer_entry(self,"refining_department_detail",mr_se)
+			else:
+				frappe.throw(f'Table Refining Department Detail Is Empty')
 
 		elif self.multiple_operation and not self.multiple_department:
-			append_se_items(self,se,"refining_operation_detail")
-		
-		se.save()
-		# se.submit()
+			mr_se = dust_receipt_entry(self,"refining_operation_detail")
+			test_create_transfer_entry(self,"refining_operation_detail",mr_se)
 
 		return 1
 	
@@ -181,6 +186,8 @@ def create_refining_entry(self):
 		for row in self.manufacturing_work_order:
 			# get items from operations
 			data = get_stock_entries_against_mfg_operation(row.manufacturing_operation)
+			if not data:
+				frappe.throw(f"No stock entry against : {row.manufacturing_operation}")
 			if data:
 				all_items += data
 				
@@ -192,6 +199,7 @@ def create_refining_entry(self):
 					"uom": entry.uom,
 					"batch_no":entry.batch_no,
 					"serial_no" :entry.serial_no,
+					"inventory_type": "Regular Stock",
 					"manufacturing_operation": row.manufacturing_operation,
 					"department": self.department,
 					# "to_department": doc.department,
@@ -203,9 +211,11 @@ def create_refining_entry(self):
 			# get items from serial no
 			se.append("items",{
 				"item_code": row.item_code,
-				"qty": row.metal_weight,
+				"qty": 1,
+				"gross_weight":row.gross_weight,
 				# "uom": row.uom,
 				# "batch_no":row.batch_no,
+				"inventory_type": "Regular Stock",
 				"serial_no" :row.serial_number,
 				# "manufacturing_operation": row.manufacturing_operation,
 				"department": self.department,
@@ -215,70 +225,27 @@ def create_refining_entry(self):
 
 	if self.refining_type == 'Recovery Material':
 		frappe.throw("Dust Not Received in Refining Department") if not self.dust_received else 0
-		recovered_item = get_item_based_on_purity(self)
-
 		if not self.multiple_operation and not self.multiple_department:
-			enter_stock_row(self,se,recovered_item)
+			copy_enter_stock_row(self,se,self.stock_entry)
+			# enter_stock_row(self,se)
 		elif not self.multiple_operation and self.multiple_department:
-			enter_stock_row(self,se,recovered_item)
+			copy_enter_stock_row(self,se,self.stock_entry)
+			# enter_stock_row(self,se)
 		elif self.multiple_operation and not self.multiple_department:
-			enter_stock_row(self,se,recovered_item)
+			copy_enter_stock_row(self,se,self.stock_entry)
+			# enter_stock_row(self,se)
 
 	elif self.refining_type == 'Re-Refining Material':
-		recovered_item = get_item_based_on_purity(self)
-		enter_stock_row(self,se,recovered_item)
-		
+		enter_stock_row(self,se)
 
 	elif self.refining_type in ["Parent Manufacturing Order","Serial Number"]:
-		if not (len(self.recovered_diamond) > 0 and len(self.recovered_gemstone) > 0 and len(self.refined_gold) > 0):
+		if (len(self.recovered_diamond) < 1 and len(self.recovered_gemstone) < 1 and len(self.refined_gold) < 1):
 			frappe.throw(f"Please Select at Least 1 item in <strong> Recovered Diamond </strong> or <strong> Recovered Metal</strong> or <strong> Recovered Gemstone</strong>")
-		if len(self.recovered_diamond) > 0:
-
-			for diamond_row in self.recovered_diamond:
-				se.append("items",{
-					"item_code": diamond_row.item,
-					"qty": diamond_row.weight,
-					"pcs":diamond_row.pcs,
-					# "batch_no":entry.batch_no,
-					# "serial_no" :entry.serial_no,
-					"t_warehouse": target_wh,
-					# "department": doc.department,
-					# "to_department": doc.department,
-					# "manufacturing_operation": doc.name,
-					# "is_finished_item":1
-				})
+		append_recovered_items(self,se,target_wh)
 		
-		if len(self.recovered_gemstone) > 0:
-			for gen_row in self.recovered_gemstone:
-				se.append("items",{
-					"item_code": gen_row.item,
-					"qty": gen_row.weight,
-					"pcs":gen_row.pcs,
-					# "batch_no":entry.batch_no,
-					# "serial_no" :entry.serial_no,
-					"t_warehouse": target_wh,
-					# "department": doc.department,
-					# "to_department": doc.department,
-					# "manufacturing_operation": doc.name,
-					# "is_finished_item":1
-				})
-		if len(self.refined_gold) > 0:
-			for metal_row in self.refined_gold:
-				se.append("items",{
-					"item_code": metal_row.item_code,
-					"qty": metal_row.pure_weight,
-					# "pcs":metal_row.pcs,s
-					# "batch_no":entry.batch_no,
-					# "serial_no" :entry.serial_no,
-					"t_warehouse": target_wh,
-					# "department": doc.department,
-					# "to_department": doc.department,
-					# "manufacturing_operation": doc.name,
-					# "is_finished_item":1
-				})
-	
 	se.save()
-	# se.submit()
+	se.submit()
+	self.stock_entry = se.name
 	frappe.msgprint('Refining Entry Passed successfully')
 
 def check_allocation(self,allocation_table):
@@ -289,33 +256,117 @@ def check_allocation(self,allocation_table):
 	if allocation != 100:
 		frappe.throw("Ratio Should be 100%")
 
-def append_se_items(self,se,type):
-	try:
-		if type == 'single':
+def dust_receipt_entry(self,type):
+	se = frappe.get_doc({
+			"doctype": "Stock Entry",
+			"stock_entry_type": "Material Receipt",
+			"custom_refining":self.name,
+			# "manufacturing_work_order": row.manufacturing_work_order,
+			"inventory_type": "Regular Stock",
+			"auto_created":1
+		})
+	if type == 'single':
+		for row in self.refined_gold:
 			se.append("items",{
-					"item_code": self.item_code,
-					"qty": self.dust_weight,
-					"s_warehouse": self.source_warehouse,
-					"t_warehouse": self.refining_warehouse,
-					"to_department": self.refining_department,
+					"item_code": row.dust_item,
+					"qty": row.dust_weight,
+					# "s_warehouse": self.source_warehouse,
+					"inventory_type": "Regular Stock",
+					"t_warehouse": self.source_warehouse,
+					# "to_department": self.refining_department,
 				})
-		elif type == 'refining_department_detail':
-			for row in self.refining_department_detail:
-				source_warehouse = frappe.db.get_value('Warehouse',{"department":row.department},'name')
-				se.append("items",{
-					"item_code": self.item_code,
-					"qty": flt((self.dust_weight*row.ratio)/100),
-					"s_warehouse": source_warehouse,
-					"t_warehouse": self.refining_warehouse,
-					"to_department": self.refining_department,
-				})
-		elif type == 'refining_operation_detail':
-			for row in self.refining_operation_detail:
-				allocate_dust_employee_wise_operations(self,row,se)
-			
-	except Exception as e:
-		frappe.throw(f"Error while Receiving Dust from : {e}")
+	elif type == 'refining_department_detail':
+		for row in self.refining_department_detail:
+			allocate_dust_department_wise(self,row,se,'mr')
+	elif type == 'refining_operation_detail':
+		for row in self.refining_operation_detail:
+			allocate_dust_employee_wise_operations(self,row,se,'mr')
 
+	se.save()
+	se.submit()
+	return se
+
+
+def test_create_transfer_entry(self,type,mr_se = None):
+	mr_se = frappe.copy_doc(mr_se)
+	mr_se.stock_entry_type = "Material Transfer to Department"
+	mr_se.inventory_type = "Regular Stock"
+	mr_se.custom_refining = self.name
+
+	if type == 'single':
+		for item in mr_se.items:
+			item.inventory_type = "Regular Stock"
+			item.s_warehouse= item.t_warehouse
+			item.t_warehouse = self.refining_warehouse
+			item.to_department = self.refining_department
+	
+	elif type == 'refining_department_detail':
+		for item in mr_se.items:
+			item.inventory_type = "Regular Stock"
+			item.s_warehouse= item.t_warehouse
+			item.t_warehouse = self.refining_warehouse
+			item.to_department = self.refining_department
+
+	elif type == 'refining_operation_detail':
+		for item in mr_se.items:
+			item.inventory_type = "Regular Stock"
+			item.s_warehouse= item.t_warehouse
+			item.t_warehouse = self.refining_warehouse
+			item.to_department = self.refining_department
+
+	mr_se.save()
+	mr_se.submit()
+	self.stock_entry = mr_se.name
+	
+def allocate_dust_department_wise(self,row,se,se_type):
+	for dust_row in self.refined_gold:
+		source_warehouse = frappe.db.get_value('Warehouse',{"department":row.department},'name')
+		item_row = {
+			"item_code": dust_row.dust_item,
+			"qty": flt((dust_row.dust_weight*row.ratio)/100),
+			"inventory_type" : "Regular Stock",
+			"t_warehouse": self.refining_warehouse
+		}
+		if se_type == 'mt':
+			item_row['s_warehouse'] = source_warehouse,
+			item_row["to_department"] = self.refining_department,
+		else:
+			item_row['t_warehouse'] = source_warehouse
+
+		se.append("items",item_row)
+
+def allocate_dust_employee_wise_operations(self,row,se,se_type):
+	list_of_operation = frappe.db.get_list('Manufacturing Operation', filters=[
+		['start_time', '>=', self.date_from],
+		['finish_time', '<=',self.date_to],
+		['operation','=',row.operation],
+		['net_wt','!=',0]],
+		fields=['name','operation','employee','SUM(net_wt) as net_wt'],
+		group_by='employee'
+		)
+	if not list_of_operation:
+		frappe.throw(f'No operations found Between the Selected Period {self.date_from} and {self.date_to}')
+	for dust_row in self.refined_gold:
+		dust_weight = flt((dust_row.dust_weight*row.ratio)/100)
+		total_net_wt = sum([operation.get('net_wt') for operation in list_of_operation ])
+		for operation in list_of_operation:
+			source_warehouse = frappe.db.get_value('Warehouse',{"employee":operation.employee},'name')
+			if not source_warehouse:
+				frappe.throw(f'Employee Not assigned any WareHouse : {operation.employee}')
+
+			item_row = {
+				"item_code": dust_row.dust_item,
+				"qty": dust_weight*(operation.net_wt)/(total_net_wt),
+				"t_warehouse": self.refining_warehouse,
+				"inventory_type": "Regular Stock",
+			}
+			if se_type == 'mt':
+				item_row['s_warehouse'] = source_warehouse,
+				item_row["to_department"] = self.refining_department,
+			else:
+				item_row['t_warehouse'] = source_warehouse
+
+			se.append("items",item_row)
 
 def get_item_based_on_purity(self):
 	if not self.metal_purity:
@@ -327,45 +378,95 @@ def get_item_based_on_purity(self):
 
 	recovered_item = get_item_from_attribute('Gold', metal_touch, self.metal_purity, "Yellow")
 	
-	recovered_item = recovered_item if recovered_item else 'Refined Gold'
+	recovered_item = recovered_item if recovered_item else 'Refined Gold - Test'
 
 	frappe.db.set_value('Refining', self.name, 'recovered_item', recovered_item)
 	return recovered_item
 
-def allocate_dust_employee_wise_operations(self,row,se):
-	list_of_operation = frappe.db.get_list('Manufacturing Operation', filters=[
-		['start_time', '>=', self.date_from],
-		['finish_time', '<=',self.date_to],
-		['operation','=',row.operation]],
-		fields=['name','operation','employee','SUM(net_wt) as net_wt'],
-		group_by='employee'
-		)
+def copy_enter_stock_row(self,se,trf_se):
+	for row in self.refined_gold:
+		if row.item_code and row.dust_item:
+			transfer_entry = frappe.get_doc('Stock Entry',trf_se)
+			for item in transfer_entry.items:
+				item.t_warehouse = ""
+				item.inventory_type = "Regular Stock"
+				item.s_warehouse = self.refining_warehouse
 
-	dust_weight = flt((self.dust_weight*row.ratio)/100)
-	total_net_wt = sum([operation.get('net_wt') for operation in list_of_operation])
+				se.append("items",item)
 
-	for operation in list_of_operation:
-		source_warehouse = frappe.db.get_value('Warehouse',{"employee":operation.employee},'name')
-		
-		se.append("items",{
-			"item_code": self.item_code,
-			"qty": dust_weight*operation.net_wt/total_net_wt,
-			"s_warehouse": source_warehouse,
-			"t_warehouse": self.refining_warehouse,
-			"to_department": self.refining_department,
-		})
-		
-def enter_stock_row(self,se,recovered_item):
-	se.append("items",{
-		"item_code": self.item_code,
-		"qty": self.dust_weight,
-		"s_warehouse": self.refining_warehouse,
-		"to_department": self.refining_department,
-	})
-			
-	se.append("items",{
-		"item_code": recovered_item,
-		"qty": self.fine_weight,
-		"t_warehouse": self.refining_warehouse,
-		"to_department": self.refining_department,
-	})
+			se.append("items",{
+				"item_code": row.item_code,
+				"qty": row.refining_gold_weight,
+				"t_warehouse": self.refining_warehouse,
+				"inventory_type" :"Regular Stock",
+				"to_department": self.refining_department,
+			})
+		else:
+			frappe.throw(f'Please add item code in Recovered Metal Table')
+
+def enter_stock_row(self,se):
+	for row in self.refined_gold:
+		if row.item_code and row.dust_item:
+			se.append("items",{
+				"item_code": row.dust_item,
+				"qty": row.dust_weight,
+				"s_warehouse": self.refining_warehouse,
+				"to_department": self.refining_department,
+			})
+			se.append("items",{
+				"item_code": row.item_code,
+				"qty": row.refining_gold_weight,
+				"t_warehouse": self.refining_warehouse,
+				"to_department": self.refining_department,
+			})
+		else:
+			frappe.throw(f'Please add item code in Recovered Metal Table')
+
+def append_recovered_items(self,se,target_wh):
+	if len(self.recovered_diamond) > 0:
+
+		for diamond_row in self.recovered_diamond:
+			se.append("items",{
+				"item_code": diamond_row.item,
+				"qty": diamond_row.weight,
+				"pcs":diamond_row.pcs,
+				# "batch_no":entry.batch_no,
+				# "serial_no" :entry.serial_no,
+				"t_warehouse": target_wh,
+				"inventory_type": "Regular Stock",
+				# "department": doc.department,
+				# "to_department": doc.department,
+				# "manufacturing_operation": doc.name,
+				# "is_finished_item":1
+			})
+	
+	if len(self.recovered_gemstone) > 0:
+		for gen_row in self.recovered_gemstone:
+			se.append("items",{
+				"item_code": gen_row.item,
+				"qty": gen_row.weight,
+				"pcs":gen_row.pcs,
+				# "batch_no":entry.batch_no,
+				# "serial_no" :entry.serial_no,
+				"t_warehouse": target_wh,
+				"inventory_type": "Regular Stock",
+				# "department": doc.department,
+				# "to_department": doc.department,
+				# "manufacturing_operation": doc.name,
+				# "is_finished_item":1
+			})
+	if len(self.refined_gold) > 0:
+		for metal_row in self.refined_gold:
+			se.append("items",{
+				"item_code": metal_row.item_code,
+				"qty": metal_row.refining_gold_weight,
+				# "pcs":metal_row.pcs,s
+				# "batch_no":entry.batch_no,
+				# "serial_no" :entry.serial_no,
+				"t_warehouse": target_wh,
+				"inventory_type": "Regular Stock",
+				# "department": doc.department,
+				# "to_department": doc.department,
+				# "manufacturing_operation": doc.name,
+				# "is_finished_item":1
+			})

@@ -39,16 +39,23 @@ frappe.ui.form.on('Refining', {
 			frm.set_value("employee", null)
 			frm.set_value("operation", null)
 		}
+
+		check_metal_weight_pure_wheight(frm)
 	},
 	previous_refining(frm) {
 		frappe.db.get_doc('Refining', frm.doc.previous_refining)
 			.then(doc => {
-				console.log(doc)
-				if (doc.docstatus === 1 && dust_received === 1) {
+				if (doc.docstatus === 1 && doc.dust_received === 1) {
 					frm.set_value('refining_department', doc.refining_department)
 					frm.set_value('source_warehouse', doc.refining_warehouse)
-					frm.set_value('item_code', doc.recovered_item)
-					frm.set_value('dust_weight', doc.fine_weight)
+					for (let row of doc.refined_gold) {
+
+						let child1 = frm.add_child('refined_gold', {
+							"dust_item": row.item_code,
+							"dust_weight": row.pure_weight
+						})
+					}
+					frm.refresh_field('refined_gold');
 				}
 				else {
 					frappe.throw(`Previous Refining Is not Complete Yet : ${frm.doc.previous_refining}`)
@@ -163,21 +170,65 @@ frappe.ui.form.on('Refining', {
 	},
 });
 
-function set_series(frm){
-	if (frm.doc.refining_type === 'Parent Manufacturing Order'){
-		frm.set_value('naming_series','RFN-PMO-.YY.-.#####')
-		frm.refresh_field('naming_series')
-	}	
-	else if (frm.doc.refining_type === 'Serial Number'){
-		frm.set_value('naming_series','RFN-SRN-.YY.-.#####')
+frappe.ui.form.on('Refined Gold', {
+	refining_gold_weight(frm, cdt, cdn) {
+		let d = locals[cdt][cdn]
+		if (d.refining_gold_weight && d.metal_purity) {
+			d.pure_weight = 0
+			frm.refresh_field('refined_gold')
+			d.pure_weight = d.refining_gold_weight * (d.metal_purity / 100)
+			frm.refresh_field('refined_gold')
+		}
+		if (d.refining_gold_weight < d.pure_weight) {
+			frappe.throw("Refining Gold Weight cannot be greater than Pure Weight")
+		}
+
+	},
+	metal_purity(frm, cdt, cdn) {
+		let d = locals[cdt][cdn]
+		if (d.refining_gold_weight && d.metal_purity) {
+			d.pure_weight = 0
+			frm.refresh_field('refined_gold')
+			d.pure_weight = d.refining_gold_weight * (d.metal_purity / 100)
+			frm.refresh_field('refined_gold')
+		}
+		if (d.refining_gold_weight < d.pure_weight) {
+			frappe.throw("Refining Gold Weight cannot be greater than Pure Weight")
+		}
+	},
+	pure_weight(frm, cdt, cdn) {
+		let d = locals[cdt][cdn]
+		if (d.refining_gold_weight < d.pure_weight) {
+			frappe.throw("Refining Gold Weight cannot be greater than Pure Weight")
+		}
+	}
+})
+
+function check_metal_weight_pure_wheight(frm) {
+	if (frm.doc.refined_gold) {
+		for (let row of frm.doc.refined_gold) {
+			if (row.refining_gold_weight < row.pure_weight) {
+				frappe.throw("Refining Gold Weight cannot be greater than Pure Weight")
+			}
+		}
+	}
+}
+
+function set_series(frm) {
+	if (frm.doc.refining_type === 'Parent Manufacturing Order') {
+		frm.set_value('naming_series', 'RFN-PMO-.YY.-.#####')
 		frm.refresh_field('naming_series')
 	}
-	else if (frm.doc.refining_type === 'Recovery Material'){
-		frm.set_value('naming_series','RFN-RCM-.YY.-.#####')
+	else if (frm.doc.refining_type === 'Serial Number') {
+		frm.set_value('naming_series', 'RFN-SRN-.YY.-.#####')
 		frm.refresh_field('naming_series')
 	}
-	else if (frm.doc.refining_type === 'Re-Refining Material'){
-		frm.set_value('naming_series','RFN-RER-.YY.-.#####')
+	else if (frm.doc.refining_type === 'Recovery Material') {
+		frm.set_value('naming_series', 'RFN-RCM-.YY.-.#####')
+		frm.refresh_field('naming_series')
+	}
+	else if (frm.doc.refining_type === 'Re-Refining Material') {
+		frm.set_value('naming_series', 'RFN-RER-.YY.-.#####')
 		frm.refresh_field('naming_series')
 	}
 }
@@ -199,6 +250,7 @@ function set_html(frm) {
 			},
 			callback: function (r) {
 				frm.get_field("raw_material_table").$wrapper.html(r.message)
+				frm.doc.set_df_property('raw_material_table', "hidden", 0)
 			}
 		})
 	}
@@ -213,21 +265,24 @@ function get_item_by_serial_no(frm) {
 		var query_filters = {
 			"company": frm.doc.company,
 			"name": frm.doc.scan_barcode,
-			"warehouse": frm.doc.refining_warehouse,
+			// "warehouse": frm.doc.refining_warehouse,
 			"status": 'Active'
 		}
 
-		frappe.db.get_value('Serial No', query_filters, ['name', 'item_code'])
+		frappe.db.get_value('Serial No', query_filters, ['name', 'item_code', 'warehouse'])
 			.then(r => {
 				let values = r.message;
-				console.log(values)
-				if (values.name) {
-					add_child_in_serial_number(frm, values)
-					frm.refresh_field('refining_serial_no_detail');
-				}
-				else {
-					frappe.throw('Invalid Serial No')
-				}
+				// console.log(values)
+					if (values.name) {
+						if (values.warehouse != frm.doc.refining_warehouse) {
+							frappe.throw(`Serial No : <strong>${values.name}</strong> is not In Refining Warehouse`)
+						}
+						add_child_in_serial_number(frm, values)
+						frm.refresh_field('refining_serial_no_detail');
+					}
+					else {
+						frappe.throw('Invalid Serial No')
+					}
 				frm.set_value('scan_barcode', "")
 			})
 	}
@@ -235,16 +290,18 @@ function get_item_by_serial_no(frm) {
 
 async function add_child_in_serial_number(frm, values) {
 	try {
-		const r = await frappe.db.get_value('BOM', { "item": values.item_code }, ['name', 'metal_weight']);
+		const r = await frappe.db.get_value('BOM', { "item": values.item_code }, ['name', "metal_and_finding_weight", "gross_weight", "custom_net_pure_weight"]);
 
-		let metal_weight = 1;
-		if (r.message.metal_weight) {
-			metal_weight = r.message.metal_weight;
+		let pure_weight = 0.001;
+		if (r.message.custom_net_pure_weight) {
+			pure_weight = r.message.custom_net_pure_weight;
 		}
 		frm.add_child('refining_serial_no_detail', {
 			"serial_number": values.name,
 			"item_code": values.item_code,
-			"metal_weight": flt(metal_weight)
+			"pure_weight": flt(pure_weight),
+			"gross_weight": flt(r.message.gross_weight),
+			"net_weight": flt(r.message.metal_and_finding_weight)
 		});
 		frm.refresh_field('refining_serial_no_detail');
 	} catch (error) {
@@ -281,10 +338,10 @@ function get_source_warehouse(frm, type, name) {
 	frappe.db.get_value("Warehouse", filters, "name")
 		.then(r => {
 			console.log(r.message.name) // Open
-			if (r.message.name){
+			if (r.message.name) {
 				frm.set_value("source_warehouse", r.message.name)
 			}
-			else{
+			else {
 				frappe.throw(`No Warehouse Found for ${type}: ${name}`)
 			}
 		})
@@ -300,10 +357,10 @@ function transfer_dust_btn(frm) {
 						if (r.message) {
 							frm.set_value("dust_received", 1)
 							for (let field of ['refining_type', 'dustname', 'refining_department',
-							 'department', 'operation', 'employee']) {
+								'department', 'operation', 'employee']) {
 								frm.set_df_property(field, "read_only", 1);
 								frm.save()
-								// frappe.msgprint('Dust Received in Refining')
+								frappe.msgprint('Dust Received in Refining')
 							}
 						}
 					})

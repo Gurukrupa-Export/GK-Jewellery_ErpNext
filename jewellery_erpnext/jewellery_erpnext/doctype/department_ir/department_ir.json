@@ -17,10 +17,12 @@
   "amended_from",
   "section_break_hojel",
   "type",
+  "transfer_type",
   "section_break_h51le",
+  "receive_against",
+  "section_break_swvwl",
   "previous_department",
   "next_department",
-  "receive_against",
   "column_break_csby3",
   "current_department",
   "section_break_xypwf",
@@ -28,6 +30,7 @@
   "get_operations",
   "column_break_blnpo",
   "scan_mop",
+  "scan_mwo",
   "section_break_5huxg",
   "department_ir_operation"
  ],
@@ -154,8 +157,26 @@
    "depends_on": "eval: doc.docstatus != 1",
    "fieldname": "scan_mop",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Scan MOP",
    "options": "Barcode"
+  },
+  {
+   "depends_on": "eval: doc.docstatus != 1",
+   "fieldname": "scan_mwo",
+   "fieldtype": "Data",
+   "label": "Scan MWO",
+   "options": "Barcode"
+  },
+  {
+   "fieldname": "section_break_swvwl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "transfer_type",
+   "fieldtype": "Select",
+   "label": "Transfer Type",
+   "options": "To be added"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -166,7 +187,7 @@
    "link_fieldname": "department_ir"
   }
  ],
- "modified": "2023-09-13 11:44:24.066969",
+ "modified": "2023-11-10 14:00:20.676621",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Department IR",

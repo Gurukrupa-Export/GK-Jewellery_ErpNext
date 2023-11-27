@@ -36,6 +36,7 @@ def set_item_variant(self):
 	# Check if the bom_type is 'Template' or 'Quotation', if so, return
 	if self.bom_type in ['Template', 'Quotation']: return
 	bom_tables = ['metal_detail','diamond_detail','gemstone_detail','finding_detail']
+	# bom_tables = ['metal_detail','diamond_detail','gemstone_detail','finding_detail']
 	attributes = {}
 
 	for bom_table in bom_tables:
@@ -102,6 +103,16 @@ def _set_bom_items_by_child_tables(self):
 				'rate': 0
 			})
 
+	if len(self.other_detail) > 0:
+		for row in self.other_detail:
+			self.append('items',{
+				'item_code': row.item_code,
+				'is_variant': 1,
+				'qty': row.quantity,
+				'uom': frappe.db.get_value("Item",item_code,'stock_uom'),
+				'rate': 0
+			})
+
 
 def update_item_price(self):
 	if frappe.db.exists("Item Price",{"item_code":self.item,"price_list":self.buying_price_list,"bom_no":self.name}):
@@ -150,6 +161,7 @@ def calculate_total(self):
 		Also calculate the gold to diamond ratio, and the diamond ratio.
 	"""
 	self.total_metal_weight = sum(row.quantity for row in self.metal_detail)
+	self.metal_weight = self.total_metal_weight
 	self.diamond_weight = sum(row.quantity for row in self.diamond_detail)
 	self.total_diamond_weight_in_gms = sum(row.weight_in_gms for row in self.diamond_detail)
 	self.total_gemstone_weight = sum(row.quantity for row in self.gemstone_detail)
@@ -160,10 +172,16 @@ def calculate_total(self):
 	self.total_gemstone_pcs = sum(flt(row.pcs) for row in self.gemstone_detail)
 	self.total_other_weight = sum(row.quantity for row in self.other_detail)
 
-	self.metal_and_finding_weight = flt(self.total_metal_weight) + flt(self.finding_weight)
+	self.metal_and_finding_weight = flt(self.metal_weight) + flt(self.finding_weight)
 	self.gold_to_diamond_ratio = flt(self.metal_and_finding_weight) / flt(self.diamond_weight) if self.diamond_weight else 0
 	self.diamond_ratio = flt(self.diamond_weight) / flt(self.total_diamond_pcs) if self.total_diamond_pcs else 0
 	self.gross_weight = flt(self.metal_and_finding_weight) + flt(self.total_diamond_weight_in_gms) + flt(self.total_gemstone_weight_in_gms) + flt(self.total_other_weight)
+
+	#Jay Added 
+	self.custom_total_pure_weight = sum(row.quantity * (flt(row.metal_purity) / 100) for row in self.metal_detail)
+	self.custom_total_pure_finding_weight = sum(row.quantity*(flt(row.metal_purity)/100) for row in self.finding_detail)
+	self.custom_net_pure_weight = self.custom_total_pure_weight + self.custom_total_pure_finding_weight
+	#-----
 
 def set_sepecifications(self):
 	"""
@@ -196,7 +214,7 @@ def set_specifications_for_modified_bom(self, fields_list):
 		self.defualt_specifications = ''.join(f"{key} - {val} \n" for key, val in temp_bom_dict.items())
 		return 
 
-	new_fields = [{"item_category": self.item_category}, {"item_subcategory": self.item_subcategory}, {"product_size": self.product_size}, {"gold_target": self.gold_target}, {"diamond_target": self.diamond_target}, {"metal_colour": self.metal_colour}, {"enamal": self.enamal}, {"rhodium": self.rhodium}, {"gemstone_quality": self.gemstone_quality}, {"changeable": self.changeable}, {"hinges": self.hinges}, {"back_belt_patti": self.back_belt_patti}, {"black_beed": self.black_beed}, {"black_beed_line": self.black_beed_line}, {"screw_type": self.screw_type}, {"hook_type": self.hook_type}, {"lock_type": self.lock_type}, {"kadi_type": self.kadi_type}, {"chain": self.chain}, {"chain_type": self.chain_type}, {"chain_length": self.chain_length}, {"customer_chain": self.customer_chain}, {"chain_weight": self.chain_weight}, {"detachable": self.detachable}, {"total_length": self.total_length}, {"back_chain": self.back_chain}, {"back_chain_size": self.back_chain_size}, {"back_side_size": self.back_side_size}, {"chain_size": self.chain_size}, {"space_between_mugappu": self.space_between_mugappu}, {"breadth": self.breadth}, {"width": self.width}, {"back_belt_length": self.back_belt_length}]
+	new_fields = [{"item_category": self.item_category}, {"item_subcategory": self.item_subcategory}, {"product_size": self.product_size}, {"gold_target": self.gold_target}, {"diamond_target": self.diamond_target}, {"metal_colour": self.metal_colour}, {"enamal": self.enamal}, {"rhodium": self.rhodium}, {"gemstone_type": self.gemstone_type}, {"gemstone_quality": self.gemstone_quality}, {"changeable": self.changeable}, {"hinges": self.hinges}, {"back_belt_patti": self.back_belt_patti}, {"black_beed": self.black_beed}, {"black_beed_line": self.black_beed_line}, {"screw_type": self.screw_type}, {"hook_type": self.hook_type}, {"lock_type": self.lock_type}, {"kadi_type": self.kadi_type}, {"chain": self.chain}, {"chain_type": self.chain_type}, {"chain_length": self.chain_length}, {"customer_chain": self.customer_chain}, {"chain_weight": self.chain_weight}, {"detachable": self.detachable}, {"total_length": self.total_length}, {"back_chain": self.back_chain}, {"back_chain_size": self.back_chain_size}, {"back_side_size": self.back_side_size}, {"chain_size": self.chain_size}, {"kadi_to_mugappu": self.kadi_to_mugappu}, {"space_between_mugappu": self.space_between_mugappu}, {"breadth": self.breadth}, {"width": self.width}, {"back_belt_length": self.back_belt_length}]
 	new_dict = {}
 	for i in new_fields:
 		for key, val in i.items():

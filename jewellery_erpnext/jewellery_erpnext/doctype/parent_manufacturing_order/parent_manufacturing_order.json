@@ -36,6 +36,8 @@
   "column_break_tfrsq",
   "diamond_grade",
   "qty",
+  "gemstone_details_section",
+  "gemstone_table",
   "section_break_6kkih",
   "metal_type",
   "metal_touch",
@@ -127,7 +129,8 @@
   {
    "fieldname": "qty",
    "fieldtype": "Int",
-   "label": "Qty"
+   "label": "Qty",
+   "reqd": 1
   },
   {
    "fieldname": "manufacturing_plan",
@@ -224,7 +227,8 @@
    "fieldname": "diamond_quality",
    "fieldtype": "Link",
    "label": "Diamond Quality",
-   "options": "Attribute Value"
+   "options": "Attribute Value",
+   "reqd": 1
   },
   {
    "collapsible": 1,
@@ -471,6 +475,16 @@
    "fieldtype": "Data",
    "label": "HUID/Certification No",
    "read_only": 1
+  },
+  {
+   "fieldname": "gemstone_details_section",
+   "fieldtype": "Section Break",
+   "label": "Gemstone Details"
+  },
+  {
+   "fieldname": "gemstone_table",
+   "fieldtype": "Table",
+   "options": "BOM Gemstone Detail"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -489,7 +503,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-09-02 03:35:30.650961",
+ "modified": "2023-11-17 13:24:54.617130",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

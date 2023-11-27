@@ -24,9 +24,7 @@ doctype_js = {
 	"Manufacturer"                 : "public/js/doctype_js/manufacturer.js",
     "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js",
     "Supplier"                     : "public/js/doctype_js/supplier.js",
-    "Material Request"			   : "public/js/doctype_js/material_request.js",
-    "Timesheet"			     	   : "public/js/doctype_js/timesheet.js",
-    "Purchase Order"			   : "public/js/doctype_js/purchase_order.js",
+    "Material Request"			   : "public/js/doctype_js/material_request.js"
 }
 
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
@@ -71,6 +69,7 @@ doc_events = {
 	},
 	"Stock Entry": {
 		"validate": "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.validate",
+        "before_submit": "jewellery_erpnext.jewellery_erpnext.doc_events.serial_no.before_submit",
 		"on_submit": "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.onsubmit",
 		"on_cancel": "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.on_cancel"
 	},
@@ -99,7 +98,8 @@ doc_events = {
 }
 
 override_whitelisted_methods = {
-	"erpnext.manufacturing.doctype.job_card.job_card.make_stock_entry": "jewellery_erpnext.jewellery_erpnext.doc_events.job_card.make_stock_entry"
+	"erpnext.manufacturing.doctype.job_card.job_card.make_stock_entry": "jewellery_erpnext.jewellery_erpnext.doc_events.job_card.make_stock_entry",
+    "erpnext.stock.doctype.material_request.material_request.make_stock_entry": "jewellery_erpnext.jewellery_erpnext.doc_events.material_request.make_stock_entry"
 }
 
 fixtures = [
@@ -122,7 +122,7 @@ fixtures = [
 		"dt": "Stock Entry Type"
 	}
 ]
-include = ["jewellery_erpnext.jewellery_erpnext.doc_events.purchase_order.get_supplier_details"]
+
 # from erpnext.stock import get_item_details 
 # from jewellery_erpnext.erpnext_override import get_price_list_rate_for
 # get_item_details.get_price_list_rate_for = get_price_list_rate_for

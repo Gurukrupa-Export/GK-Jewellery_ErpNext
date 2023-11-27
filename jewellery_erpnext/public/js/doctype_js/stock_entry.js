@@ -1,10 +1,29 @@
 frappe.ui.form.on('Stock Entry', {
     refresh(frm) {
         frm.trigger("get_items_from_customer_goods")
+        if(frm.doc.docstatus == 1) {
+        frm.add_custom_button(__('Create Return'), function() {
+            frappe.model.open_mapped_doc({
+                method: "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.make_mr_on_return",
+                frm: frm
+            })
+        }, __("Create"))
+    }
+    if (frm.doc.docstatus === 1) {
+        if (frm.doc.add_to_transit && frm.doc.purpose=='Material Transfer' && frm.doc.per_transferred < 100) {
+            frm.add_custom_button(__('End Transit'), function() {
+                frappe.model.open_mapped_doc({
+                    method: "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.make_stock_in_entry",
+                    frm: frm
+                })
+            });
+        }
+    }
     },
     validate(frm) {
+        var idx = []
         $.each(frm.doc.items || [], function(i, row) {
-            row.inventory_type = frm.doc.inventory_type;
+            row.inventory_type = row.inventory_type ? row.inventory_type: frm.doc.inventory_type;
             row.customer = frm.doc._customer;
             row.branch = frm.doc.branch;
             row.department = frm.doc.department;
@@ -17,7 +36,13 @@ frappe.ui.form.on('Stock Entry', {
             row.to_subcontractor = frm.doc.to_subcontractor
             row.project = frm.doc.project;
             row.manufacturing_operation = frm.doc.manufacturing_operation
+            if (!in_list(["Customer Goods Issue", "Customer Goods Received", "Customer Goods Transfer"], frm.doc.stock_entry_type) && row.inventory_type == "Customer Goods" && !frm.doc.manufacturing_work_order) {
+                idx.push(row.idx)
+            }
         })
+        if (idx.length > 0) {
+            frappe.throw(`Rows #${idx}: Inventory Type is selected as Customer Goods, please select stock entry type of customer goods`)
+        }
         refresh_field("items");
     },
     get_items_from_customer_goods(frm) {
@@ -173,7 +198,7 @@ frappe.ui.form.on('Stock Entry', {
         })
     },
     stock_entry_type(frm) {
-        if (in_list(["Customer Goods Issue","Customer Goods Received"],frm.doc.stock_entry_type)){
+        if (in_list(["Customer Goods Issue","Customer Goods Received", "Customer Goods Transfer"],frm.doc.stock_entry_type)){
             frm.set_value('inventory_type', 'Customer Goods')
         }
         else {
@@ -183,10 +208,13 @@ frappe.ui.form.on('Stock Entry', {
     },
     inventory_type(frm) {
         $.each(frm.doc.items || [], function (i, d) {
-            d.inventory_type = frm.doc.inventory_type;
+            if (!d.inventory_type) {
+                d.inventory_type = frm.doc.inventory_type;
+            }
         });
     },
     _customer(frm) {
+        if (!frm.doc._customer) return
         $.each(frm.doc.items || [], function (i, d) {
             d.customer = frm.doc._customer;
         });

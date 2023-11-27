@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import now
 from frappe.model.mapper import get_mapped_doc
+from erpnext.controllers.item_variant import get_variant,create_variant
 from jewellery_erpnext.utils import update_existing
 
 class ParentManufacturingOrder(Document):
@@ -12,6 +13,9 @@ class ParentManufacturingOrder(Document):
 		if self.serial_no:
 			serial_bom = frappe.db.exists("BOM",{"tag_no":self.serial_no})
 			self.db_set("serial_id_bom", serial_bom)
+
+	def validate(self):
+		get_gemstone_details(self)
 
 	def on_submit(self):
 		create_manufacturing_work_order(self)
@@ -29,14 +33,34 @@ class ParentManufacturingOrder(Document):
 		bom = self.serial_id_bom or self.master_bom
 		if not bom:
 			frappe.throw("BOM is missing")
-		bom_doc = frappe.get_all("BOM Item",{"parent": bom}, ["item_code", "qty"])
+		bom_doc = frappe.get_all("BOM Item",{"parent": bom}, ["parent","item_code", "qty"])
 		items = {}
 		target_warehouse = frappe.db.get_value("Manufacturing Setting", {"company": self.company},"in_transit")
 		for row in bom_doc:
-			item_type = get_item_type(row.item_code)
-			if item_type not in items:
-				items[item_type] = []
-			items[item_type].append({'item_code': row.item_code, 'qty': row.qty, 'warehouse': target_warehouse})
+			item_type = get_item_type(row.item_code)			
+			
+			if item_type == "diamond_item":
+				continue
+				diamond_item_code = get_diamond_item_code_by_variant(self,bom,row,target_warehouse,item_type)
+				items[item_type].append({'item_code': diamond_item_code, 'qty': row.qty, 'warehouse': target_warehouse})
+				
+			elif item_type == "gemstone_item":
+				continue
+				items[item_type].append({'item_code': gemstone_item_code, 'qty': row.qty, 'warehouse': target_warehouse})
+			else:
+				if item_type not in items:
+					items[item_type] = []
+					items[item_type].append({'item_code': row.item_code, 'qty': row.qty, 'warehouse': target_warehouse})
+
+		diamond_list = get_diamond_item_code_by_variant(self,bom,target_warehouse) 
+
+		if diamond_list:
+			items["diamond_item"] = diamond_list
+
+		gemstone_list = get_gemstone_item_code_by_variant(self,bom,target_warehouse)
+		if gemstone_list:
+			items["gemstone_item"] = items["gemstone_item"]
+
 		for item_type, val in items.items():
 			if item_type == "metal_item":
 				continue
@@ -138,7 +162,65 @@ def create_manufacturing_work_order(self):
 	fg_doc.metal_purity = row.metal_purity
 	fg_doc.metal_colour = row.metal_colour
 	fg_doc.seq = int(self.name.split("-")[-1])
-	fg_doc.department = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"default_department")
+	fg_doc.department = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"default_fg_department")
 	fg_doc.for_fg = 1
 	fg_doc.auto_created = 1
 	fg_doc.save()
+
+def get_diamond_item_code_by_variant(self,bom,target_warehouse):
+	attributes = {}
+	diamond_list = []
+	diamond_bom = frappe.get_doc('BOM',bom)
+	if diamond_bom.diamond_detail:	
+		# Loop through the rows of the bom table
+		for row in diamond_bom.diamond_detail:
+			# Get the template document for the current item
+			template = frappe.get_doc("Item",row.item)
+			if template.name not in attributes: # If the attributes for the current item have not been fetched yet
+				attributes[template.name] = [attr.attribute for attr in template.attributes] # Store the attributes in the dictionary
+			# Create a dictionary of the attribute values from the row
+			args = {attr: row.get(attr.replace(" ", "_").lower()) for attr in attributes[template.name] if row.get(attr.replace(" ", "_").lower())}
+			args["Diamond Grade"] = self.diamond_grade
+			# frappe.throw(f"""{args}""")
+			variant = get_variant(row.item, args) # Get the variant for the current item and attribute values
+
+			if variant:
+				diamond_list.append({'item_code': variant, 'qty': self.qty, 'warehouse': target_warehouse})
+				
+			else:
+				# Create a new variant
+				variant = create_variant(row.item,args)
+				variant.save()
+				diamond_list.append({'item_code': variant.item_code, 'qty': self.qty, 'warehouse': target_warehouse})
+
+		return diamond_list
+		
+def get_gemstone_item_code_by_variant(self,bom,target_warehouse):
+	attributes = {}
+	gemstone_list = []
+	if len(self.gemstone_table) > 0:
+		for row in self.gemstone_table:
+			template = frappe.get_doc("Item","G")
+			if template.name not in attributes: 
+				attributes[template.name] = [attr.attribute for attr in template.attributes]
+			args = {attr: row.get(attr.replace(" ", "_").lower()) for attr in attributes[template.name] if row.get(attr.replace(" ", "_").lower())}
+			variant = get_variant(row.item, args)
+			
+			if variant:
+				gemstone_list.append({'item_code': variant, 'qty': row.quantity, 'warehouse': target_warehouse})
+			else:
+				# Create a new variant
+				variant = create_variant(row.item,args)
+				variant.save()
+				gemstone_list.append({'item_code': variant.item_code, 'qty': row.quantity, 'warehouse': target_warehouse})
+			
+		return gemstone_list
+
+def get_gemstone_details(self):
+	bom = self.serial_id_bom or self.master_bom
+	if not bom:
+		frappe.throw("BOM is missing")
+	bom_doc = frappe.get_doc('BOM',bom)
+	if len(bom_doc.gemstone_detail) > 0:
+		for gem_row in bom_doc.gemstone_detail:
+			self.append('gemstone_table',gem_row)
