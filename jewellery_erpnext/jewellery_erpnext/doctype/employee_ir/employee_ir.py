@@ -3,6 +3,7 @@
 
 import frappe
 import json
+from datetime import datetime
 from frappe import _
 from frappe.utils import flt, cint, today
 from frappe.model.mapper import get_mapped_doc
@@ -12,7 +13,19 @@ from jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir imp
 from jewellery_erpnext.utils import update_existing, get_item_from_attribute
 from jewellery_erpnext.jewellery_erpnext.doctype.qc.qc import create_qc_record
 from jewellery_erpnext.jewellery_erpnext.doctype.manufacturing_operation.manufacturing_operation import get_loss_details, get_previous_operation
-
+from frappe.utils import (
+	add_days,
+	add_to_date,
+	cint,
+	flt,
+	get_datetime,
+	get_link_to_form,
+	get_time,
+	getdate,
+	time_diff,
+	time_diff_in_hours,
+	time_diff_in_seconds,
+)
 
 class EmployeeIR(Document):
 	@frappe.whitelist()
@@ -59,15 +72,19 @@ class EmployeeIR(Document):
 
 	#for issue
 	def on_submit_issue(self, cancel=False):
+		now = datetime.now()
+		dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 		employee = None if cancel else self.employee
 		operation = None if cancel else self.operation
 		status = "Not Started" if cancel else "WIP"
 		values = {"operation": operation, "status": status}
+
 		if self.subcontracting == "Yes":
 			values["for_subcontracting"] = 1 
 			values["subcontractor"] = None if cancel else self.subcontractor
 		else:
 			values["employee"] = employee
+
 		for row in self.employee_ir_operations:
 			if not cancel:
 				update_stock_entry_dimensions(self, row, row.manufacturing_operation, True)
@@ -77,17 +94,29 @@ class EmployeeIR(Document):
 				values.update(res)
 			# values["gross_wt"] = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation, "to_employee":self.employee}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
 			frappe.db.set_value("Manufacturing Operation", row.manufacturing_operation, values)
+			values["start_time"] = dt_string
+			doc = frappe.get_doc("Manufacturing Operation", row.manufacturing_operation)
+			add_time_log(doc,values)
+			# frappe.throw('HOLD')
 
 	#for receive
 	def on_submit_receive(self, cancel=False):
 		self.validate_qc("Stop")
+		now = datetime.now()
+		dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 		precision = cint(frappe.db.get_single_value("System Settings", "float_precision"))
 		for row in self.employee_ir_operations:
+
 			res = {"received_gross_wt": row.received_gross_wt}
+			res["employee"] = self.employee
 			status = "WIP"
 			if not cancel:
 				status = "Finished"
 				create_operation_for_next_op(row.manufacturing_operation, employee_ir=self.name)
+				res["complete_time"] = dt_string
+				doc = frappe.get_doc("Manufacturing Operation", row.manufacturing_operation)
+
+				add_time_log(doc,res)
 				difference_wt = flt(row.received_gross_wt, precision) - flt(row.gross_wt, precision)
 				create_stock_entry(self, row, flt(difference_wt, 3))
 				# res = get_material_wt(self, row.manufacturing_operation)
@@ -179,6 +208,15 @@ def create_operation_for_next_op(docname, target_doc=None, employee_ir = None):
 	target_doc.time_taken = None
 	target_doc.save()
 	target_doc.db_set("employee", None)
+
+	target_doc.start_time = ""
+	target_doc.finish_time = ""
+	target_doc.time_taken = ""
+	target_doc.started_time = ""
+	target_doc.current_time= ""
+	target_doc.time_logs = []
+	target_doc.total_time_in_mins = ""
+	target_doc.save()
 
 @frappe.whitelist()
 def get_manufacturing_operations(source_name, target_doc=None):
@@ -335,7 +373,6 @@ def create_stock_entry(doc, row, difference_wt=0):
 		se_doc.save()
 		se_doc.submit()
 
-
 def get_previous_operation(manufacturing_operation):
 	mfg_operation = frappe.db.get_value("Manufacturing Operation", manufacturing_operation, ["previous_operation", "manufacturing_work_order"], as_dict=1)
 	if not mfg_operation.previous_operation:
@@ -354,3 +391,57 @@ def convert_pure_metal(mwo, ms, qty, s_warehouse, t_warehouse, reverse = False):
 	else:
 		ms.qty = qty*flt(mwo.get("metal_purity"))/100 
 		convert_metal_purity(ms, mwo, s_warehouse, t_warehouse)
+
+
+# @frappe.whitelist()
+def add_time_log(doc, args):
+		
+		last_row = []
+		employees = args['employee']
+		
+		# if isinstance(employees, str):
+		# 	employees = json.loads(employees)
+		if doc.time_logs and len(doc.time_logs) > 0:
+			last_row = doc.time_logs[-1]
+			
+
+		doc.reset_timer_value(args)
+		if last_row and args.get("complete_time"):
+			for row in doc.time_logs:
+				if not row.to_time:
+					row.update(
+						{
+							"to_time": get_datetime(args.get("complete_time")),
+						}
+					)
+		elif args.get("start_time"):
+			new_args = frappe._dict(
+				{
+					"from_time": get_datetime(args.get("start_time")),
+				}
+			)
+
+			if employees:
+				new_args.employee = employees
+				doc.add_start_time_log(new_args)
+			else:
+				doc.add_start_time_log(new_args)
+
+		if not doc.employee and employees:
+			doc.set_employees(employees)
+
+		# if self.status == "On Hold":
+		# 	self.current_time = time_diff_in_seconds(last_row.to_time, last_row.from_time)
+
+		if doc.status == "QC Pending" :
+		# and self.status == "On Hold":
+			doc.current_time = time_diff_in_seconds(last_row.to_time, last_row.from_time)
+			 
+		elif doc.status == "On Hold":
+			doc.current_time = time_diff_in_seconds(last_row.to_time, last_row.from_time)
+			
+		# else: 
+		# 	# a = self
+		# 	print(doc)
+
+		doc.save()

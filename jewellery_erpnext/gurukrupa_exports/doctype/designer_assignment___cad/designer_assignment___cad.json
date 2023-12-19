@@ -8,13 +8,16 @@
  "field_order": [
   "designer",
   "designer_name",
-  "designer_remark"
+  "designer_remark",
+  "timesheet"
  ],
  "fields": [
   {
    "fieldname": "designer",
    "fieldtype": "Link",
+   "in_filter": 1,
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Designer",
    "options": "Employee",
    "reqd": 1
@@ -31,12 +34,19 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Designer Remark"
+  },
+  {
+   "fieldname": "timesheet",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Timesheet",
+   "options": "Timesheet"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-02-24 14:10:06.091241",
+ "modified": "2023-12-05 13:06:19.378851",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Designer Assignment - CAD",

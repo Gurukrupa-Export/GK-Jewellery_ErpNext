@@ -6,6 +6,7 @@ from frappe import _
 from frappe.utils import flt,cint
 from jewellery_erpnext.utils import get_variant_of_item, update_existing, get_item_from_attribute
 from frappe.model.mapper import get_mapped_doc
+from frappe.model.document import Document
 
 def validate(self, method):
 	"""
@@ -412,3 +413,30 @@ def convert_metal_purity(from_item: dict, to_item: dict, s_warehouse, t_warehous
 	})
 	doc.save()
 	doc.submit()
+
+
+
+
+
+@frappe.whitelist()
+def get_dispatch_slip(source_name, target_doc=None):
+	if isinstance(target_doc, str):
+		target_doc = json.loads(target_doc)
+	if not target_doc:
+		target_doc = frappe.new_doc("Dispatch Slip")
+	else:
+		target_doc = frappe.get_doc(target_doc)
+	sales_invoice_items = frappe.db.get_list("Stock Entry Detail",filters={"parent":source_name},fields=["*"])
+	
+	# print(sales_invoice_items)
+	for i in sales_invoice_items:
+		target_doc.append("delivery_challan_detail", {
+			"item_code": i.get("item_code"),
+			# "gst_hsn_code": i.get("gst_hsn_code"),
+			"description": i.get("description"),
+			"qty": i.get("qty"),
+			# "amount": i.get("net_amount"),
+			# "item_code": sales_invoice.get("description"),
+	})
+
+	return target_doc

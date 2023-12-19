@@ -57,7 +57,51 @@ frappe.ui.form.on('BOM Gemstone Detail', {
 	},
 	pcs: function(frm){
 		calculate_total(frm)
+	},
+	cut_or_cab:function(frm,cdt,cdn){
+		var row = locals[cdt][cdn]
+		frappe.call({
+			method: 'jewellery_erpnext.jewellery_erpnext.doc_events.bom.get_gemstone_details',
+			args: {
+				'gemstone_type': row.gemstone_type,
+				'cut_or_cab':row.cut_or_cab
+			},
+			callback: function(r) {
+				if (!r.exc) {
+					console.log(r.message)
+					frm.set_query('stone_shape', 'gemstone_detail', function(doc,cdt,cdn) {
+						return { 
+							filters: [
+								['Attribute Value','name','in', r.message[0]],
+							]
+						};
+					});
+					frm.set_query('gemstone_grade', 'gemstone_detail', function(doc,cdt,cdn) {
+						return { 
+							filters: [
+								['Attribute Value','name','in', r.message[1]],
+							]
+						};
+					});
+					frm.set_query('gemstone_quality', 'gemstone_detail', function(doc,cdt,cdn) {
+						return { 
+							filters: [
+								['Attribute Value','name','in', r.message[2]],
+							]
+						};
+					});
+					frm.set_query('gemstone_size', 'gemstone_detail', function(doc,cdt,cdn) {
+						return { 
+							filters: [
+								['Attribute Value','name','in', r.message[3]],
+							]
+						};
+					});
+				}
+			}
+		});
 	}
+
 })
 frappe.ui.form.on('BOM Finding Detail', {
 	quantity: function(frm){

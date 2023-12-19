@@ -17,6 +17,8 @@
   "setting_type",
   "gold_wt_approx",
   "diamond_wt_approx",
+  "gold_wt",
+  "diamond_wt",
   "design_status",
   "design_status_cpo"
  ],
@@ -86,6 +88,7 @@
    "columns": 1,
    "fieldname": "gold_wt_approx",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Gold wt (Approx)"
   },
@@ -93,6 +96,7 @@
    "columns": 1,
    "fieldname": "diamond_wt_approx",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Diamond wt (Approx)"
   },
@@ -101,6 +105,7 @@
    "columns": 1,
    "fieldname": "design_status",
    "fieldtype": "Select",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Status (CMO)",
    "options": "\nApproved\nReject",
@@ -111,16 +116,27 @@
    "columns": 1,
    "fieldname": "design_status_cpo",
    "fieldtype": "Select",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Status (CPO)",
    "options": "\nApproved\nReject",
    "permlevel": 2
+  },
+  {
+   "fieldname": "gold_wt",
+   "fieldtype": "Float",
+   "label": "Gold wt (Approx)"
+  },
+  {
+   "fieldname": "diamond_wt",
+   "fieldtype": "Float",
+   "label": "Diamond wt (Approx)"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-15 16:26:34.730196",
+ "modified": "2023-10-26 17:52:28.368937",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Final Sketch Approval CMO",

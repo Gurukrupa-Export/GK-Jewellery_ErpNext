@@ -379,8 +379,8 @@ def set_bom_item_details(self):
 				set_diamond_fields(self, diamond, item)
 
 			# Set Gemstone Fields
-			for stone in self.gemstone_detail:
-				set_gemstone_fields(stone, item)
+			# for stone in self.gemstone_detail:
+			# 	set_gemstone_fields(stone, item)
 
 			# Set Finding Fields
 			for finding in self.finding_detail:

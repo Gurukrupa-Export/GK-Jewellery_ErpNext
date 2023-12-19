@@ -49,6 +49,7 @@
   {
    "fieldname": "diamond_type",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Diamond Type",
    "options": "Attribute Value",
    "reqd": 1
@@ -56,13 +57,14 @@
   {
    "fieldname": "stone_shape",
    "fieldtype": "Link",
-   "label": "Diamond Shape",
+   "label": "Stone Shape",
    "options": "Attribute Value",
    "reqd": 1
   },
   {
    "fieldname": "diamond_quality",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Diamond Quality",
    "options": "Attribute Value",
    "reqd": 1
@@ -74,14 +76,15 @@
   {
    "fieldname": "price_list_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Price List Type",
-   "options": "Sieve Size Range\nWeight (in cts)\nSize (in mm)",
-   "reqd": 1
+   "options": "Sieve Size Range\nWeight (in cts)\nSize (in mm)"
   },
   {
    "depends_on": "eval:(doc.price_list_type) =='Weight (in cts)'",
    "fieldname": "from_weight",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "From Weight (in cts)",
    "mandatory_depends_on": "eval:(doc.price_list_type) =='Weight (in cts)'"
   },
@@ -89,13 +92,15 @@
    "depends_on": "eval:(doc.price_list_type) =='Weight (in cts)'",
    "fieldname": "to_weight",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "To Weight (in cts)",
    "mandatory_depends_on": "eval:(doc.price_list_type) =='Weight (in cts)'"
   },
   {
-   "depends_on": "eval:doc.price_list_type=='Sieve Size Range'",
+   "depends_on": "eval: doc.price_list_type=='Sieve Size Range'",
    "fieldname": "sieve_size_range",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Sieve Size Range",
    "mandatory_depends_on": "eval:(doc.price_list_type) =='Sieve Size Range'",
    "options": "Attribute Value"
@@ -109,9 +114,10 @@
   },
   {
    "fieldname": "rate",
-   "fieldtype": "Float",
-   "label": "Rate",
-   "reqd": 1
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Rate"
   },
   {
    "fieldname": "handling_rate",
@@ -134,7 +140,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-15 00:28:49.747636",
+ "modified": "2023-11-21 10:06:53.514864",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Diamond Price List",

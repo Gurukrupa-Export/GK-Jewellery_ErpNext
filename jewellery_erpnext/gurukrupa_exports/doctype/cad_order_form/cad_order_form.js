@@ -68,6 +68,7 @@ frappe.ui.form.on('CAD Order Form', {
 		['sub_setting_type1', 'Sub Setting Type'],
 		['sub_setting_type2', 'Sub Setting Type'],
 		['gemstone_quality', 'Gemstone Quality'],
+		['changeable_type', 'Changeable Type'],
 		];
 
 		set_filters_on_child_table_fields(frm, fields);
@@ -120,24 +121,19 @@ frappe.ui.form.on('CAD Order Form', {
 			})
 		}
 	},
-
 	due_days: function (frm) {
 		delivery_date(frm);
 	},
-	
 	validate: function (frm) {
 		if (frm.doc.delivery_date < frm.doc.order_date) {
 			frappe.msgprint(__("You can not select past date in Delivery Date"));
 			frappe.validated = false;
 		}
 	},
-	
 	concept_image: function (frm) {
 		refresh_field('image_preview');
 	},
-	
 	design_by: function (frm) { set_order_type_from_design_by(frm); },
-	
 	customer_code: function(frm){
 		frm.doc.service_type = [];
         if(frm.doc.customer_code){
@@ -169,7 +165,65 @@ frappe.ui.form.on('CAD Order Form', {
 				show_attribute_fields_for_subcategory(frm, d.doctype, d.name, d);
 			})
 		}
-   }
+		// if(frm.doc.customer_code=='CU0010'){
+		// 	frm.fields_dict['order_details'].grid.get_field('screw_type').get_query = function(doc, cdt, cdn) {
+		// 		console.log('HERE')
+		// 		var d = locals[cdt][cdn];
+		// 		return { visible: 1 };
+		// 	};
+		// }
+   	},
+    refresh:function(frm) {
+		frm.add_custom_button(__("Customer Order"), function(){
+				erpnext.utils.map_current_doc({
+					method: "jewellery_erpnext.gurukrupa_exports.doctype.cad_order_form.cad_order_form.make_order_form",
+					source_doctype: "Customer Order Form",
+					target: me.frm,
+					setters: [
+						{
+							label: "Customer Name",
+							fieldname: "customer_code",
+							fieldtype: "Link",
+							options: "Customer",
+							reqd: 1,
+							read_only:1,
+							default: frm.doc.customer_code || undefined
+							
+						},
+						{
+							label: "Item Category",
+							fieldname: "item_category",
+							fieldtype: "Link",
+							options: "Attribute Value",
+							get_query: function(doc, cdt, cdn) {
+								return {
+									query: 'jewellery_erpnext.query.item_attribute_query',
+									filters: { 'item_attribute': "Item Category"}
+								};
+							}
+							
+						},
+						{
+							label: "Metal Touch",
+							fieldname: "metal_touch",
+							fieldtype: "Link",
+							options: "Attribute Value",
+							get_query: function(doc, cdt, cdn) {
+								return {
+									query: 'jewellery_erpnext.query.item_attribute_query',
+									filters: { 'item_attribute': "Metal Touch"}
+								};
+							}
+							
+						}
+					],
+					get_query_filters: {
+						// customer_code: ['=', cur_frm.doc.customer_code],
+						docstatus: 1
+					}
+				})
+			}, __("Get Order From"))
+	},
 });
 
 frappe.ui.form.on('CAD Order Form Detail', {
@@ -239,6 +293,7 @@ frappe.ui.form.on('CAD Order Form Detail', {
 		row.estimated_duedate = frm.doc.estimated_duedate;
 		row.branch = frm.doc.branch
 		row.project = frm.doc.project
+		row.customer_code = frm.doc.customer_code
 		refresh_field("order_details");
 	},
 
@@ -282,7 +337,7 @@ frappe.ui.form.on('CAD Order Form Detail', {
 
 	bom(frm, cdt, cdn) {
 		set_metal_properties_from_bom(frm, cdt, cdn)
-	}
+	},
 });
 
 function set_metal_properties_from_bom(frm, cdt, cdn) {
@@ -367,18 +422,12 @@ function show_attribute_fields_for_subcategory(frm, cdt, cdn, order_detail) {
 
 //private function to hide all subcategory related fields in order details
 function hide_all_subcategory_attribute_fields(frm, cdt, cdn) {
-	var subcategory_attribute_fields = ['Gold Target', 'Diamond Target', 
-	'Product Size', 'Length', 'Height', 'Sizer Type', 'Navratna',
-	'Enamal', 'Rhodium', 'Stone Type', 'Gemstone Type', 'Gemstone Quality',
-	'Gemstone Types1', 'Gemstone Types2', 'Gemstone Types3', 'Gemstone Types4',
-	'Gemstone Types5', 'Gemstone Types6', 'Gemstone Types7', 'Gemstone Types8',
-	'Stone Changeable', 'Changeable', 'Hinges', 'Back Belt', 'Vanki Type',
+	var subcategory_attribute_fields = ['Length', 'Height', 'Sizer Type', 'Hinges', 'Back Belt', 'Vanki Type',
 	'Black Beed', 'Black Beed Line', 'Screw Type', 'Hook Type', 'Lock Type',
 	'2 in 1', 'Kadi Type', 'Chain', 'Chain Type', 'Customer Chain', 'Chain Length',
-	'Total Length', 'Chain Weight', 'Detachable', 'Back Chain', 'Back Chain Size',
+	'Total Length', 'Chain Weight', 'Back Chain', 'Back Chain Size',
 	'Back Side Size', 'Chain Thickness', 'Total Mugappu', 'Kadi to Mugappu',
-	'Space between Mugappu', 'Nakshi', 'Nakshi From', 'Customer Sample',
-	'Certificate Place', 'Breadth', 'Width', 'Back Belt', 'Back Belt Length'];
+	'Space between Mugappu', 'Nakshi', 'Nakshi From', 'Breadth', 'Width', 'Back Belt', 'Back Belt Length'];
 	show_hide_fields(frm, cdt, cdn, subcategory_attribute_fields, 1);
 }
 

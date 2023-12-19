@@ -1,0 +1,530 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:TI-{####}",
+ "creation": "2023-10-27 18:06:13.343177",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_10dzs",
+  "company",
+  "department",
+  "column_break_5icy6",
+  "branch",
+  "customer_code",
+  "salesman_name",
+  "section_break_ucdko",
+  "designer",
+  "design_code",
+  "bom",
+  "theme_code",
+  "item_category",
+  "column_break_xpw75",
+  "order_date",
+  "serial_no",
+  "fourteen_digit_code",
+  "item_subcategory",
+  "section_break_bkres",
+  "complexity",
+  "product_size",
+  "back_chain",
+  "productivity",
+  "chain_type",
+  "column_break_qxqbh",
+  "delicate",
+  "length",
+  "enamel",
+  "rhodium",
+  "setting_type",
+  "section_break_76nr3",
+  "metal_type",
+  "metal_touch",
+  "column_break_9ksbz",
+  "metal_colour",
+  "metal_purity",
+  "section_break_yexsu",
+  "gross_weight",
+  "launch_month",
+  "rpt_cad_approval",
+  "finding_type",
+  "column_break_5mhdj",
+  "category_manager",
+  "npd",
+  "cfa",
+  "collection",
+  "job_worker",
+  "section_break_r3hoy",
+  "renarks",
+  "images_tab",
+  "design_image",
+  "column_break_gio83",
+  "design_image_preview",
+  "section_break_tabba",
+  "cad_image",
+  "column_break_xywuv",
+  "cad_image_preview",
+  "section_break_urbiu",
+  "old_e_pdis_image",
+  "column_break_uib6w",
+  "old_e_pdis_image_preview",
+  "section_break_auveo",
+  "necklace_17",
+  "chokar_13",
+  "necklet_15",
+  "column_break_l2mpq",
+  "haram_24",
+  "haram_26"
+ ],
+ "fields": [
+  {
+   "default": "CU0010",
+   "fieldname": "customer_code",
+   "fieldtype": "Link",
+   "label": "Customer Code",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "design_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Design Code",
+   "no_copy": 1,
+   "options": "Item",
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "default": "Manufacturing Plan & Management - GE",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_5icy6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Surat",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "salesman_name",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Sales Person",
+   "options": "Sales Person"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:true",
+   "fieldname": "section_break_ucdko",
+   "fieldtype": "Section Break",
+   "label": "Code Details"
+  },
+  {
+   "default": "Gurukrupa Exports",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "order_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Order Date"
+  },
+  {
+   "fetch_from": "design_code.tag_no",
+   "fetch_if_empty": 1,
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "label": "Serial No",
+   "options": "Serial No"
+  },
+  {
+   "fetch_from": "design_code.item_category",
+   "fetch_if_empty": 1,
+   "fieldname": "item_category",
+   "fieldtype": "Link",
+   "label": "Item Category",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "design_code.item_subcategory",
+   "fieldname": "item_subcategory",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Item Subcategory",
+   "options": "Attribute Value"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:true",
+   "fieldname": "section_break_bkres",
+   "fieldtype": "Section Break",
+   "label": "Order Details"
+  },
+  {
+   "fieldname": "complexity",
+   "fieldtype": "Select",
+   "label": "Complexity",
+   "options": "Simple\nGeneric\nComplex"
+  },
+  {
+   "fieldname": "product_size",
+   "fieldtype": "Data",
+   "label": "Product Size"
+  },
+  {
+   "fieldname": "delicate",
+   "fieldtype": "Select",
+   "label": "Delicate",
+   "options": "No\nYes"
+  },
+  {
+   "fieldname": "back_chain",
+   "fieldtype": "Select",
+   "label": "Back Chain",
+   "options": "No\nYes"
+  },
+  {
+   "fetch_from": "bom.length",
+   "fetch_if_empty": 1,
+   "fieldname": "length",
+   "fieldtype": "Data",
+   "label": "Length"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:true",
+   "fieldname": "section_break_76nr3",
+   "fieldtype": "Section Break",
+   "label": "Metal Details"
+  },
+  {
+   "default": "Gold",
+   "fetch_from": "bom.metal_type_",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_type",
+   "fieldtype": "Link",
+   "label": "Metal Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "bom.metal_touch",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_touch",
+   "fieldtype": "Link",
+   "label": "Metal Touch",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "column_break_9ksbz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "bom.metal_colour",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_colour",
+   "fieldtype": "Link",
+   "label": "Metal Colour",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "bom.metal_purity",
+   "fetch_if_empty": 1,
+   "fieldname": "metal_purity",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Metal Purity",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "theme_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Theme Code"
+  },
+  {
+   "fieldname": "fourteen_digit_code",
+   "fieldtype": "Data",
+   "label": "14 Digit Code"
+  },
+  {
+   "fetch_from": "design_code.weight",
+   "fetch_if_empty": 1,
+   "fieldname": "gross_weight",
+   "fieldtype": "Float",
+   "label": "Gross Weight"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:true",
+   "fieldname": "section_break_yexsu",
+   "fieldtype": "Section Break",
+   "label": "Weight Details"
+  },
+  {
+   "fieldname": "renarks",
+   "fieldtype": "Text Editor",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_xpw75",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:true",
+   "fieldname": "section_break_10dzs",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Company Details"
+  },
+  {
+   "fieldname": "column_break_qxqbh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:true",
+   "fieldname": "section_break_r3hoy",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "chain_type",
+   "fieldtype": "Link",
+   "label": "Chain Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fetch_from": "bom.enamal",
+   "fetch_if_empty": 1,
+   "fieldname": "enamel",
+   "fieldtype": "Select",
+   "label": "Enamel",
+   "options": "No\nYes"
+  },
+  {
+   "fetch_from": "bom.rhodium",
+   "fetch_if_empty": 1,
+   "fieldname": "rhodium",
+   "fieldtype": "Select",
+   "label": "Rhodium",
+   "options": "No\nYes"
+  },
+  {
+   "fieldname": "rpt_cad_approval",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "RPT CAD Approval",
+   "options": "No\nYes"
+  },
+  {
+   "fieldname": "finding_type",
+   "fieldtype": "Link",
+   "label": "Finding Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "npd",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "NPD"
+  },
+  {
+   "fieldname": "cfa",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "CFA"
+  },
+  {
+   "fieldname": "collection",
+   "fieldtype": "Link",
+   "label": "Collection",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "productivity",
+   "fieldtype": "Select",
+   "label": "Plain/Studded",
+   "options": "Studded\nPlain"
+  },
+  {
+   "fieldname": "designer",
+   "fieldtype": "Link",
+   "label": "Designer",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "images_tab",
+   "fieldtype": "Tab Break",
+   "label": "Images"
+  },
+  {
+   "fieldname": "design_image",
+   "fieldtype": "Attach Image",
+   "label": "Design Image"
+  },
+  {
+   "fieldname": "cad_image",
+   "fieldtype": "Attach Image",
+   "label": "CAD Image"
+  },
+  {
+   "fieldname": "old_e_pdis_image",
+   "fieldtype": "Attach Image",
+   "label": "Old E-PDIS Image"
+  },
+  {
+   "fetch_from": "design_code.setting_type",
+   "fetch_if_empty": 1,
+   "fieldname": "setting_type",
+   "fieldtype": "Link",
+   "label": "Setting Type",
+   "options": "Attribute Value"
+  },
+  {
+   "fieldname": "launch_month",
+   "fieldtype": "Date",
+   "label": "Launch Month"
+  },
+  {
+   "fieldname": "job_worker",
+   "fieldtype": "Link",
+   "label": "Job Worker",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "design_image_preview",
+   "fieldtype": "Image",
+   "label": "Design Image Preview",
+   "options": "design_image"
+  },
+  {
+   "fieldname": "cad_image_preview",
+   "fieldtype": "Image",
+   "label": "CAD Image Preview",
+   "options": "cad_image"
+  },
+  {
+   "fieldname": "old_e_pdis_image_preview",
+   "fieldtype": "Image",
+   "label": "Old E PDIS Image Preview",
+   "options": "old_e_pdis_image"
+  },
+  {
+   "fetch_from": "design_code.master_bom",
+   "fieldname": "bom",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "BOM",
+   "options": "BOM"
+  },
+  {
+   "fieldname": "category_manager",
+   "fieldtype": "Link",
+   "label": "Category Manager",
+   "options": "Titan Category Manager"
+  },
+  {
+   "fieldname": "column_break_5mhdj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_gio83",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_tabba",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_xywuv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_urbiu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_uib6w",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_auveo",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "necklace_17",
+   "fieldtype": "Data",
+   "label": "Necklace(17\")"
+  },
+  {
+   "fieldname": "chokar_13",
+   "fieldtype": "Data",
+   "label": "Chokar(13\")"
+  },
+  {
+   "fieldname": "necklet_15",
+   "fieldtype": "Data",
+   "label": "Necklet(15\")"
+  },
+  {
+   "fieldname": "haram_24",
+   "fieldtype": "Data",
+   "label": "Haram(24\")"
+  },
+  {
+   "fieldname": "haram_26",
+   "fieldtype": "Data",
+   "label": "Haram(26\")"
+  },
+  {
+   "fieldname": "column_break_l2mpq",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-11-09 11:21:38.100901",
+ "modified_by": "Administrator",
+ "module": "Gurukrupa Exports",
+ "name": "Titan Design Information Sheet",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

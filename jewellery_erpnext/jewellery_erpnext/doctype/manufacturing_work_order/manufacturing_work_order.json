@@ -491,8 +491,7 @@
    "fieldtype": "Select",
    "in_preview": 1,
    "label": "Status",
-   "options": "\nDraft\nNot Started\nIn Process\nCompleted\nStopped\nClosed\nCancelled",
-   "read_only": 1
+   "options": "\nDraft\nNot Started\nIn Process\nCompleted\nStopped\nClosed\nCancelled"
   },
   {
    "fieldname": "split_from",
@@ -510,6 +509,7 @@
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_calendar_and_gantt": 1,
  "is_submittable": 1,
  "links": [
   {
@@ -533,7 +533,7 @@
    "link_fieldname": "manufacturing_work_order"
   }
  ],
- "modified": "2023-09-03 04:27:46.771157",
+ "modified": "2023-10-30 16:05:58.121162",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Work Order",

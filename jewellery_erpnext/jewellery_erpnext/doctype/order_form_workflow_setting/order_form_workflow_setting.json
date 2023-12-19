@@ -1,0 +1,49 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-21 11:36:03.010210",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_xl7cb",
+  "sketch_order_customer_approval"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_xl7cb",
+   "fieldtype": "Section Break",
+   "label": "Sketch Order"
+  },
+  {
+   "default": "0",
+   "fieldname": "sketch_order_customer_approval",
+   "fieldtype": "Check",
+   "label": "Sketch Order Customer Approval"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-10-21 11:37:34.233951",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "Order Form Workflow Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

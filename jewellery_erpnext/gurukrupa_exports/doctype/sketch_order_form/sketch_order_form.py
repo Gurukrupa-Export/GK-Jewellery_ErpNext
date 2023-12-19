@@ -53,6 +53,7 @@ def make_sketch_order(doctype, source_name, parent_doc=None, target_doc=None):
 		target.sketch_order_form_detail = source.name
 		target.sketch_order_form = source.parent
 		target.sketch_order_form_index = source.idx
+		target.custom_sketch_order_customer_approval_flow = frappe.db.get_value('Order Form Workflow Setting','Order Form Workflow Setting','sketch_order_customer_approval')
 		set_fields_from_parent(source, target)
 
 	def set_fields_from_parent(source, target, parent = parent_doc):
@@ -90,3 +91,4 @@ def make_sketch_order(doctype, source_name, parent_doc=None, target_doc=None):
 
 	doc.save()
 	return doc.name
+

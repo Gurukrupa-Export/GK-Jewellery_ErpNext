@@ -44,6 +44,8 @@
   "metal_purity",
   "section_break_royco",
   "order_remarks",
+  "section_break_jnspi",
+  "gemstone_table",
   "order_details_tab",
   "section_break_hwml7",
   "order_form_id",
@@ -471,6 +473,16 @@
    "fieldtype": "Data",
    "label": "HUID/Certification No",
    "read_only": 1
+  },
+  {
+   "fieldname": "gemstone_table",
+   "fieldtype": "Table",
+   "label": "gemstone_table",
+   "options": "BOM Gemstone Detail"
+  },
+  {
+   "fieldname": "section_break_jnspi",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -489,7 +501,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-09-02 03:35:30.650961",
+ "modified": "2023-12-06 09:58:28.161806",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

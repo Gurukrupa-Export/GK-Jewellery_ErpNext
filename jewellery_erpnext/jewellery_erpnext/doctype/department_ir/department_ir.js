@@ -81,7 +81,7 @@ frappe.ui.form.on('Department IR', {
 			}
 			if (frm.doc.type == "Issue") {
 				query_filters["department_ir_status"] = ["not in", ["In-Transit", "Revert"]]
-				query_filters["status"] = ["in", ["Not Started", "Finished"]]
+				query_filters["status"] = ["in", ["Not Started"]]
 				query_filters["employee"] = ["is", "not set"]
 				query_filters["subcontractor"] = ["is", "not set"]
 			}
@@ -89,10 +89,11 @@ frappe.ui.form.on('Department IR', {
 				query_filters["department_ir_status"] = "In-Transit"
 				query_filters["department"] = frm.doc.current_department
 			}
-
+			console.log(query_filters)
 			frappe.db.get_value('Manufacturing Operation', query_filters, ['name', 'manufacturing_work_order', 'status'])
 				.then(r => {
 					let values = r.message;
+					console.log(values)
 					if (values.manufacturing_work_order) {
 						console.log(values.manufacturing_work_order)
 						let row = frm.add_child('department_ir_operation', {
