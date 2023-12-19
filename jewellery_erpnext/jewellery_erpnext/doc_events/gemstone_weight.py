@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 from frappe.utils import get_link_to_form
-from erpnext.e_commerce.variant_selector.utils import get_item_codes_by_attributes
+from jewellery_erpnext.jewellery_erpnext.doc_events.diamond_weight import get_item_codes_by_attributes
 
 def validate(self, method):
 	pass

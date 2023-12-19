@@ -150,7 +150,7 @@ def get_stock_entry_type(txn_type, purpose):
 			return "Material Receipt for Certification"
 
 def get_stock_item_against_mwo(se_doc, doc, row, s_warehouse, t_warehouse):
-	if doc.type == "Issue":
+	if doc.type == "Issue":	
 		target_wh = frappe.get_value("Warehouse", {"department": doc.department}, "name")
 		filters = [
 			["Stock Entry", "manufacturing_work_order", "=", row.manufacturing_work_order],
@@ -165,6 +165,9 @@ def get_stock_item_against_mwo(se_doc, doc, row, s_warehouse, t_warehouse):
 			["Stock Entry Detail", "reference_doctype", "=", "Manufacturing Work Order"],
 		]
 	stock_entries = frappe.get_all("Stock Entry", filters=filters, fields=["`tabStock Entry Detail`.item_code", "`tabStock Entry Detail`.qty"], join="right join")
+	if len(stock_entries) < 1:		
+		frappe.msgprint(f'No Stock entry Found against the Manufacturing Work Order: <strong> {row.manufacturing_work_order}</strong>')
+	
 	for item in stock_entries:
 		se_doc.append("items", {
 			"item_code": item.item_code,

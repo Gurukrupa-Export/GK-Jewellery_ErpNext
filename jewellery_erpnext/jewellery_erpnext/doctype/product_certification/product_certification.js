@@ -15,15 +15,15 @@ frappe.ui.form.on('Product Certification', {
 			})
 		}
 	},
-	service_type(frm) {
-		if (frm.doc.service_type){
-			frm.trigger("set_label_for_service_type")		
-		}
-	},
-	set_label_for_service_type(frm) {
-		frm.fields_dict['exploded_product_details'].grid.get_docfield('huid').label = frm.doc.service_type == "Hall Marking Service" ? "HUID" : "Certification No";
-        frm.fields_dict['exploded_product_details'].grid.refresh();
-	},
+	// service_type(frm) {
+	// 	if (frm.doc.service_type){
+	// 		frm.trigger("set_label_for_service_type")		
+	// 	}
+	// },
+	// set_label_for_service_type(frm) {
+	// 	frm.fields_dict['exploded_product_details'].grid.get_docfield('huid').label = frm.doc.service_type == "Hall Marking Service" ? "HUID" : "Certification No";
+    //     frm.fields_dict['exploded_product_details'].grid.refresh();
+	// },
 	setup: function (frm) {
 		var fields = [['category', 'Item Category'],
 		['subcategory', 'Item Subcategory'],

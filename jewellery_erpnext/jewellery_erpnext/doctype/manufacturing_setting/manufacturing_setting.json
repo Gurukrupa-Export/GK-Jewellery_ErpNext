@@ -9,12 +9,17 @@
  "engine": "InnoDB",
  "field_order": [
   "company",
+  "serial_number_setting_section",
+  "apply_custom_serial_number",
+  "series_start",
+  "abbr",
   "section_break_pwstz",
   "default_operation",
   "gold_loss_item",
   "service_item",
   "column_break_9vro2",
   "default_department",
+  "default_fg_department",
   "in_transit",
   "manufacturing_warehouses_section",
   "powder_value",
@@ -195,11 +200,40 @@
    "fieldname": "others_section",
    "fieldtype": "Section Break",
    "label": "Others"
+  },
+  {
+   "description": "Manufacturing Work Order for Finished Goods will have this Department",
+   "fieldname": "default_fg_department",
+   "fieldtype": "Link",
+   "label": "Default FG Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "series_start",
+   "fieldtype": "Data",
+   "label": "Series Start"
+  },
+  {
+   "fieldname": "abbr",
+   "fieldtype": "Data",
+   "label": "Abbr"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "serial_number_setting_section",
+   "fieldtype": "Section Break",
+   "label": "Serial Number Setting"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_custom_serial_number",
+   "fieldtype": "Check",
+   "label": "Apply Custom Serial Number"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-05 16:36:21.121529",
+ "modified": "2023-11-22 12:57:02.665287",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Setting",

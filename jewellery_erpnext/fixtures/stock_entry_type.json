@@ -158,5 +158,13 @@
   "modified": "2022-05-06 15:07:12.660906",
   "name": "Material Transfer for Manufacture",
   "purpose": "Material Transfer for Manufacture"
+ },
+ {
+  "add_to_transit": 1,
+  "docstatus": 0,
+  "doctype": "Stock Entry Type",
+  "modified": "2023-10-18 12:50:49.887354",
+  "name": "Customer Goods Transfer",
+  "purpose": "Material Transfer"
  }
 ]

@@ -46,7 +46,7 @@ frappe.ui.form.on('Department IR', {
 					docname: frm.doc.receive_against,
 					fields: ["current_department", "next_department"]
 				},
-				callback(r){
+				callback(r) {
 					var value = r.message
 					frm.set_value({ "previous_department": value.current_department, "current_department": value.next_department })
 				}
@@ -70,14 +70,54 @@ frappe.ui.form.on('Department IR', {
 			frm.refresh_field("department_ir_operation")
 		}
 	},
-	scan_mop(frm) {
-		if (frm.doc.scan_mop) {
+	// scan_mop(frm) {
+	// 	if (frm.doc.scan_mop) {
+	// 		if (!frm.doc.current_department) {
+	// 			frappe.throw("Please select current department first")
+	// 		}
+	// 		var query_filters = {
+	// 			"company": frm.doc.company,
+	// 			"name": frm.doc.scan_mop
+	// 		}
+	// 		if (frm.doc.type == "Issue") {
+	// 			query_filters["department_ir_status"] = ["not in", ["In-Transit", "Revert"]]
+	// 			query_filters["status"] = ["in", ["Not Started", "Finished"]]
+	// 			query_filters["employee"] = ["is", "not set"]
+	// 			query_filters["subcontractor"] = ["is", "not set"]
+	// 		}
+	// 		else {
+	// 			query_filters["department_ir_status"] = "In-Transit"
+	// 			query_filters["department"] = frm.doc.current_department
+	// 		}
+
+	// 		frappe.db.get_value('Manufacturing Operation', query_filters, ['name', 'manufacturing_work_order', 'status'])
+	// 			.then(r => {
+	// 				let values = r.message;
+	// 				if (values.manufacturing_work_order) {
+	// 					console.log(values.manufacturing_work_order)
+	// 					let row = frm.add_child('department_ir_operation', {
+	// 						"manufacturing_work_order": values.manufacturing_work_order,
+	// 						"manufacturing_operation": values.name,
+	// 						// "status":values.status
+	// 					});
+	// 					frm.refresh_field('department_ir_operation');
+	// 				}
+	// 				else {
+	// 					frappe.throw('Invalid Manufacturing Operation')
+	// 					console.log("values.manufacturing_work_order")
+	// 				}
+	// 				frm.set_value('scan_mop', "")
+	// 			})
+	// 	}
+	// },
+	scan_mwo(frm) {
+		if (frm.doc.scan_mwo) {
 			if (!frm.doc.current_department) {
 				frappe.throw("Please select current department first")
 			}
 			var query_filters = {
 				"company": frm.doc.company,
-				"name": frm.doc.scan_mop
+				"manufacturing_work_order": frm.doc.scan_mwo
 			}
 			if (frm.doc.type == "Issue") {
 				query_filters["department_ir_status"] = ["not in", ["In-Transit", "Revert"]]
@@ -95,7 +135,7 @@ frappe.ui.form.on('Department IR', {
 					let values = r.message;
 					console.log(values)
 					if (values.manufacturing_work_order) {
-						console.log(values.manufacturing_work_order)
+						console.log(values)
 						let row = frm.add_child('department_ir_operation', {
 							"manufacturing_work_order": values.manufacturing_work_order,
 							"manufacturing_operation": values.name,
@@ -104,10 +144,9 @@ frappe.ui.form.on('Department IR', {
 						frm.refresh_field('department_ir_operation');
 					}
 					else {
-						frappe.throw('Invalid Manufacturing Operation')
-						console.log("values.manufacturing_work_order")
+						frappe.throw('No Manufacturing Operation Found')
 					}
-					frm.set_value('scan_mop', "")
+					frm.set_value('scan_mwo', "")
 				})
 		}
 	},

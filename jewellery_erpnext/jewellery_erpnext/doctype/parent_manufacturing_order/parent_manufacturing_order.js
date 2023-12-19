@@ -6,6 +6,11 @@ frappe.ui.form.on('Parent Manufacturing Order', {
 		var parent_fields = [['diamond_grade', 'Diamond Grade'], ['metal_colour', 'Metal Colour'], ['metal_purity', 'Metal Purity']];
 		set_filters_on_parent_table_fields(frm, parent_fields);
 	},
+	refresh(frm){
+		if (!frm.doc.__islocal) {
+			frm.set_df_property('diamond_grade', 'reqd', 1)
+		}
+	},
 	sales_order_item: function (frm) {
 		frappe.call({
 			method: "jewellery_erpnext.jewellery_erpnext.doctype.production_order.production_order.get_item_code",

@@ -17,6 +17,7 @@
   "docname",
   "supply_raw_material",
   "huid",
+  "certification",
   "item_details_section",
   "category",
   "sub_category",
@@ -71,7 +72,7 @@
    "fieldname": "huid",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "HUID/Certification",
+   "label": "HUID",
    "mandatory_depends_on": "eval:parent.type == \"Receive\" && !parent.__islocal",
    "read_only_depends_on": "eval:parent.type == \"Issue\""
   },
@@ -204,12 +205,20 @@
    "label": "Metal Colour",
    "options": "Attribute Value",
    "read_only": 1
+  },
+  {
+   "fieldname": "certification",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Certification",
+   "mandatory_depends_on": "eval:parent.type == \"Receive\" && !parent.__islocal",
+   "read_only_depends_on": "eval:parent.type == \"Issue\""
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-03 04:36:17.275367",
+ "modified": "2023-10-17 18:08:34.464460",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Exploded Product Details",

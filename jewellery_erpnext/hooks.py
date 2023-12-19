@@ -72,6 +72,7 @@ doc_events = {
 	},
 	"Stock Entry": {
 		"validate": "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.validate",
+        "before_submit": "jewellery_erpnext.jewellery_erpnext.doc_events.serial_no.before_submit",
 		"on_submit": "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.onsubmit",
 		"on_cancel": "jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.on_cancel"
 	},
@@ -100,7 +101,8 @@ doc_events = {
 }
 
 override_whitelisted_methods = {
-	"erpnext.manufacturing.doctype.job_card.job_card.make_stock_entry": "jewellery_erpnext.jewellery_erpnext.doc_events.job_card.make_stock_entry"
+	"erpnext.manufacturing.doctype.job_card.job_card.make_stock_entry": "jewellery_erpnext.jewellery_erpnext.doc_events.job_card.make_stock_entry",
+    "erpnext.stock.doctype.material_request.material_request.make_stock_entry": "jewellery_erpnext.jewellery_erpnext.doc_events.material_request.make_stock_entry"
 }
 
 fixtures = [
