@@ -44,6 +44,14 @@
   "column_break_dk0s1",
   "metal_colour",
   "metal_purity",
+  "item_weight_detail_section",
+  "gross_weight",
+  "net_weight",
+  "diamond_weight",
+  "column_break_nw2np",
+  "gemstone_weight",
+  "finding_weight",
+  "other_weight",
   "section_break_royco",
   "order_remarks",
   "order_details_tab",
@@ -73,7 +81,12 @@
   "images_tab",
   "section_break_1xrgj",
   "finish_good_image",
-  "preview"
+  "preview",
+  "mop_details_tab",
+  "section_break_okxuw",
+  "stock_summery",
+  "show_details_section",
+  "stock_entry_details"
  ],
  "fields": [
   {
@@ -485,6 +498,79 @@
    "fieldname": "gemstone_table",
    "fieldtype": "Table",
    "options": "BOM Gemstone Detail"
+  },
+  {
+   "fieldname": "item_weight_detail_section",
+   "fieldtype": "Section Break",
+   "label": "ITEM WEIGHT DETAIL"
+  },
+  {
+   "description": "Sum of all { MFG WORK ORDER GROSS WEIGHT }",
+   "fieldname": "gross_weight",
+   "fieldtype": "Float",
+   "label": "Gross Weight",
+   "precision": "2"
+  },
+  {
+   "description": "Sum of all { MFG WORK ORDER NET WEIGHT }",
+   "fieldname": "net_weight",
+   "fieldtype": "Float",
+   "label": "Net Weight",
+   "precision": "2"
+  },
+  {
+   "description": "Sum of all { MFG WORK ORDER DIAMOND WEIGHT }",
+   "fieldname": "diamond_weight",
+   "fieldtype": "Float",
+   "label": "Diamond Weight",
+   "precision": "2"
+  },
+  {
+   "description": "Sum of all { MFG WORK ORDER GEMSTONE WEIGHT }",
+   "fieldname": "gemstone_weight",
+   "fieldtype": "Float",
+   "label": "Gemstone Weight",
+   "precision": "2"
+  },
+  {
+   "fieldname": "finding_weight",
+   "fieldtype": "Float",
+   "label": "Finding Weight",
+   "precision": "2"
+  },
+  {
+   "fieldname": "other_weight",
+   "fieldtype": "Float",
+   "label": "Other Weight",
+   "precision": "2"
+  },
+  {
+   "fieldname": "column_break_nw2np",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mop_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "MOP Details"
+  },
+  {
+   "fieldname": "stock_entry_details",
+   "fieldtype": "HTML"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "show_details_section",
+   "fieldtype": "Section Break",
+   "label": "Operation Movement"
+  },
+  {
+   "fieldname": "stock_summery",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "section_break_okxuw",
+   "fieldtype": "Section Break",
+   "label": "Summary"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -503,7 +589,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-11-17 13:24:54.617130",
+ "modified": "2023-12-14 16:40:57.776660",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

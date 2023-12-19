@@ -6,6 +6,7 @@ from frappe import _
 from frappe.utils import now, time_diff, get_timedelta
 from frappe.model.document import Document
 from jewellery_erpnext.utils import set_values_in_bulk, update_existing
+from frappe.model.naming import make_autoname
 
 class ManufacturingOperation(Document):
 	def validate(self):
@@ -14,7 +15,9 @@ class ManufacturingOperation(Document):
 		self.validate_loss()
 
 	def on_update(self):
-		self.attach_cad_cam_file_into_item_master()
+		self.attach_cad_cam_file_into_item_master() # To set MOP doctype CAD-CAM Attachment's & respective details into Item Master.
+		self.set_wop_weight_details()  # To Set WOP doctype Weight details from MOP Doctype.
+		self.set_pmo_weight_details()  # To Set PMO doctype Weight details from MOP Doctype.
 		
 
 	def update_weights(self):
@@ -48,22 +51,38 @@ class ManufacturingOperation(Document):
 	def attach_cad_cam_file_into_item_master(self):
 		self.ref_name = self.name
 		existing_child = self.get_existing_child('Item', self.item_code, 'Cam Weight Detail', self.name)
+		
+		record_filter_from_mnf_setting = frappe.get_all("CAM Weight Details Mapping", filters={'parent': self.company, 'parenttype': "Manufacturing Setting"}, fields=['operation'])
+		
 		if existing_child:
 			# Update the existing row
 			existing_child.update({
 				'cad_numbering_file': self.cad_numbering_file,
 				'support_cam_file': self.support_cam_file,
-				'mop_series': self.ref_name
+				'mop_series': self.ref_name,
+				'platform_wt':self.platform_wt,
+				'rpt_wt_issue':self.rpt_wt_issue,
+				'rpt_wt_receive':self.rpt_wt_receive,
+				'rpt_wt_loss':self.rpt_wt_loss,
+				'estimated_rpt_wt':self.estimated_rpt_wt
 			})
 			existing_child.save()
 		else:
 			# Create a new child record
-			self.add_child_record('Item', self.item_code, 'Cam Weight Detail', 
-								{'cad_numbering_file': self.cad_numbering_file,
-								'support_cam_file': self.support_cam_file,
-								'mop_reference': self.ref_name,
-								'mop_series': self.ref_name
-								})
+			filter_record = [row.get('operation') for row in record_filter_from_mnf_setting]
+			if self.operation in filter_record:
+				self.add_child_record('Item', self.item_code, 'Cam Weight Detail', 
+									{'cad_numbering_file': self.cad_numbering_file,
+									'support_cam_file': self.support_cam_file,
+									'mop_reference': self.ref_name,
+									'mop_series': self.ref_name,
+									'mop_series': self.ref_name,
+									'platform_wt':self.platform_wt,
+									'rpt_wt_issue':self.rpt_wt_issue,
+									'rpt_wt_receive':self.rpt_wt_receive,
+									'rpt_wt_loss':self.rpt_wt_loss,
+									'estimated_rpt_wt':self.estimated_rpt_wt
+									})
 
 	def get_existing_child(self, parent_doctype, parent_name, child_doctype, mop_reference):
 		# Check if the child record already exists
@@ -93,8 +112,7 @@ class ManufacturingOperation(Document):
 		for fieldname, value in child_fields.items():
 			child_doc.set(fieldname, value)
 		# Save the child document
-		child_doc.insert()	
-
+		child_doc.insert()
 
 	@frappe.whitelist()
 	def create_fg(self):
@@ -113,14 +131,82 @@ class ManufacturingOperation(Document):
 		mwo = frappe.get_all("Manufacturing Work Order",
 					{"name": ["!=",self.manufacturing_work_order],"manufacturing_order": pmo, "docstatus":["!=",2], "department":["=",self.department]},
 					pluck="name")
-		data = frappe.db.sql(f"""select se.manufacturing_work_order, se.manufacturing_operation, sed.parent, sed.item_code,sed.item_name, sed.qty, sed.uom 
+		data = frappe.db.sql(f"""select se.manufacturing_work_order, se.manufacturing_operation, sed.parent, sed.item_code,sed.item_name, sed.batch_no, sed.qty, sed.uom,
+					   			ifnull(sum(if(sed.uom='cts',sed.qty*0.2, sed.qty)),0) as gross_wt
 			   				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
 							se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') and sed.t_warehouse = '{target_wh}' 
 							group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1)
 
-		total_qty = sum(item['qty'] for item in data)
+		total_qty = 0
+		for row in data:
+			total_qty += row.get('gross_wt', 0)
+		total_qty =  round(total_qty,4) #sum(item['qty'] for item in data)
 
 		return frappe.render_template("jewellery_erpnext/jewellery_erpnext/doctype/manufacturing_operation/stock_entry_details.html", {"data":data,"total_qty":total_qty})
+	
+	def set_wop_weight_details(doc):
+		get_wop_weight = frappe.db.get_value("Manufacturing Operation",{"manufacturing_work_order": doc.manufacturing_work_order, "status": ["!=", "Not Started"]},
+							  [
+								  "gross_wt",
+								  "net_wt",
+								  "diamond_wt",
+								  "gemstone_wt",
+								  "other_wt",
+								  "received_gross_wt",
+								  "received_net_wt",
+								  "loss_wt",
+								  "diamond_wt_in_gram",
+								  "diamond_pcs",
+								  "gemstone_pcs"
+		  						],
+							    order_by= "modified DESC",as_dict=1)
+		if get_wop_weight is None:
+			return
+		else:
+			frappe.db.set_value("Manufacturing Work Order", doc.manufacturing_work_order, 
+						{
+								"gross_wt"				:get_wop_weight.gross_wt,
+								"net_wt"				:get_wop_weight.net_wt,
+								"diamond_wt"			:get_wop_weight.diamond_wt,
+								"gemstone_wt"			:get_wop_weight.gemstone_wt,
+								"other_wt"				:get_wop_weight.other_wt,
+								"received_gross_wt"		:get_wop_weight.received_gross_wt,
+								"received_net_wt"		:get_wop_weight.received_net_wt,
+								"loss_wt"				:get_wop_weight.loss_wt,
+								"diamond_wt_in_gram"	:get_wop_weight.diamond_wt_in_gram,
+								"diamond_pcs"			:get_wop_weight.diamond_pcs,
+								"gemstone_pcs"			:get_wop_weight.gemstone_pcs
+							}
+						,update_modified=False)
+
+	def set_pmo_weight_details(doc):
+		get_mwo_weight = frappe.db.sql(f"""select 
+											sum(gross_wt) as gross_wt,
+											sum(net_wt) as net_wt,
+											sum(diamond_wt) as diamond_wt,
+											sum(gemstone_wt)as gemstone_wt,
+											sum(other_wt) as other_wt,
+											sum(received_gross_wt) as received_gross_wt,
+											sum(received_net_wt)as received_net_wt,
+											sum(loss_wt) as loss_wt,
+											sum(diamond_wt_in_gram) as diamond_wt_in_gram,
+											sum(diamond_pcs) as diamond_pcs,
+											sum(gemstone_pcs) as gemstone_pcs
+										from `tabManufacturing Work Order` 
+								 		where manufacturing_order = "{doc.manufacturing_order}" 
+								 		and docstatus = 1""",as_dict=1)
+		if get_mwo_weight is None:
+			return
+		else:
+			frappe.db.set_value("Parent Manufacturing Order",doc.manufacturing_order,
+					  {
+							"gross_weight"			:get_mwo_weight[0].gross_wt,
+							"net_weight"			:get_mwo_weight[0].net_wt,
+							"diamond_weight"		:get_mwo_weight[0].diamond_wt,
+							"gemstone_weight"		:get_mwo_weight[0].gemstone_wt,
+							# "finding_weight"		:get_mwo_weight[0].,
+							"other_weight"			:get_mwo_weight[0].other_wt
+						},update_modified=False)
 
 def create_manufacturing_entry(doc):
 	target_wh = frappe.db.get_value("Warehouse",{"department": doc.department})
@@ -162,6 +248,15 @@ def create_manufacturing_entry(doc):
 			"to_department": doc.department,
 			"s_warehouse": target_wh
 		})
+	sr_no = ""
+	compose_series = genrate_serial_no(doc)
+	serial_no=[]
+	for i in range(pmo_det.qty):
+		sr_no = make_autoname(compose_series)
+		serial_no.append(sr_no)
+	sr_no = "\n".join(serial_no)
+	new_bom_serial_no = serial_no[0]
+	doc.serial_no = sr_no
 	se.append("items",{
 		"item_code": pmo_det.item_code,
 		"qty": pmo_det.qty,
@@ -170,6 +265,7 @@ def create_manufacturing_entry(doc):
 		"to_department": doc.department,
 		"inventory_type": "Regular Stock",
 		"manufacturing_operation": doc.name,
+		"serial_no": sr_no,
 		"is_finished_item":1
 	})
 	se.save()
@@ -177,8 +273,31 @@ def create_manufacturing_entry(doc):
 	update_produced_qty(pmo_det)
 	frappe.msgprint('Finished Good created successfully')
 	if doc.for_fg:
-		doc.finish_good_serial_number = get_serial_no(se.name)
-	return se.name
+		doc.finish_good_serial_number = get_serial_no(new_bom_serial_no) #get_serial_no(se_name)
+	return new_bom_serial_no
+
+def genrate_serial_no(doc):
+	errors = []
+	mwo_no = frappe.db.get_value("Manufacturing Operation", doc.name, ['manufacturing_work_order'])
+	if mwo_no:
+		series_start = frappe.db.get_value("Manufacturing Setting", doc.company, ['series_start'])
+		diamond_grade, manufacturer, posting_date= frappe.db.get_value("Manufacturing Work Order", mwo_no, ['diamond_grade','manufacturer','posting_date'])
+		mnf_abbr = frappe.db.get_value("Manufacturer", manufacturer, ['custom_abbreviation'])
+		dg_abbr = frappe.db.get_value("Attribute Value", diamond_grade, ['abbreviation'])
+		date = f"{posting_date.year %100:02d}"
+		date_to_letter = {0:'J', 1:'A', 2:'B', 3:'C', 4:'D', 5:'E', 6:'F', 7:'G', 8:'H', 9:'I'}
+		final_date = date[0] + date_to_letter[int(date[1])]
+		if not series_start:
+				errors.append(f"Please set value <b>Series Start</b> on Manufacturing Setting for <strong>{doc.company}</strong>")
+		if not mnf_abbr:
+				errors.append(f"Please set value <b>Abbreviation</b> on Manufacturer doctype for <strong>{doc.company}</strong>")
+		if not dg_abbr:
+				errors.append(f"Please set value <b>Abbreviation</b> on Attribute Value doctype respective Diamond Grade:<b>{diamond_grade}</b>")
+	if errors:
+		frappe.throw("<br>".join(errors))
+        
+	compose_series = str(series_start + "-" + mnf_abbr + "-" + dg_abbr + "-" + final_date + "-.####")
+	return compose_series
 
 def update_produced_qty(pmo_det, cancel=False):
 	qty = pmo_det.qty * (-1 if cancel else 1)
@@ -328,10 +447,11 @@ def format_attrbute_name(input_string):
 	return formatted_string
 
 def get_serial_no(se_name):
-	se_doc = frappe.get_doc('Stock Entry',se_name)
-	for row in se_doc.items:
-		if row.is_finished_item:
-			serial_no = row.serial_no
+	# se_doc = frappe.get_doc('Stock Entry',se_name)
+	# for row in se_doc.items:
+	# 	if row.is_finished_item:
+	# 		serial_no = row.serial_no
+	serial_no = se_name
 	return str(serial_no)
 
 def finish_other_tagging_operations(doc,pmo):

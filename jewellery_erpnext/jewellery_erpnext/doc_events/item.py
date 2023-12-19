@@ -34,7 +34,7 @@ def system_item_restriction(self):
 
 def add_item_attributes(self):
 	if self.has_variants and self.subcategory and not self.attributes:
-		item_attributes = frappe.get_all("Attribute Value Item Attribute Detail",{'parent': self.subcategory,'in_item_variant':1},'item_attribute',order_by='idx asc')
+		item_attributes = frappe.get_all("Attribute Value Item Attribute Detail",{'parent': self.subcategory},'item_attribute',order_by='idx asc')
 		if item_attributes:
 			self.attributes = []
 			for row in item_attributes:
@@ -99,7 +99,7 @@ def set_attribute_and_value_in_description(self):
 	if self.variant_of:
 		description_value = "<b><u>" + self.variant_of + "</u></b><br/>"
 		for d in self.get('attributes'):
-			description_value += d.attribute +" : "+ str(d.attribute_value) + "<br/>"
+			description_value += d.attribute +" : "+ d.attribute_value + "<br/>"
 		self.description = description_value
 
 @frappe.whitelist()

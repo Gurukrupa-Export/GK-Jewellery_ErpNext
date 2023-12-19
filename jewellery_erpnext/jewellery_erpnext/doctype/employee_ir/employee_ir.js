@@ -13,11 +13,19 @@ frappe.ui.form.on('Employee IR', {
 	setup(frm) {
 		frm.set_query("operation", function () {
 			return {
-				filters: {
-					"is_subcontracted": frm.doc.subcontracting == "Yes"
-				}
+				filters: [
+                    ["Department Operation", "department", "=", cur_frm.doc.department],
+                    ["Department Operation", "is_subcontracted", "=", frm.doc.subcontracting == "Yes"],
+                ]
 			}
-		})
+		});
+		frm.set_query("department", function(){
+            return {
+                "filters": [
+                    ["Department", "company", "=", cur_frm.doc.company],
+                ]
+            }
+        });
 		frm.set_query("main_slip", function (doc) {
 			return {
 				filters: {
@@ -30,7 +38,8 @@ frappe.ui.form.on('Employee IR', {
 		frm.set_query("employee", function (doc) {
 			return {
 				filters: {
-					"department": frm.doc.department
+					"department": frm.doc.department,
+					"custom_operation": frm.doc.operation
 				}
 			}
 		})
@@ -55,7 +64,10 @@ frappe.ui.form.on('Employee IR', {
 				filters: [["Operation MultiSelect", "operation", "=", frm.doc.operation]]
 			}
 		})
+		var parent_fields = [['custom_transfer_type', 'Employee IR Reason']];
+		set_filters_on_parent_table_fields(frm, parent_fields);
 	},
+	
 	type(frm) {
 		frm.clear_table("department_ir_operation")
 		frm.refresh_field("department_ir_operation")
@@ -148,58 +160,95 @@ frappe.ui.form.on('Employee IR', {
 		}
 	},
 	get_operations(frm) {
-		var query_filters = {
-			"department": frm.doc.department
-		}
-		
-		if (frm.doc.main_slip){
-			var metal_purity = frm.doc.main_slip.match(/(\d+\.\d+)/);
-			query_filters["metal_purity"] = metal_purity[0]
-
-		
-			frappe.call({
-				method: 'jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_value',
-				args: {
-					'main_slip': frm.doc.main_slip,
-				},
-				callback: function(r) {
-					if (!r.exc) {
-						console.log(r.message)
-					}
+		var query_filters= {
+			"department": frm.doc.department,
+		};
+		if (frm.doc.main_slip == null)
+		{
+			if (frm.doc.type == "Issue") {
+				query_filters["status"] = ["in", ["Not Started"]];
+				query_filters["operation"] = ["is", "not set"];
+	
+				if (frm.doc.subcontracting == "Yes") {
+					query_filters["employee"] = ["is", "not set"];
+				} else {
+					query_filters["subcontractor"] = ["is", "not set"];
 				}
-			});
-		}
-		
-		if (frm.doc.type == "Issue") {
-			query_filters["status"] = ["in", ["Not Started"]]
-			query_filters["operation"] = ["is", "not set"]
-			// query_filters["department_ir_status"] = ["=", "Received"]
-			if (frm.doc.subcontracting == "Yes") {
-				query_filters["employee"] = ["is", "not set"]
+			} else {
+				query_filters["status"] = ["in", ["On Hold", "WIP", "QC Completed"]];
+				query_filters["operation"] = frm.doc.operation;
+	
+				if (frm.doc.employee) query_filters["employee"] = frm.doc.employee;
+				if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor;
 			}
-			else {
-				query_filters["subcontractor"] = ["is", "not set"]
+	
+			erpnext.utils.map_current_doc({
+				method: "jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_manufacturing_operations",
+				source_doctype: "Manufacturing Operation",
+				slip: frm.doc.main_slip,
+				target: frm,
+				setters: {
+					manufacturing_work_order: undefined,
+					company: frm.doc.company || undefined,
+					department: frm.doc.department,
+					manufacturer: frm.doc.manufacturer || undefined,
+				
+				},
+				get_query_filters: query_filters,
+				size: "extra-large"
+			});	
+		}
+		else{
+
+			frappe.db.get_value("Main Slip", frm.doc.main_slip, ["metal_colour", "metal_purity"])
+			.then(r => {
+				var metal_colour = r.message.metal_colour;
+				var metal_purity = r.message.metal_purity;
+	
+			if (frm.doc.type == "Issue") {
+				query_filters["status"] = ["in", ["Not Started"]];
+				query_filters["operation"] = ["is", "not set"];
+	
+				if (frm.doc.subcontracting == "Yes") {
+					query_filters["employee"] = ["is", "not set"];
+				} else {
+					query_filters["subcontractor"] = ["is", "not set"];
+				}
+			} else {
+				query_filters["status"] = ["in", ["On Hold", "WIP", "QC Completed"]];
+				query_filters["operation"] = frm.doc.operation;
+	
+				if (frm.doc.employee) query_filters["employee"] = frm.doc.employee;
+				if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor;
 			}
-		}
-		else {
-			query_filters["status"] = ["in", ["On Hold", "WIP", "QC Completed"]]
-			query_filters["operation"] = frm.doc.operation
-			if (frm.doc.employee) query_filters["employee"] = frm.doc.employee
-			if (frm.doc.subcontractor && frm.doc.subcontracting == "Yes") query_filters["subcontractor"] = frm.doc.subcontractor
-		}
-		// console.log(query_filters)
-		erpnext.utils.map_current_doc({
-			method: "jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_manufacturing_operations",
-			source_doctype: "Manufacturing Operation",
-			target: frm,
-			setters: {
-				manufacturing_work_order: undefined,
-				company: frm.doc.company || undefined,
-				department: frm.doc.department,
-				manufacturer: frm.doc.manufacturer || undefined,
-			},
-			get_query_filters: query_filters,
-			size: "extra-large"
+	
+			erpnext.utils.map_current_doc({
+				method: "jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.get_manufacturing_operations",
+				source_doctype: "Manufacturing Operation",
+				slip: frm.doc.main_slip,
+				target: frm,
+				setters: {
+					manufacturing_work_order: undefined,
+					company: frm.doc.company || undefined,
+					department: frm.doc.department,
+					manufacturer: frm.doc.manufacturer || undefined,
+					metal_purity: metal_purity || undefined,
+					metal_colour: metal_colour|| undefined
+				},
+				get_query_filters: query_filters,
+				size: "extra-large"
+			});	
 		})
-	}
+		}
+		}
 });
+function set_filters_on_parent_table_fields(frm, fields) {
+	fields.map(function (field) {
+		frm.set_query(field[0], function (doc) {
+			return {
+				query: 'jewellery_erpnext.query.item_attribute_query',
+				filters: { 'item_attribute': field[1] }
+			};
+		});
+	});
+}

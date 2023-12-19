@@ -8,7 +8,6 @@
  "engine": "InnoDB",
  "field_order": [
   "index",
-  "bom_or_cad",
   "company",
   "department",
   "column_break_etz53",
@@ -29,10 +28,10 @@
   "due_days",
   "est_due_days",
   "service_type",
+  "item",
   "section_break_10",
   "cad_order_form",
   "design_by",
-  "item_type",
   "column_break_2",
   "cad_order_form_detail",
   "design_type",
@@ -107,21 +106,11 @@
   "detachable",
   "2_in_1",
   "enamal",
+  "column_break_66",
+  "customer_sample",
   "column_break_69",
   "nakshi_from",
   "nakshi_weight",
-  "section_break_6pxwc",
-  "customer_sample",
-  "column_break_hzu6j",
-  "customer_voucher_no",
-  "column_break_8fcyf",
-  "customer_gold",
-  "column_break_g9i4z",
-  "customer_diamond",
-  "column_break_rhjnl",
-  "customer_stone",
-  "column_break_k6wnf",
-  "customer_good",
   "section_break_vfurz",
   "navratna",
   "section_break_oykzd",
@@ -162,12 +151,18 @@
   "designer_assignment",
   "section_break_77",
   "update_reason",
-  "section_break_tcrzb",
-  "item",
-  "column_break_ggjel",
-  "new_bom",
   "design_attribute_tab",
   "design_attributes",
+  "creativity_tab",
+  "stepping",
+  "fusion",
+  "drops",
+  "coin",
+  "column_break_qetse",
+  "gold_wire",
+  "gold_ball",
+  "flows",
+  "nagas",
   "territories_tab",
   "india",
   "india_states",
@@ -301,6 +296,7 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:((doc.design_type==\"Mod\"))",
    "fetch_from": "cad_order_form_detail.design_id",
    "fieldname": "design_id",
    "fieldtype": "Link",
@@ -694,6 +690,10 @@
    "options": "Attribute Value"
   },
   {
+   "fieldname": "column_break_66",
+   "fieldtype": "Column Break"
+  },
+  {
    "fetch_from": "cad_order_form_detail.enamal",
    "fieldname": "enamal",
    "fieldtype": "Link",
@@ -706,6 +706,7 @@
    "fetch_from": "cad_order_form_detail.customer_sample",
    "fieldname": "customer_sample",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Customer Sample",
    "options": "Attribute Value",
    "read_only": 1
@@ -971,6 +972,7 @@
    "fetch_from": "cad_order_form_detail.gemstone_type1",
    "fieldname": "gemstone_type1",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Gemstone Type1",
    "options": "Attribute Value"
   },
@@ -979,8 +981,7 @@
    "fieldname": "gemstone_type2",
    "fieldtype": "Link",
    "label": "Gemstone Type2",
-   "options": "Attribute Value",
-   "read_only": 1
+   "options": "Attribute Value"
   },
   {
    "fetch_from": "cad_order_form_detail.gemstone_type3",
@@ -1145,10 +1146,67 @@
    "label": "Territories"
   },
   {
+   "fieldname": "creativity_tab",
+   "fieldtype": "Tab Break",
+   "label": "Creativity"
+  },
+  {
    "fieldname": "design_attributes",
    "fieldtype": "Table",
    "label": "Design Attributes",
    "options": "Design Attributes"
+  },
+  {
+   "default": "0",
+   "fieldname": "stepping",
+   "fieldtype": "Check",
+   "label": "Stepping"
+  },
+  {
+   "default": "0",
+   "fieldname": "fusion",
+   "fieldtype": "Check",
+   "label": "Fusion"
+  },
+  {
+   "default": "0",
+   "fieldname": "drops",
+   "fieldtype": "Check",
+   "label": "Drops"
+  },
+  {
+   "default": "0",
+   "fieldname": "coin",
+   "fieldtype": "Check",
+   "label": "Coin"
+  },
+  {
+   "fieldname": "column_break_qetse",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_wire",
+   "fieldtype": "Check",
+   "label": "Gold Wire (dat)"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_ball",
+   "fieldtype": "Check",
+   "label": "Gold Ball"
+  },
+  {
+   "default": "0",
+   "fieldname": "flows",
+   "fieldtype": "Check",
+   "label": "Flows"
+  },
+  {
+   "default": "0",
+   "fieldname": "nagas",
+   "fieldtype": "Check",
+   "label": "Nagas"
   },
   {
    "default": "0",
@@ -1167,111 +1225,12 @@
    "fieldname": "usa",
    "fieldtype": "Check",
    "label": "USA"
-  },
-  {
-   "fieldname": "item_type",
-   "fieldtype": "Select",
-   "label": "Item Type",
-   "options": "\nTemplate and Variant\nSuffix Of Variant\nOnly Variant",
-   "read_only": 1
-  },
-  {
-   "fieldname": "bom_or_cad",
-   "fieldtype": "Select",
-   "hidden": 1,
-   "label": "BOM or CAD",
-   "options": "\nBOM\nCAD"
-  },
-  {
-   "fieldname": "section_break_6pxwc",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fetch_from": "cad_order_form_detail.customer_gold",
-   "fieldname": "customer_gold",
-   "fieldtype": "Select",
-   "label": "Customer Gold",
-   "options": "No\nYes",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "cad_order_form_detail.customer_sample_voucher_no",
-   "fieldname": "customer_voucher_no",
-   "fieldtype": "Data",
-   "label": "Customer Voucher No",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "cad_order_form_detail.customer_diamond",
-   "fieldname": "customer_diamond",
-   "fieldtype": "Select",
-   "label": "Customer Diamond",
-   "options": "No\nYes",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "cad_order_form_detail.customer_stone",
-   "fieldname": "customer_stone",
-   "fieldtype": "Select",
-   "label": "Customer Stone",
-   "options": "No\nYes"
-  },
-  {
-   "fetch_from": "cad_order_form_detail.stock_entry",
-   "fieldname": "customer_good",
-   "fieldtype": "Link",
-   "label": "Customer Good",
-   "options": "Attribute Value",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_hzu6j",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_8fcyf",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_g9i4z",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_rhjnl",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_k6wnf",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "new_bom",
-   "fieldtype": "Link",
-   "label": "New BOM",
-   "options": "BOM"
-  },
-  {
-   "fieldname": "section_break_tcrzb",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_ggjel",
-   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [
-  {
-   "link_doctype": "Item",
-   "link_fieldname": "custom_cad_order_id"
-  },
-  {
-   "link_doctype": "BOM",
-   "link_fieldname": "custom_order_form_id"
-  }
- ],
- "modified": "2023-11-01 15:24:37.403120",
+ "links": [],
+ "modified": "2023-07-29 17:32:27.986491",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order",

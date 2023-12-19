@@ -7,18 +7,21 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "company",
   "department",
   "customer_received_voucher",
   "batch_no",
   "metal_type",
+  "base_metal_touch",
   "base_purity",
-  "base_metal_wt",
   "total_weight",
+  "base_metal_wt",
   "making_type",
   "column_break_aw0qk",
   "date",
   "manager",
   "mix_metal",
+  "to_metal_touch",
   "to_purity",
   "mix_weight",
   "wastage_per",
@@ -60,10 +63,11 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval: doc.metal_type",
    "fieldname": "base_metal_wt",
    "fieldtype": "Float",
    "label": "Base Metal Weight",
-   "read_only": 1
+   "mandatory_depends_on": "eval: doc.metal_type"
   },
   {
    "fieldname": "total_weight",
@@ -103,8 +107,9 @@
   },
   {
    "fieldname": "to_purity",
-   "fieldtype": "Select",
-   "label": "To Purity"
+   "fieldtype": "Link",
+   "label": "To Purity",
+   "options": "Attribute Value"
   },
   {
    "fieldname": "mix_weight",
@@ -134,12 +139,30 @@
    "fieldname": "item_details",
    "fieldtype": "HTML",
    "label": "Item Details"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "base_metal_touch",
+   "fieldtype": "Data",
+   "label": "Base Metal Touch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_metal_touch",
+   "fieldtype": "Link",
+   "label": "To Metal Touch",
+   "options": "Attribute Value"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-11-17 17:35:21.295694",
+ "modified": "2023-12-06 16:16:18.005828",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Metal Conversion",

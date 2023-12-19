@@ -45,8 +45,7 @@ class QC(Document):
 
 		if self.has_value_changed("status") and self.status in ["Accepted", "Rejected"]:
 			self.finish_time = now()
-			self.time_taken = time_diff(self.finish_time, self.start_time) 
-			
+			self.time_taken = time_diff(self.finish_time, self.start_time)
 
 	@frappe.whitelist()
 	def force_approve(self):

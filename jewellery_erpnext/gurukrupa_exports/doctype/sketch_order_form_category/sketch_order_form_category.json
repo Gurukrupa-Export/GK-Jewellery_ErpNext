@@ -75,6 +75,21 @@
    "options": "Item"
   },
   {
+   "depends_on": "eval:(doc.design_type==\"Mod\")",
+   "fetch_from": "tag__design_id.tag_no",
+   "fieldname": "tag_id",
+   "fieldtype": "Link",
+   "label": "Serial No",
+   "options": "Serial No"
+  },
+  {
+   "depends_on": "eval:((doc.design_type==\"Similar\"))",
+   "fieldname": "reference_design_code",
+   "fieldtype": "Link",
+   "label": "Reference Design ID",
+   "options": "Item"
+  },
+  {
    "depends_on": "eval:((doc.design_type==\"Similar\"))",
    "fieldname": "reference_serial_no",
    "fieldtype": "Link",
@@ -102,6 +117,29 @@
   {
    "fieldname": "column_break",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "depends_on": "eval:((doc.design_type==\"Similar\")||(doc.design_type==\"New Design\"))",
+   "fetch_from": "tag__design_id.image",
+   "fetch_if_empty": 1,
+   "fieldname": "design_image",
+   "fieldtype": "Attach Image",
+   "label": "Design Image",
+   "length": 5
+  },
+  {
+   "fetch_from": "tag__design_id.image",
+   "fieldname": "image_preview",
+   "fieldtype": "Image",
+   "in_preview": 1,
+   "label": "Image",
+   "options": "design_image"
   },
   {
    "fieldname": "section_break_10",
@@ -216,6 +254,12 @@
    "fieldtype": "Section Break"
   },
   {
+   "fieldname": "gemstone_type1",
+   "fieldtype": "Link",
+   "label": "Gemstone Type1",
+   "options": "Attribute Value"
+  },
+  {
    "fieldname": "column_break_34",
    "fieldtype": "Column Break"
   },
@@ -317,56 +361,12 @@
    "fieldname": "budget",
    "fieldtype": "Data",
    "label": "Budget"
-  },
-  {
-   "fieldname": "project",
-   "fieldtype": "Link",
-   "label": "Project",
-   "options": "Project"
-  },
-  {
-   "depends_on": "eval:(doc.design_type==\"Mod\")",
-   "fetch_from": "tag__design_id.tag_no",
-   "fieldname": "tag_id",
-   "fieldtype": "Link",
-   "label": "Serial No",
-   "options": "Serial No"
-  },
-  {
-   "fieldname": "gemstone_type1",
-   "fieldtype": "Link",
-   "label": "Gemstone Type1",
-   "options": "Attribute Value"
-  },
-  {
-   "depends_on": "eval:((doc.design_type==\"Similar\")||(doc.design_type==\"New Design\"))",
-   "fetch_from": "tag__design_id.image",
-   "fetch_if_empty": 1,
-   "fieldname": "design_image",
-   "fieldtype": "Attach Image",
-   "label": "Design Image",
-   "length": 5
-  },
-  {
-   "fetch_from": "tag__design_id.image",
-   "fieldname": "image_preview",
-   "fieldtype": "Image",
-   "in_preview": 1,
-   "label": "Image",
-   "options": "design_image"
-  },
-  {
-   "depends_on": "eval:((doc.design_type==\"Similar\"))",
-   "fieldname": "reference_design_code",
-   "fieldtype": "Link",
-   "label": "Reference Design ID",
-   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-15 16:52:05.605354",
+ "modified": "2023-12-07 13:22:25.436508",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Sketch Order Form Category",

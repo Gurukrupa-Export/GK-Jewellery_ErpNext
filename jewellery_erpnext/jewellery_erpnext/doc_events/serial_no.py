@@ -1,7 +1,7 @@
 import frappe
 from frappe.model.naming import make_autoname
 def before_submit(self, method=None):
-    apply_custom_serial_number = frappe.db.get_value("Manufacturing Setting", self.company, 'apply_custom_serial_number')
+    apply_custom_serial_number = 0 #frappe.db.get_value("Manufacturing Setting", self.company, 'apply_custom_serial_number')
     if apply_custom_serial_number == 1:
         for item in self.items:
             serial_no = ""

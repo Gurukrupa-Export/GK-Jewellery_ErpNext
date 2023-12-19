@@ -166,5 +166,13 @@
   "modified": "2023-10-18 12:50:49.887354",
   "name": "Customer Goods Transfer",
   "purpose": "Material Transfer"
+ },
+ {
+  "add_to_transit": 0,
+  "docstatus": 0,
+  "doctype": "Stock Entry Type",
+  "modified": "2023-11-17 12:32:59.983995",
+  "name": "Material Receipt - Sales Person",
+  "purpose": "Material Transfer"
  }
 ]

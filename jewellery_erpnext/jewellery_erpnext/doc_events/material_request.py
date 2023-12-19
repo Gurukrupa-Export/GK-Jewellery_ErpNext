@@ -78,6 +78,8 @@ def make_stock_entry(source_name, target_doc=None):
 		target.purpose = source.material_request_type
 		target.from_warehouse = source.set_from_warehouse
 		target.to_warehouse = source.set_warehouse
+		# sending doc_id for reference
+		target.custom_material_request_reference = source.name
 
 		if source.job_card:
 			target.purpose = "Material Transfer for Manufacture"
@@ -98,12 +100,12 @@ def make_stock_entry(source_name, target_doc=None):
 		itm_batch = []
 		dict = {}
 		for i in source.items:
-			dict.update({"item": i.item_code, "batch": i.custom_batch_no, "serial": i.custom_serial_no})
+			dict.update({"item": i.item_code, "batch": i.custom_batch_no, "serial": i.custom_serial_no, "idx": i.idx})
 			itm_batch.append(dict)
 
 		for itm in target.items:
 			for b in itm_batch:
-				if itm.item_code == b.get("item"):
+				if itm.item_code == b.get("item") and itm.idx == b.get("idx"):
 					itm.batch_no = b.get("batch")
 					itm.serial_no = b.get("serial")
 

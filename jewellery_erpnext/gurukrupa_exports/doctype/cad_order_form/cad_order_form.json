@@ -33,6 +33,16 @@
   "amended_from",
   "design_attribute_tab",
   "design_attributes",
+  "creativity_tab",
+  "stepping",
+  "fusion",
+  "drops",
+  "coin",
+  "column_break_jazjr",
+  "gold_wire",
+  "gold_ball",
+  "flows",
+  "nagas",
   "territories_tab",
   "india",
   "india_states",
@@ -161,7 +171,6 @@
   {
    "fieldname": "remarks",
    "fieldtype": "Text",
-   "hidden": 1,
    "label": "Remarks"
   },
   {
@@ -194,6 +203,11 @@
    "label": "Territories"
   },
   {
+   "fieldname": "creativity_tab",
+   "fieldtype": "Tab Break",
+   "label": "Creativity"
+  },
+  {
    "default": "0",
    "fieldname": "india",
    "fieldtype": "Check",
@@ -222,6 +236,58 @@
    "options": "\nUSA"
   },
   {
+   "default": "0",
+   "fieldname": "stepping",
+   "fieldtype": "Check",
+   "label": "Stepping"
+  },
+  {
+   "default": "0",
+   "fieldname": "fusion",
+   "fieldtype": "Check",
+   "label": "Fusion"
+  },
+  {
+   "default": "0",
+   "fieldname": "drops",
+   "fieldtype": "Check",
+   "label": "Drops"
+  },
+  {
+   "default": "0",
+   "fieldname": "coin",
+   "fieldtype": "Check",
+   "label": "Coin"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_wire",
+   "fieldtype": "Check",
+   "label": "Gold Wire"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold_ball",
+   "fieldtype": "Check",
+   "label": "Gold Ball"
+  },
+  {
+   "default": "0",
+   "fieldname": "flows",
+   "fieldtype": "Check",
+   "label": "Flows"
+  },
+  {
+   "default": "0",
+   "fieldname": "nagas",
+   "fieldtype": "Check",
+   "label": "Nakshi"
+  },
+  {
+   "fieldname": "column_break_jazjr",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "design_attribute_tab",
    "fieldtype": "Tab Break",
    "label": "Design Attribute"
@@ -230,8 +296,7 @@
    "fieldname": "design_attributes",
    "fieldtype": "Table",
    "label": "Design Attributes",
-   "options": "Design Attributes",
-   "reqd": 1
+   "options": "Design Attributes"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -240,17 +305,9 @@
   {
    "link_doctype": "CAD Order",
    "link_fieldname": "cad_order_form"
-  },
-  {
-   "link_doctype": "Item",
-   "link_fieldname": "custom_cad_order_form_id"
-  },
-  {
-   "link_doctype": "BOM",
-   "link_fieldname": "custom_cad_order_form_id"
   }
  ],
- "modified": "2023-11-10 09:29:05.163473",
+ "modified": "2023-07-29 17:24:50.540777",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "CAD Order Form",

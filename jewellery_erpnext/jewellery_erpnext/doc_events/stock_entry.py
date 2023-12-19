@@ -345,7 +345,6 @@ def update_manufacturing_operation(doc, is_cancelled=False):
 
 @frappe.whitelist()
 def make_stock_in_entry(source_name, target_doc=None):
-	print("@@@@@@@@@@@@@@@@@@@@@!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", source_name, target_doc)
 	def set_missing_values(source, target):
 		if target.stock_entry_type == "Customer Goods Received":
 			target.stock_entry_type = "Customer Goods Issue"
@@ -360,6 +359,15 @@ def make_stock_in_entry(source_name, target_doc=None):
 
 	def update_item(source_doc, target_doc, source_parent):
 		target_doc.t_warehouse = ""
+		# getting target warehouse on end transit
+		target_wh = ""
+		if source_parent.custom_material_request_reference:
+			ref_mr = frappe.get_doc("Material Request", source_parent.custom_material_request_reference)
+			for wh in ref_mr.items:
+				if wh.item_code == source_doc.item_code:
+					target_wh = wh.warehouse
+			target_doc.t_warehouse = target_wh
+
 
 		target_doc.s_warehouse = source_doc.t_warehouse
 		target_doc.qty = source_doc.qty
@@ -421,21 +429,34 @@ def convert_metal_purity(from_item: dict, to_item: dict, s_warehouse, t_warehous
 @frappe.whitelist()
 def make_mr_on_return(source_name, target_doc=None):
 	def set_missing_values(source, target):
+		itm_batch = []
+		dict = {}
+		for i in source.items:
+			dict.update({"item": i.item_code, "batch": i.batch_no, "serial": i.serial_no, "idx": i.idx})
+			itm_batch.append(dict)
+
+		for itm in target.items:
+			for b in itm_batch:
+				if itm.item_code == b.get("item") and itm.idx == b.get("idx"):
+					itm.custom_batch_no = b.get("batch")
+					itm.custom_serial_no = b.get("serial")
+
 		if source.stock_entry_type == "Customer Goods Transfer":
 			target.material_request_type = "Material Transfer"
 		target.set_missing_values()
 
 	def update_item(source_doc, target_doc, source_parent):
 		target_doc.from_warehouse = source_doc.t_warehouse
-
-		ref_se = frappe.get_doc("Stock Entry", source_parent.outgoing_stock_entry)
-		for wh in ref_se.items:
-			if wh.item_code == source_doc.item_code:
-				target_wh = wh.s_warehouse
+		target_wh = ""
+		if source_parent.outgoing_stock_entry:
+			ref_se = frappe.get_doc("Stock Entry", source_parent.outgoing_stock_entry)
+			for wh in ref_se.items:
+				if wh.item_code == source_doc.item_code:
+					target_wh = wh.s_warehouse
 
 		target_doc.warehouse = target_wh
 		target_doc.qty = source_doc.qty
-
+	
 	doclist = get_mapped_doc(
 		"Stock Entry",
 		source_name,
@@ -457,3 +478,175 @@ def make_mr_on_return(source_name, target_doc=None):
 	)
 
 	return doclist
+
+""" 
+create_material_receipt_for_sales_person function  
+creates a return receipt for items issued. i.e. Stock Enty to Stock Entry.
+"""
+
+@frappe.whitelist()
+def create_material_receipt_for_sales_person(source_name):
+	source_doctype = 'Stock Entry'
+	target_doctype = 'Stock Entry'
+	source_doc = frappe.get_doc("Stock Entry", source_name)
+	target_doc = frappe.new_doc(source_doctype)
+	target_doc.update(source_doc.as_dict())
+	material_receipts_sql = f"""SELECT se.name, si.item_code, sum(si.qty) as quantity
+                            FROM `tabStock Entry` as se
+                            LEFT JOIN `tabStock Entry Detail` as si
+                            ON si.parent = se.name
+                            WHERE se.custom_material_return_receipt_number = '{source_doc.name}'
+                            GROUP BY se.name, si.item_code
+                         """
+	material_receipts = frappe.db.sql(material_receipts_sql, as_dict=True)
+	item_qty_material_receipt = {}
+	for row in material_receipts:
+		if row.item_code not in item_qty_material_receipt:
+			item_qty_material_receipt[row.item_code] = row.quantity
+		else:
+			item_qty_material_receipt[row.item_code] += row.quantity
+	
+	target_doc.stock_entry_type = "Material Receipt - Sales Person"
+	target_doc.docstatus = 0
+	target_doc.posting_date = frappe.utils.nowdate()
+	target_doc.posting_time = frappe.utils.nowtime()
+	items_quantity_ca= frappe.db.sql(f"""SELECT soic.item_code, sum(soic.quantity)
+                                        FROM `tabCustomer Approval` as ca
+                                        LEFT JOIN `tabSales Order Item Child` as soic
+                                        ON soic.parent = ca.name
+                                        WHERE ca.stock_entry_reference LIKE '{source_name}'
+                                        GROUP BY soic.item_code
+                                     """, as_dict=True)
+	items_quantity_ca = {item['item_code']: flt(item['sum(soic.quantity)']) for item in items_quantity_ca}
+	items_quantity = item_qty_material_receipt.copy()
+	for item_code in items_quantity_ca:
+		if item_code in items_quantity:
+			items_quantity[item_code]+=items_quantity_ca[item_code]
+		else:
+			items_quantity[item_code]=items_quantity_ca[item_code]
+	
+	filtered_items = []
+	for item in target_doc.items:
+		if item.item_code not in items_quantity:
+			filtered_items.append(item)
+		elif item.item_code in items_quantity:
+			if item.qty != items_quantity[item.item_code]:
+				item.qty -= items_quantity[item.item_code]
+				filtered_items.append(item)
+	
+	serial_and_batch_items = {}
+	for item in source_doc.items:
+		serial_and_batch_items[item.item_code] = [item.serial_no, item.batch_no]
+	target_doc.items = filtered_items
+	target_doc.stock_entry_type = "Material Receipt - Sales Person"
+	target_doc.custom_material_return_receipt_number = source_doc.name
+	for item in target_doc.items:
+		if item.item_code in serial_and_batch_items:
+			item.serial_no = serial_and_batch_items[item.item_code][0]
+			item.batch_no = serial_and_batch_items[item.item_code][1]
+		item.s_warehouse, item.t_warehouse = item.t_warehouse, item.s_warehouse
+	target_doc.insert()
+	total_return_receipt_for_issue={}
+
+	return target_doc
+
+"""
+create_material_receipt_for_customer_approval function 
+creates a return receipt for items issued. i.e. Customer Approval to Stock Entry.
+"""
+@frappe.whitelist()
+def create_material_receipt_for_customer_approval(source_name, cust_name):
+    items_quantity_ca = frappe.db.sql(f"""
+        SELECT soic.item_code, sum(soic.quantity) as total_quantity, soic.serial_no
+        FROM `tabCustomer Approval` as ca
+        LEFT JOIN `tabSales Order Item Child` as soic ON soic.parent = ca.name
+        WHERE ca.stock_entry_reference LIKE '{source_name}' AND ca.name='{cust_name}'
+        GROUP BY soic.item_code, soic.serial_no
+    """, as_dict=True)
+
+    item_qty = {item['item_code']: {'total_quantity': item['total_quantity'], 'serial_no': item['serial_no']} for item in items_quantity_ca}
+
+    target_doc = frappe.new_doc("Stock Entry")
+    target_doc.update(frappe.get_doc("Stock Entry", source_name).as_dict())
+    target_doc.docstatus = 0
+
+    target_doc.items = []
+    for item in frappe.get_all("Stock Entry Detail", filters={'parent': source_name}, fields=['*']):
+        se_item = frappe.new_doc("Stock Entry Detail")
+        se_item.update(item)
+        se_item.qty = item_qty.get(item.item_code, {}).get('total_quantity', 0)
+        se_item.serial_no = item_qty.get(item.item_code, {}).get('serial_no', '')
+        target_doc.append('items', se_item)
+
+    target_doc.stock_entry_type = "Material Receipt - Sales Person"
+    target_doc.custom_material_return_receipt_number = source_name
+
+    for item in target_doc.items:
+        item.s_warehouse, item.t_warehouse = item.t_warehouse, item.s_warehouse
+
+    target_doc.insert()
+    return target_doc.name
+
+
+"""
+create_material_receipt_for_customer_approval 
+validates serial items entered are equal to quantity or not if not appropriate errors received
+
+"""
+
+@frappe.whitelist()
+def make_stock_in_entry_on_transit_entry(source_name, target_doc=None):
+	def set_missing_values(source, target):
+		target.stock_entry_type = source.stock_entry_type
+		target.set_missing_values()
+
+	def update_item(source_doc, target_doc, source_parent):
+		target_doc.t_warehouse = ""
+
+		if source_doc.material_request_item and source_doc.material_request:
+			add_to_transit = frappe.db.get_value("Stock Entry", source_name, "add_to_transit")
+			if add_to_transit:
+				warehouse = frappe.get_value(
+					"Material Request Item", source_doc.material_request_item, "warehouse"
+				)
+				target_doc.t_warehouse = warehouse
+
+		target_doc.s_warehouse = source_doc.t_warehouse
+		target_doc.qty = source_doc.qty - source_doc.transferred_qty
+
+	doclist = get_mapped_doc(
+		"Stock Entry",
+		source_name,
+		{
+			"Stock Entry": {
+				"doctype": "Stock Entry",
+				"field_map": {"name": "outgoing_stock_entry"},
+				"validation": {"docstatus": ["=", 1]},
+			},
+			"Stock Entry Detail": {
+				"doctype": "Stock Entry Detail",
+				"field_map": {
+					"name": "ste_detail",
+					"parent": "against_stock_entry",
+					"serial_no": "serial_no",
+					"batch_no": "batch_no",
+				},
+				"postprocess": update_item,
+				"condition": lambda doc: flt(doc.qty) - flt(doc.transferred_qty) > 0.01,
+			},
+		},
+		target_doc,
+		set_missing_values,
+	)
+
+	return doclist
+
+@frappe.whitelist()
+def validation_of_serial_item(issue_doc):
+    doc=frappe.get_doc("Stock Entry",issue_doc)
+    serial_item={}
+    for item in doc.items:
+        check_serial_no = frappe.db.get_list('Item', filters={'item_code': item.item_code},fields=['has_serial_no'])
+        if check_serial_no[0]['has_serial_no']==1:
+            serial_item[item.item_code]=item.serial_no.split('\n')
+    return serial_item

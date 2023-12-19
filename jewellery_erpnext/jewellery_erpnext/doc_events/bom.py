@@ -214,7 +214,7 @@ def set_specifications_for_modified_bom(self, fields_list):
 		self.defualt_specifications = ''.join(f"{key} - {val} \n" for key, val in temp_bom_dict.items())
 		return 
 
-	new_fields = [{"item_category": self.item_category}, {"item_subcategory": self.item_subcategory}, {"product_size": self.product_size}, {"gold_target": self.gold_target}, {"diamond_target": self.diamond_target}, {"metal_colour": self.metal_colour}, {"enamal": self.enamal}, {"rhodium": self.rhodium}, {"gemstone_quality": self.gemstone_quality}, {"changeable": self.changeable}, {"hinges": self.hinges}, {"back_belt_patti": self.back_belt_patti}, {"black_beed": self.black_beed}, {"black_beed_line": self.black_beed_line}, {"screw_type": self.screw_type}, {"hook_type": self.hook_type}, {"lock_type": self.lock_type}, {"kadi_type": self.kadi_type}, {"chain": self.chain}, {"chain_type": self.chain_type}, {"chain_length": self.chain_length}, {"customer_chain": self.customer_chain}, {"chain_weight": self.chain_weight}, {"detachable": self.detachable}, {"total_length": self.total_length}, {"back_chain": self.back_chain}, {"back_chain_size": self.back_chain_size}, {"back_side_size": self.back_side_size}, {"chain_size": self.chain_size}, {"space_between_mugappu": self.space_between_mugappu}, {"breadth": self.breadth}, {"width": self.width}, {"back_belt_length": self.back_belt_length}]
+	new_fields = [{"item_category": self.item_category}, {"item_subcategory": self.item_subcategory}, {"product_size": self.product_size}, {"gold_target": self.gold_target}, {"diamond_target": self.diamond_target}, {"metal_colour": self.metal_colour}, {"enamal": self.enamal}, {"rhodium": self.rhodium}, {"gemstone_type": self.gemstone_type}, {"gemstone_quality": self.gemstone_quality}, {"changeable": self.changeable}, {"hinges": self.hinges}, {"back_belt_patti": self.back_belt_patti}, {"black_beed": self.black_beed}, {"black_beed_line": self.black_beed_line}, {"screw_type": self.screw_type}, {"hook_type": self.hook_type}, {"lock_type": self.lock_type}, {"kadi_type": self.kadi_type}, {"chain": self.chain}, {"chain_type": self.chain_type}, {"chain_length": self.chain_length}, {"customer_chain": self.customer_chain}, {"chain_weight": self.chain_weight}, {"detachable": self.detachable}, {"total_length": self.total_length}, {"back_chain": self.back_chain}, {"back_chain_size": self.back_chain_size}, {"back_side_size": self.back_side_size}, {"chain_size": self.chain_size}, {"kadi_to_mugappu": self.kadi_to_mugappu}, {"space_between_mugappu": self.space_between_mugappu}, {"breadth": self.breadth}, {"width": self.width}, {"back_belt_length": self.back_belt_length}]
 	new_dict = {}
 	for i in new_fields:
 		for key, val in i.items():
@@ -227,25 +227,3 @@ def set_specifications_for_modified_bom(self, fields_list):
 				modified_specifications += f"{key} - {val} \n"
 	self.defualt_specifications = ''.join(f"{key} - {val} \n" for key, val in temp_bom_dict.items() if val != None)
 	self.modified_specifications = modified_specifications
-
-
-@frappe.whitelist()
-def get_gemstone_details(gemstone_type,cut_or_cab):
-	gemstone_shape_list = []
-	gemstone_grade_list = []
-	gemstone_quality_list = []
-	gemstone_size_list = []
-
-	db_data = frappe.db.sql(f"""select gemstone_shape, gemstone_grade ,gemstone_quality ,gemstone_size  from `tabAttribute Value Gemstone Type` tavgt where parent ='{gemstone_type}' and cut_or_cab='{cut_or_cab}'""",as_dict=1)
-	for i in db_data:
-		gemstone_shape_list.append(i['gemstone_shape'])
-		gemstone_grade_list.append(i['gemstone_grade'])
-		gemstone_quality_list.append(i['gemstone_quality'])
-		gemstone_size_list.append(i['gemstone_size'])
-	
-	gemstone_shape_list = list(set(gemstone_shape_list))
-	gemstone_grade_list = list(set(gemstone_grade_list))
-	gemstone_quality_list = list(set(gemstone_quality_list))
-	gemstone_size_list = list(set(gemstone_size_list))
-
-	return gemstone_shape_list,gemstone_grade_list,gemstone_quality_list,gemstone_size_list

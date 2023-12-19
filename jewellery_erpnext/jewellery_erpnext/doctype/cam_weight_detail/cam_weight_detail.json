@@ -7,39 +7,79 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "cad_numbering_file",
-  "support_cam_file",
-  "mop_reference",
-  "mop_series"
+    "mop_reference",
+    "mop_series",
+    "cad_numbering_file",
+    "support_cam_file",
+    "platform_wt",
+    "rpt_wt_issue",
+    "rpt_wt_receive",
+    "rpt_wt_loss",
+    "estimated_rpt_wt"
  ],
  "fields": [
-  {
-   "fieldname": "cad_numbering_file",
-   "fieldtype": "Attach",
-   "in_list_view": 1,
-   "label": "CAD numbering File"
-  },
-  {
-   "fieldname": "support_cam_file",
-   "fieldtype": "Attach",
-   "in_list_view": 1,
-   "label": "Support CAM File"
-  },
-  {
-   "fieldname": "mop_reference",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "MOP Reference",
-   "options": "Manufacturing Operation",
-   "read_only": 1
-  },
-  {
-   "fieldname": "mop_series",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "MOP Series",
-   "read_only": 1
-  }
+    {
+        "fieldname": "cad_numbering_file",
+        "fieldtype": "Attach",
+        "in_list_view": 1,
+        "label": "CAD numbering File"
+       },
+       {
+        "fieldname": "support_cam_file",
+        "fieldtype": "Attach",
+        "in_list_view": 1,
+        "label": "Support CAM File"
+       },
+       {
+        "fieldname": "mop_reference",
+        "fieldtype": "Link",
+        "in_list_view": 1,
+        "label": "MOP Reference",
+        "options": "Manufacturing Operation",
+        "read_only": 1
+       },
+       {
+        "fieldname": "mop_series",
+        "fieldtype": "Data",
+        "in_list_view": 1,
+        "label": "MOP Series",
+        "read_only": 1
+       },
+       {
+        "fieldname": "platform_wt",
+        "fieldtype": "Float",
+        "in_list_view": 1,
+        "label": "Platform wt",
+        "precision": "4"
+       },
+       {
+        "fieldname": "rpt_wt_issue",
+        "fieldtype": "Float",
+        "in_list_view": 1,
+        "label": "RPT Wt ISSUE",
+        "precision": "4"
+       },
+       {
+        "fieldname": "rpt_wt_receive",
+        "fieldtype": "Float",
+        "in_list_view": 1,
+        "label": "RPT Wt RECEIVE",
+        "precision": "4"
+       },
+       {
+        "fieldname": "rpt_wt_loss",
+        "fieldtype": "Float",
+        "in_list_view": 1,
+        "label": "RPT Wt LOSS",
+        "precision": "4"
+       },
+       {
+        "fieldname": "estimated_rpt_wt",
+        "fieldtype": "Float",
+        "in_list_view": 1,
+        "label": "Estimated RPT WT",
+        "precision": "4"
+       }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,

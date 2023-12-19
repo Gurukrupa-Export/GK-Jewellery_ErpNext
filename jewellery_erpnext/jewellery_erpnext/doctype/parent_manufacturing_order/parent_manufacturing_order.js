@@ -10,6 +10,7 @@ frappe.ui.form.on('Parent Manufacturing Order', {
 		if (!frm.doc.__islocal) {
 			frm.set_df_property('diamond_grade', 'reqd', 1)
 		}
+		set_html(frm);
 	},
 	sales_order_item: function (frm) {
 		frappe.call({
@@ -38,4 +39,27 @@ function set_filters_on_parent_table_fields(frm, fields) {
 			};
 		});
 	});
+}
+function set_html(frm) {
+	frappe.call({ 
+		method: "get_stock_summary",
+		doc: frm.doc,
+		args: { 
+			"docname": frm.doc.name,
+		}, 
+		callback: function (r) { 
+			frm.get_field("stock_summery").$wrapper.html(r.message) 
+		} 
+	})
+
+	frappe.call({ 
+		method: "get_linked_stock_entries",
+		doc: frm.doc,
+		args: { 
+			"docname": frm.doc.name,
+		}, 
+		callback: function (r) { 
+			frm.get_field("stock_entry_details").$wrapper.html(r.message) 
+		} 
+	})
 }

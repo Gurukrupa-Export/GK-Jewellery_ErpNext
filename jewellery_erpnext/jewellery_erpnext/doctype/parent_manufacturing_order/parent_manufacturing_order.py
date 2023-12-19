@@ -15,12 +15,14 @@ class ParentManufacturingOrder(Document):
 			self.db_set("serial_id_bom", serial_bom)
 
 	def validate(self):
-		get_gemstone_details(self)
-
+		# get_gemstone_details(self)  #  move get_gemstone_details(doc) function under make_manufacturing_order(source_doc, row) on date dec 4
+		pass
 	def on_submit(self):
 		create_manufacturing_work_order(self)
+		gemstone_details_set_mandatory_field(self)
 		for idx in range(0, int(self.qty)):
 			self.create_material_requests()
+			
 
 	def on_cancel(self):
 		update_existing("Manufacturing Plan Table", self.rowname, "manufacturing_order_qty", f"manufacturing_order_qty - {self.qty}")
@@ -59,8 +61,8 @@ class ParentManufacturingOrder(Document):
 
 		gemstone_list = get_gemstone_item_code_by_variant(self,bom,target_warehouse)
 		if gemstone_list:
-			items["gemstone_item"] = items["gemstone_item"]
-
+			items["gemstone_item"] = gemstone_list
+		
 		for item_type, val in items.items():
 			if item_type == "metal_item":
 				continue
@@ -77,7 +79,30 @@ class ParentManufacturingOrder(Document):
 	def set_missing_value(self):
 		if not self.is_new():
 			pass
+	
+	@frappe.whitelist()
+	def get_stock_summary(self):
+		target_wh = frappe.db.get_value("Warehouse",{"department": self.department})
+		mwo = frappe.get_all("Manufacturing Work Order",{"manufacturing_order":self.name},pluck="name")
+		data = frappe.db.sql(f"""select se.manufacturing_work_order, se.manufacturing_operation, sed.parent, sed.item_code,sed.item_name, sed.qty, sed.uom,
+					   			ifnull(sum(if(sed.uom='cts',sed.qty*0.2, sed.qty)),0) as gross_wt
+			   				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
+							se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') and sed.t_warehouse = '{target_wh}' 
+							group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1)
+		total_qty = 0
+		for row in data:
+			total_qty += row.get('gross_wt', 0)
+		total_qty =  round(total_qty,4)
+		return frappe.render_template("jewellery_erpnext/jewellery_erpnext/doctype/parent_manufacturing_order/stock_summery.html", {"data":data,"total_qty":total_qty})
 
+	@frappe.whitelist()
+	def get_linked_stock_entries(self): # MOP Details
+		mwo = frappe.get_all("Manufacturing Work Order",{"manufacturing_order":self.name},pluck="name")
+		data = frappe.db.sql(f"""select se.manufacturing_work_order, se.manufacturing_operation, se.department,se.to_department, se.employee,se.stock_entry_type,sed.parent, sed.item_code,sed.item_name, sed.qty, sed.uom 
+			   				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
+							se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') ORDER BY se.modified ASC""", as_dict=1)
+		total_qty = len([item['qty'] for item in data])
+		return frappe.render_template("jewellery_erpnext/jewellery_erpnext/doctype/parent_manufacturing_order/stock_entry_details.html", {"data":data,"total_qty":total_qty})
 
 def get_item_type(item_code):
 	item_type = frappe.db.get_value("Item",item_code, "variant_of")
@@ -115,6 +140,8 @@ def make_manufacturing_order(source_doc, row):
 	doc.qty = row.qty_per_manufacturing_order
 	doc.rowname = row.name
 	doc.save()
+	# frappe.throw(str(doc))
+	get_gemstone_details(doc)   
 	diamond_grade = frappe.db.get_value("Customer Diamond Grade",{"diamond_quality": doc.diamond_quality, "parent": doc.customer},"diamond_grade_1")
 	doc.db_set("diamond_grade",diamond_grade)
 
@@ -215,7 +242,7 @@ def get_gemstone_item_code_by_variant(self,bom,target_warehouse):
 				gemstone_list.append({'item_code': variant.item_code, 'qty': row.quantity, 'warehouse': target_warehouse})
 			
 		return gemstone_list
-
+	
 def get_gemstone_details(self):
 	bom = self.serial_id_bom or self.master_bom
 	if not bom:
@@ -224,3 +251,20 @@ def get_gemstone_details(self):
 	if len(bom_doc.gemstone_detail) > 0:
 		for gem_row in bom_doc.gemstone_detail:
 			self.append('gemstone_table',gem_row)
+		self.save()			#  Added on date dec 4
+
+
+def gemstone_details_set_mandatory_field(self):
+	errors = []
+	if self.gemstone_table:
+		for row in self.gemstone_table:
+			if not row.gemstone_quality:
+				errors.append("Gemstone Details Table <b>Quality</b> is required.")
+			if not row.gemstone_grade:
+				errors.append("Gemstone Details Table <b>Grade</b> is required.")
+			if not row.gemstone_pr:
+				errors.append("Gemstone Details Table <b>Gemstone PR</b> is required.")
+			if not row.per_pc_or_per_carat:
+				errors.append("Gemstone Details Table <b>Per Pc or Per Carat</b> is required.")
+	if errors:
+		frappe.throw("<br>".join(errors))

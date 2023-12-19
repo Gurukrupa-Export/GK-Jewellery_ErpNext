@@ -33,6 +33,18 @@ frappe.ui.form.on('Department IR', {
 			}
 		})
 	},
+	// refresh:function(frm){
+	// 	frm.add_custom_button(__('End Transit'), function() {
+	// 		frappe.model.open_mapped_doc({
+	// 			// method: "erpnext.stock.doctype.stock_entry.stock_entry.make_stock_in_entry",
+	// 			method:"jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir.stock_entry_end_transit",
+	// 			frm: frm,
+	// 			args: {
+	// 				doc: frm.doc.name
+	// 			}
+	// 		})
+	// 	});
+	// },
 	type(frm) {
 		frm.clear_table("department_ir_operation")
 		frm.refresh_field("department_ir_operation")
@@ -129,11 +141,10 @@ frappe.ui.form.on('Department IR', {
 				query_filters["department_ir_status"] = "In-Transit"
 				query_filters["department"] = frm.doc.current_department
 			}
-			console.log(query_filters)
+
 			frappe.db.get_value('Manufacturing Operation', query_filters, ['name', 'manufacturing_work_order', 'status'])
 				.then(r => {
 					let values = r.message;
-					console.log(values)
 					if (values.manufacturing_work_order) {
 						console.log(values)
 						let row = frm.add_child('department_ir_operation', {

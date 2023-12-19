@@ -36,7 +36,6 @@ def create_new_bom(self):
 		# if Finished Goods BOM for an item not present for item Copy from TEMPLATE BOM
 		elif temp_bom:=frappe.db.get_value("BOM",{'item': row.item_code,'is_active':1,'bom_type':'Template'},'name',order_by='creation asc'):
 			bom = temp_bom
-		
 		else:
 			bom = None
 		if bom:

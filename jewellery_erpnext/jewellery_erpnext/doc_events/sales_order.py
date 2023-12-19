@@ -73,3 +73,8 @@ def cancel_bom(self):
 			bom = frappe.get_doc("BOM",row.bom)
 			bom.is_active = 0
 			row.bom = ''
+   
+@frappe.whitelist()
+def get_customer_approval_data(customer_approval_data):
+    doc = frappe.get_doc("Customer Approval", customer_approval_data)
+    return doc

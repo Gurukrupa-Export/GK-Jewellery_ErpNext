@@ -31,6 +31,7 @@ def item_attribute_query(doctype, txt, searchfield, start, page_len, filters):
 					where parent = %(item_attribute)s 
 					and attribute_value like %(txt)s {condition}
 				""",args)
+	print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 	return item_attribute if item_attribute else []
 
 @frappe.whitelist()

@@ -38,6 +38,16 @@ class ManufacturingWorkOrder(Document):
 	def on_cancel(self):
 		self.db_set("status","Cancelled")
 
+	@frappe.whitelist()
+	def get_linked_stock_entries(self): # MWO Details Tab code
+		mwo = frappe.get_all("Manufacturing Work Order",{"name":self.name},pluck="name")
+		data = frappe.db.sql(f"""select se.manufacturing_operation, se.name, sed.item_code,sed.item_name, sed.qty, sed.uom 
+							from `tabStock Entry Detail` sed left join `tabStock Entry` se 
+							on sed.parent = se.name 
+							where se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') ORDER BY se.modified ASC""", as_dict=1)
+		total_qty = len([item['name'] for item in data])
+		return frappe.render_template("jewellery_erpnext/jewellery_erpnext/doctype/manufacturing_work_order/stock_entry_details.html", {"data":data,"total_qty":total_qty})
+
 def create_manufacturing_operation(doc):
 	mop = get_mapped_doc("Manufacturing Work Order", doc.name,
 			{

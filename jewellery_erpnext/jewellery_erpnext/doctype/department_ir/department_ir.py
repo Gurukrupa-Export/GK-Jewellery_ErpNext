@@ -56,11 +56,12 @@ class DepartmentIR(Document):
 		values["department_ir_status"] = "Received"
 		for row in self.department_ir_operation:
 			create_stock_entry(self, row)
+			# current_in_transit_wh = frappe.db.get_value("Warehouse", {"company": self.company, "department":self.current_department},"default_in_transit_warehouse")
 			in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": self.company},"in_transit")
-			# values["gross_wt"] = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation,
-			# 					   "s_warehouse": in_transit_wh, "docstatus":1}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
-			# res = get_material_wt(self, row.manufacturing_operation)
-			# values.update(res)
+			values["gross_wt"] = get_value("Stock Entry Detail", {'manufacturing_operation': row.manufacturing_operation,
+								   "s_warehouse": in_transit_wh, "docstatus":1}, 'sum(if(uom="cts",qty*0.2,qty))', 0)
+			res = get_material_wt(self, row.manufacturing_operation)
+			values.update(res)
 			frappe.db.set_value("Manufacturing Operation", row.manufacturing_operation, values)
 			frappe.db.set_value("Manufacturing Work Order", row.manufacturing_work_order, 'department', self.current_department)
 
@@ -102,6 +103,10 @@ def update_stock_entry_dimensions(doc, row, manufacturing_operation, for_employe
 
 def create_stock_entry(doc, row):
 	in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"in_transit")
+	# current_in_transit_wh = frappe.db.get_value("Warehouse", {"company": doc.company, "department":doc.current_department},"default_in_transit_warehouse")
+	if not in_transit_wh:
+		frappe.throw(_(f"Please set transit warhouse for Current Department {doc.current_department}"))
+
 	department_wh = frappe.get_value("Warehouse", {"department": doc.current_department})
 	if not department_wh:
 		frappe.throw(_(f"Please set warhouse for department {doc.current_department}"))
@@ -127,19 +132,37 @@ def create_stock_entry(doc, row):
 		se_doc.save()
 		se_doc.submit()
 
+
+# @frappe.whitelist()
+# def stock_entry_end_transit(doc):
+# 	mwo_get = frappe.get_all("Department IR Operation",filters={"parent": doc},fields=["manufacturing_work_order"], limit=1 )
+# 	mwo= mwo_get[0].get("manufacturing_work_order")
+# 	se_get = frappe.db.sql(f"""select se.name from `tabStock Entry Detail` as sed join `tabStock Entry` as se 
+# 					where se.name = sed.parent 
+# 					and se.docstatus = 1
+# 					and manufacturing_work_order = "{mwo}" """, as_dict=1)
+# 	se= se_get[0].get("name")
+# 	se_entry = make_stock_in_entry(source_name=se,target_doc=None)
+# 	se_entry.docstatus = 1
+# 	se_entry.save()
+# 	frappe.msgprint("Stock Entry Created",str(se_entry))
+
 def create_stock_entry_for_issue(doc, row, manufacturing_operation):
 	in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"in_transit")
-	department_wh = frappe.get_value("Warehouse", {"department": doc.current_department})
+	# next_in_transit_wh = frappe.db.get_value("Warehouse", {"company": doc.company, "department":doc.next_department},"default_in_transit_warehouse")
+	# if not next_in_transit_wh:
+	# 	frappe.throw(_(f"Please set transit warhouse for Next Department {doc.next_department}"))
+
+	department_wh = frappe.get_value("Warehouse", {"department": doc.current_department})	
 	if not department_wh:
 		frappe.throw(_(f"Please set warhouse for department {doc.current_department}"))
 	stock_entries = frappe.get_all("Stock Entry Detail", {
-						"manufacturing_operation": row.manufacturing_operation, "t_warehouse": department_wh,
+						 "t_warehouse":department_wh , "manufacturing_operation": row.manufacturing_operation,
 						"to_department": doc.current_department, "docstatus": 1
 					}, pluck="parent", group_by = "parent")
 	if not stock_entries:
 		prev_mfg_operation = get_previous_operation(row.manufacturing_operation)
 		in_transit_wh = frappe.db.get_value("Manufacturing Setting", {"company": doc.company},"in_transit")
-
 		stock_entries = frappe.get_all("Stock Entry Detail", filters={
 							"manufacturing_operation": prev_mfg_operation, "t_warehouse": department_wh, 
 							"to_department": doc.current_department, "docstatus": 1

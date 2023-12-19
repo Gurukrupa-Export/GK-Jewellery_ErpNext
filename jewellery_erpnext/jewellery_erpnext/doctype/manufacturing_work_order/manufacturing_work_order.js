@@ -8,6 +8,7 @@ frappe.ui.form.on('Manufacturing Work Order', {
                 frm.trigger("split_work_order")
 			})
 		}
+        set_html(frm);
 	},
 	split_work_order: function (frm) {
         const dialog = new frappe.ui.Dialog({
@@ -40,3 +41,20 @@ frappe.ui.form.on('Manufacturing Work Order', {
         // dialog.$wrapper.find('.modal-dialog').css("max-width", "90%");
     }
 });
+function set_html(frm) {
+	if (!frm.doc.__islocal && frm.doc.is_last_operation) {
+	}
+	else {
+		frm.get_field("stock_entry_details").$wrapper.html("")
+	}
+		frappe.call({ 
+			method: "get_linked_stock_entries",
+			doc: frm.doc,
+			args: { 
+				"docname": frm.doc.name,
+			}, 
+			callback: function (r) { 
+				frm.get_field("stock_entry_details").$wrapper.html(r.message) 
+			} 
+		})
+}
