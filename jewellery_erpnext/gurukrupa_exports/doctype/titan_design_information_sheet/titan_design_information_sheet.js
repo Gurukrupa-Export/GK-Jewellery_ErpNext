@@ -62,6 +62,7 @@ frappe.ui.form.on('Titan Design Information Sheet', {
 				frappe.throw(`<b>${arr[0]}</b> already available`)
 			}   
 		})
+		// frm.set_value('serial_no','')
 	}
 });
 

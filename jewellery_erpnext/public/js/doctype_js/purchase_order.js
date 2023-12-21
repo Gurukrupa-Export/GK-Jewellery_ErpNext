@@ -17,7 +17,6 @@ frappe.ui.form.on('Purchase Order Item', {
 		refresh_field("items");
 	},
 	item_code:function(frm,cdt,cdn){
-		
 		if (frm.doc.supplier){
 			var supplier = frm.doc.supplier
 		}

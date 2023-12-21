@@ -83,7 +83,7 @@
    "fieldname": "cad_order_form_id",
    "fieldtype": "Link",
    "label": "CAD Order Form ID",
-   "options": "CAD Order Form",
+   "options": "Order Form",
    "read_only": 1
   },
   {
@@ -111,7 +111,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-13 16:24:43.009628",
+ "modified": "2023-12-20 12:32:11.739676",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Demo",

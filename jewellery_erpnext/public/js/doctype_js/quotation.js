@@ -1,16 +1,16 @@
 frappe.ui.form.on('Quotation', {
     refresh(frm) {
-        frm.add_custom_button(__("CAD Order"), function(){
+        frm.add_custom_button(__("Order"), function(){
             erpnext.utils.map_current_doc({
-                method: "jewellery_erpnext.gurukrupa_exports.doctype.cad_order.cad_order.make_quotation",
-                source_doctype: "CAD Order",
+                method: "gke_customization.gke_order_forms.doctype.order.order.make_quotation",
+                source_doctype: "Order",
                 target: me.frm,
                 setters: [
                     {
-                        label: "CAD Order Form",
+                        label: "Order Form",
                         fieldname: "cad_order_form",
                         fieldtype: "Link",
-                        options: "CAD Order Form"
+                        options: "Order Form"
                     },
                     {
                         label: "Customer",

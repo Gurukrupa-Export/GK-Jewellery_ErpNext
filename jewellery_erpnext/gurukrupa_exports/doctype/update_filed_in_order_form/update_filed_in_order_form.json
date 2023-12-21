@@ -28,7 +28,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Order From Type",
-   "options": "CAD Order"
+   "options": "Order"
   },
   {
    "depends_on": "eval:doc.order_from_type",
@@ -37,7 +37,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Order Form ID",
-   "options": "CAD Order"
+   "options": "Order"
   },
   {
    "fetch_from": "order_form_id.delivery_date",
@@ -102,7 +102,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-31 10:12:51.642472",
+ "modified": "2023-12-20 12:33:50.990231",
  "modified_by": "Administrator",
  "module": "Gurukrupa Exports",
  "name": "Update Filed In Order Form",

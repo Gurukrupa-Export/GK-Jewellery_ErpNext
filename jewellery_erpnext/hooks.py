@@ -25,6 +25,7 @@ doctype_js = {
     "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js",
     "Supplier"                     : "public/js/doctype_js/supplier.js",
     "Material Request"			   : "public/js/doctype_js/material_request.js",
+    "Purchase Order"			   : "public/js/doctype_js/purchase_order.js",
 }
 
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
