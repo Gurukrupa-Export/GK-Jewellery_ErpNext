@@ -9,7 +9,7 @@ from frappe.model.mapper import get_mapped_doc
 from frappe.model.document import Document
 from jewellery_erpnext.jewellery_erpnext.doctype.main_slip.main_slip import get_main_slip_item
 from jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir import update_stock_entry_dimensions, get_material_wt
-from jewellery_erpnext.utils import update_existing, get_item_from_attribute
+from jewellery_erpnext.utils import update_existing, get_item_from_attribute,get_item_from_attribute_full
 from jewellery_erpnext.jewellery_erpnext.doctype.qc.qc import create_qc_record
 from jewellery_erpnext.jewellery_erpnext.doctype.manufacturing_operation.manufacturing_operation import get_loss_details, get_previous_operation
 
@@ -231,6 +231,7 @@ def create_stock_entry(doc, row, difference_wt=0):
 	row.db_set("gold_loss", difference_wt)
 	for stock_entry in stock_entries:
 		existing_doc = frappe.get_doc("Stock Entry", stock_entry)
+		# frappe.throw(f"{existing_doc.to_warehouse}")
 		se_doc = frappe.copy_doc(existing_doc)
 		for child in se_doc.items:
 			if child.item_code in loss.keys():
@@ -354,3 +355,101 @@ def convert_pure_metal(mwo, ms, qty, s_warehouse, t_warehouse, reverse = False):
 	else:
 		ms.qty = qty*flt(mwo.get("metal_purity"))/100 
 		convert_metal_purity(ms, mwo, s_warehouse, t_warehouse)
+
+@frappe.whitelist()
+def book_metal_loss(doc_name,mwo,opt,gwt,r_gwt):
+	doc = frappe.get_doc("Employee IR",doc_name)
+	mnf_opt = frappe.get_doc("Manufacturing Operation",opt)
+	# To get allowed loss percentage value
+	allowed_loss_percentage = frappe.get_value("Department Operation", {"company": doc.company,"department":doc.department},"allowed_loss_percentage")
+	# To Check Tollarance which book a loss down side.
+	if allowed_loss_percentage:
+		cal = round(flt((100-allowed_loss_percentage)/100)*flt(gwt),2)
+		if flt(r_gwt) < cal:
+			frappe.throw(f"Department Operation Standard Process Loss Percentage set by <b>{allowed_loss_percentage}%. </br> Not allowed to book a loss less than {cal}</b>")
+	
+	# Fetching Stock Entry based on MNF Work Order
+	if gwt != r_gwt:
+		wip_wh = frappe.get_value("Warehouse", {"custom_operation": doc.operation,"employee":doc.employee})
+		stock_entries = frappe.db.sql(f"""
+								select se.name 
+								from `tabStock Entry Detail` sed 
+								left join `tabStock Entry` se 
+								on sed.parent = se.name 
+								where se.docstatus=1 
+								and se.manufacturing_work_order = '{mwo}'
+								# and sed.t_warehouse = '{wip_wh}'
+								# and sed.to_main_slip = '{doc.main_slip}'
+								# and sed.to_department = '{doc.department}'
+								group by se.name order by se.creation""", as_dict=1, pluck=1)
+		
+		# Declaration & fetch required value
+		data=[] 		# for final data list
+		metal_item=[]  	# for check metal or not list
+		unique = set()	# for Unique Item_Code
+		sum_qty = {}	# for sum of qty matched item
+		# getting Metal property from MNF Work Order
+		mwo_metal_property = frappe.db.get_value("Manufacturing Work Order", mwo, ["metal_type", "metal_touch", "metal_purity"], as_dict=1)
+		# To Check and pass thgrow Each ITEM metal or not function
+		metal_item.append(get_item_from_attribute_full(mwo_metal_property.metal_type, mwo_metal_property.metal_touch, mwo_metal_property.metal_purity))
+		# To get Final Metal Item
+		flat_metal_item = [ item for sublist in metal_item for super_sub in sublist for item in super_sub]
+
+		# To prepare Final Data with all condition's
+		for stock_entry in stock_entries:
+			existing_doc = frappe.get_doc("Stock Entry", stock_entry)
+			se_doc = frappe.copy_doc(existing_doc)
+			for child in se_doc.items:
+				if child.item_code in flat_metal_item:
+					key = (child.item_code, child.qty)
+					if key not in unique:
+						unique.add(key)
+						if child.item_code in sum_qty:
+							sum_qty[child.item_code]["qty"] += child.qty
+						else:
+							sum_qty[child.item_code] = {
+									"item_code": child.item_code,
+									"qty": child.qty,
+									"stock_uom":child.uom,
+									"manufacturing_work_order":se_doc.manufacturing_work_order,
+									"stock_entry": child.parent,
+									"proportionally_loss":0.0,
+									"received_gross_weight":0.0,
+								}
+		data = list(sum_qty.values())
+
+		# To Get total from manufacturing operation loss details table
+		mnf_opt_loss_total_qty = 0
+		if mnf_opt.loss_details:
+			for entry in mnf_opt.loss_details:
+				if entry.stock_uom == 'cts':
+					mnf_opt_loss_total_qty += entry.stock_qty * 0.2
+				else:
+					mnf_opt_loss_total_qty += entry.stock_qty
+		# -------------------------------------------------------------------------
+		# Prepare data and calculation proportionally devide each row based on each qty.
+		loss = (flt(gwt) - flt(r_gwt))
+		ms_consum = 0
+		ms_consum_book =0
+		stock_loss = 0
+		total_qty = 0
+		if loss < 0:
+			ms_consum = abs(round(loss,2))
+		if mnf_opt_loss_total_qty != 0:
+			loss = flt(loss - mnf_opt_loss_total_qty)
+		for entry in data:
+			total_qty += entry["qty"]
+		for entry in data:
+			if total_qty != 0:
+				stock_loss = (loss * entry["qty"]) / total_qty
+				if stock_loss > 0:
+					entry["received_gross_weight"]=(entry["qty"]-stock_loss)
+					entry["proportionally_loss"] = stock_loss
+					entry["main_slip_consumption"] = 0
+				else:
+					ms_consum_book = round((ms_consum * entry["qty"]) / total_qty,4)
+					entry["proportionally_loss"] = 0
+					entry["received_gross_weight"] = 0
+					entry["main_slip_consumption"] = ms_consum_book
+		# -------------------------------------------------------------------------
+		return data, mnf_opt_loss_total_qty # Return Final pripared final Data and total of mnf operation loss table

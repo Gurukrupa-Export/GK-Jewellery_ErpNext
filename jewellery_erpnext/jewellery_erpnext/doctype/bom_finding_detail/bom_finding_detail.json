@@ -92,11 +92,6 @@
    "label": "Amount"
   },
   {
-   "fieldname": "making_rate",
-   "fieldtype": "Currency",
-   "label": "Making Rate"
-  },
-  {
    "default": "0.00",
    "fieldname": "making_amount",
    "fieldtype": "Currency",
@@ -166,12 +161,17 @@
    "label": "Metal Type",
    "options": "Attribute Value",
    "reqd": 1
+  },
+  {
+   "fieldname": "making_rate",
+   "fieldtype": "Currency",
+   "label": "Making Rate"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-04-21 18:07:18.834345",
+ "modified": "2023-12-29 13:19:21.280368",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "BOM Finding Detail",

@@ -178,6 +178,7 @@ class ManufacturingOperation(Document):
 								"gemstone_pcs"			:get_wop_weight.gemstone_pcs
 							}
 						,update_modified=False)
+			# frappe.throw(str(get_wop_weight))
 
 	def set_pmo_weight_details(doc):
 		get_mwo_weight = frappe.db.sql(f"""select 
@@ -207,6 +208,24 @@ class ManufacturingOperation(Document):
 							# "finding_weight"		:get_mwo_weight[0].,
 							"other_weight"			:get_mwo_weight[0].other_wt
 						},update_modified=False)
+			
+			# To Set Product WT on PMO Tolerance METAL/Diamond/Gemstone Table.
+			docname = doc.manufacturing_order
+			for row in frappe.get_all('Metal Product Tolerance', filters={'parent': docname}, fields=['name']):
+				if row:
+					row_doc = frappe.get_doc('Metal Product Tolerance', row.name)
+					frappe.db.set_value('Metal Product Tolerance', row_doc.name, 'product_wt', get_mwo_weight[0].gross_wt or get_mwo_weight[0].net_wt)
+
+			for row in frappe.get_all('Diamond Product Tolerance', filters={'parent': docname}, fields=['name']):
+				if row:
+					row_doc = frappe.get_doc('Diamond Product Tolerance', row.name)
+					frappe.db.set_value('Diamond Product Tolerance', row_doc.name, 'product_wt', get_mwo_weight[0].diamond_wt)
+			
+			for row in frappe.get_all('Gemstone Product Tolerance', filters={'parent': docname}, fields=['name']):
+				if row:
+					row_doc = frappe.get_doc('Gemstone Product Tolerance', row.name)
+					frappe.db.set_value('Gemstone Product Tolerance', row_doc.name, 'product_wt', get_mwo_weight[0].gemstone_wt)
+
 
 def create_manufacturing_entry(doc):
 	target_wh = frappe.db.get_value("Warehouse",{"department": doc.department})
@@ -236,7 +255,7 @@ def create_manufacturing_entry(doc):
 			  				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
 							se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') and sed.t_warehouse = '{target_wh}' 
 							group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1)
-
+	frappe.throw(f"{data}")
 	for entry in data:
 		se.append("items",{
 			"item_code": entry.item_code,
@@ -296,7 +315,7 @@ def genrate_serial_no(doc):
 	if errors:
 		frappe.throw("<br>".join(errors))
         
-	compose_series = str(series_start + "-" + mnf_abbr + "-" + dg_abbr + "-" + final_date + "-.####")
+	compose_series = str(series_start + mnf_abbr + dg_abbr + final_date + "-.####")
 	return compose_series
 
 def update_produced_qty(pmo_det, cancel=False):

@@ -359,7 +359,7 @@ frappe.ui.form.on("Stock Entry Detail", {
         }
         if ((row.serial_no) &&(item_list.length !=row.qty)){
             disableSaveButton()
-            frappe.msgprint("Error there are more items in serial no please remove Items")
+            frappe.throw("Error there are more items in serial no please remove Items")
         }
     },
     serial_no:function(frm,cdt,cdn){
@@ -378,18 +378,18 @@ frappe.ui.form.on("Stock Entry Detail", {
                 var serial_item_list = response.message;
                 if (serial_item.length > row.qty) {
                     disableSaveButton()
-                    frappe.msgprint("Error: Please remove serial no");
+                    frappe.throw("Error: Please remove serial no");
                 }
                 else if (serial_item.length < row.qty) {
                     disableSaveButton()
-                    frappe.msgprint("Error: There are less serial no. Please add");
+                    frappe.throw("Error: There are less serial no. Please add");
                 }
                 else
                 {
                 for(let i=0;i<=serial_item.length;i++){
                     if (serial_item[i]!=serial_item_list[row.item_code][i]){
                         disableSaveButton()
-                        frappe.msgprint("Error: Serial number is  not present")
+                        frappe.throw("Error: Serial number is  not present")
                         return
                     }
 

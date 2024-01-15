@@ -25,7 +25,11 @@ doctype_js = {
     "Quality Inspection Template"  : "public/js/doctype_js/quality_inspection_template.js",
     "Supplier"                     : "public/js/doctype_js/supplier.js",
     "Material Request"			   : "public/js/doctype_js/material_request.js",
-    "Purchase Order"			   : "public/js/doctype_js/purchase_order.js",
+    "Sales Invoice"				   : "public/js/doctype_js/sales_invoice.js",
+    "Delivery Note"				   : "public/js/doctype_js/delivery_note.js",
+    "Purchase Order"				   : "public/js/doctype_js/purchase_order.js",
+    "Purchase Receipt"				   : "public/js/doctype_js/purchase_receipt.js",
+    "Purchase Invoice"				   : "public/js/doctype_js/purchase_invoice.js",
 }
 
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
@@ -94,6 +98,9 @@ doc_events = {
 	},
     "Purchase Order": {
         "on_cancel": "jewellery_erpnext.jewellery_erpnext.doc_events.purchase_order.on_cancel"
+	},
+    "Sales Invoice": {
+        "before_validate": "jewellery_erpnext.jewellery_erpnext.doc_events.sales_invoice.before_validate"
 	}
 
 }
@@ -121,8 +128,13 @@ fixtures = [
    			"Stock Entry-custom_supporting_staff",
 			"Sales Person-custom_warehouse",
 			"Stock Entry-custom_material_return_receipt_number",
-            "Stock Entry-custom_material_request_reference"
-            ]]
+            "Stock Entry-custom_material_request_reference",
+            "Stock Entry-custom_cg_issue_against"
+            "Stock Entry-custom_customer_approval_reference"
+            ]],
+            [
+                "module", "=", "Jewellery Erpnext"
+			]
             ]
 	},
 
@@ -134,6 +146,11 @@ fixtures = [
 	},
     {
 		"dt": "Stock Entry Type"
+	},
+	{
+		"dt": "DocType",
+        "filters": [[
+            "module", "=", "Gurukrupa Exports"], ["custom", "=", 1]]
 	},
 ]
 

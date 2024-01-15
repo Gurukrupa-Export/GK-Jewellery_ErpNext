@@ -99,8 +99,6 @@ def set_attribute_and_value_in_description(self):
 	if self.variant_of:
 		description_value = "<b><u>" + self.variant_of + "</u></b><br/>"
 		for d in self.get('attributes'):
-			if d.attribute_value == None:
-				continue
 			description_value += d.attribute +" : "+ d.attribute_value + "<br/>"
 		self.description = description_value
 

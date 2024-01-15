@@ -30,6 +30,16 @@
   "serial_id_bom",
   "item_sub_category",
   "setting_type",
+  "default_material_request_department_section",
+  "diamond_department",
+  "column_break_eyifr",
+  "gemstone_department",
+  "column_break_xfaep",
+  "finding_department",
+  "column_break_zep9i",
+  "other_material_department",
+  "column_break_zpp9f",
+  "metal_department",
   "section_break_cuzmc",
   "diamond_quality",
   "manufacturer",
@@ -52,6 +62,10 @@
   "gemstone_weight",
   "finding_weight",
   "other_weight",
+  "gold_section",
+  "metal_product_tolerance",
+  "diamond_product_tolerance",
+  "gemstone_product_tolerance",
   "section_break_royco",
   "order_remarks",
   "order_details_tab",
@@ -571,6 +585,85 @@
    "fieldname": "section_break_okxuw",
    "fieldtype": "Section Break",
    "label": "Summary"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "gold_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "metal_product_tolerance",
+   "fieldtype": "Table",
+   "label": "Metal Product Tolerance",
+   "options": "Metal Product Tolerance"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "diamond_product_tolerance",
+   "fieldtype": "Table",
+   "label": "Diamond Product Tolerance",
+   "options": "Diamond Product Tolerance"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "gemstone_product_tolerance",
+   "fieldtype": "Table",
+   "label": "Gemstone Product Tolerance",
+   "options": "Gemstone Product Tolerance"
+  },
+  {
+   "fieldname": "diamond_department",
+   "fieldtype": "Link",
+   "label": "Diamond Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gemstone_department",
+   "fieldtype": "Link",
+   "label": "Gemstone Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_material_request_department_section",
+   "fieldtype": "Section Break",
+   "label": "Default Material Request Department"
+  },
+  {
+   "fieldname": "column_break_eyifr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xfaep",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "finding_department",
+   "fieldtype": "Link",
+   "label": "Finding Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "column_break_zep9i",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "other_material_department",
+   "fieldtype": "Link",
+   "label": "Other Material Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "column_break_zpp9f",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "metal_department",
+   "fieldtype": "Link",
+   "label": "Metal Department",
+   "options": "Department"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -589,7 +682,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2023-12-14 16:40:57.776660",
+ "modified": "2024-01-11 17:13:41.803537",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

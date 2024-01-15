@@ -3,6 +3,11 @@
 
 frappe.ui.form.on('Parent Manufacturing Order', {
 	setup(frm) {
+		filter_departments(frm,"diamond_department")
+		filter_departments(frm,"gemstone_department")
+		filter_departments(frm,"finding_department")
+		filter_departments(frm,"other_material_department")
+		filter_departments(frm,"metal_department")
 		var parent_fields = [['diamond_grade', 'Diamond Grade'], ['metal_colour', 'Metal Colour'], ['metal_purity', 'Metal Purity']];
 		set_filters_on_parent_table_fields(frm, parent_fields);
 	},
@@ -29,6 +34,16 @@ frappe.ui.form.on('Parent Manufacturing Order', {
 		})
 	}
 });
+
+function filter_departments(frm,field_name){
+	frm.set_query(field_name, function(){
+		return {
+			filters: {
+				"company": frm.doc.company
+			}
+		}
+	})
+}
 
 function set_filters_on_parent_table_fields(frm, fields) {
 	fields.map(function (field) {

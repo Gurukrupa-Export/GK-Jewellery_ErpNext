@@ -42,8 +42,6 @@
   "section_break_50",
   "sieve_size_range",
   "weight_in_cts",
-  "from_weight",
-  "to_weight",
   "diameter",
   "sieve_size_color",
   "size_type",
@@ -59,7 +57,7 @@
   "finding_size_and_weights",
   "subcategory",
   "section_break_15",
-  "attribute_value_for__customer_theme_code"
+  "diamond_sieve_size"
  ],
  "fields": [
   {
@@ -254,7 +252,6 @@
    "options": "Attribute Value"
   },
   {
-   "depends_on": "eval:doc.is_diamond_sieve_size==1",
    "fieldname": "weight_in_cts",
    "fieldtype": "Float",
    "label": "Weight In Carat"
@@ -355,28 +352,15 @@
    "length": 2
   },
   {
-   "fieldname": "from_weight",
-   "fieldtype": "Float",
-   "label": "From Weight",
-   "precision": "4"
-  },
-  {
-   "fieldname": "to_weight",
-   "fieldtype": "Float",
-   "label": "To Weight",
-   "precision": "4"
-  },
-  {
-   "depends_on": "eval: (doc.is_diamond_quality==1) || (doc.is_gemstone_type==1) || (doc.is_finding_type==1) || (doc.is_subcategory==1)",
-   "fieldname": "attribute_value_for__customer_theme_code",
+   "fieldname": "diamond_sieve_size",
    "fieldtype": "Table",
-   "label": "Attribute Value For  Customer Theme Code",
-   "options": "Attribute Value For  Customer Theme Code"
+   "label": "Diamond Sieve Size",
+   "options": "Attribute Value Diamond Sieve Size"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-15 11:47:32.199777",
+ "modified": "2023-12-18 18:26:13.471987",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Attribute Value",

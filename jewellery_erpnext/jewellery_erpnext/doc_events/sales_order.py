@@ -78,3 +78,16 @@ def cancel_bom(self):
 def get_customer_approval_data(customer_approval_data):
     doc = frappe.get_doc("Customer Approval", customer_approval_data)
     return doc
+
+@frappe.whitelist()
+def customer_approval_filter(doctype, txt, searchfield, start, page_len, filters):
+    dialoge_filter = frappe.db.sql(f"""SELECT ca.name
+									FROM `tabCustomer Approval` AS ca
+									LEFT JOIN `tabStock Entry` AS se
+									ON ca.name = se.custom_customer_approval_reference
+									WHERE se.custom_customer_approval_reference != ca.name 
+										OR se.custom_customer_approval_reference IS NULL 
+										AND ca.docstatus=1
+									""", as_dict=True)
+    
+    return dialoge_filter

@@ -44,6 +44,8 @@
   "column_break_prlpk",
   "metal_colour",
   "metal_purity",
+  "multicolour",
+  "allowed_colours",
   "section_break_5xrl1",
   "gross_wt",
   "net_wt",
@@ -313,7 +315,6 @@
   {
    "fieldname": "color",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "color",
    "read_only": 1
   },
@@ -526,6 +527,20 @@
    "fieldname": "show_detail_section",
    "fieldtype": "Section Break",
    "label": "Show Detail"
+  },
+  {
+   "default": "0",
+   "fieldname": "multicolour",
+   "fieldtype": "Check",
+   "label": "Multicolour",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.multicolour==\"1\"",
+   "fieldname": "allowed_colours",
+   "fieldtype": "Data",
+   "label": "Allowed Colours",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -552,11 +567,11 @@
    "link_fieldname": "manufacturing_work_order"
   }
  ],
- "modified": "2023-12-14 12:26:43.946069",
+ "modified": "2024-01-05 14:15:27.182332",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Work Order",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

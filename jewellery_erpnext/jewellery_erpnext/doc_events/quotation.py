@@ -99,13 +99,14 @@ def cancel_bom(self):
 			row.quotation_bom = ''
 
 @frappe.whitelist()
-def update_bom_detail(parent_doctype,parent_doctype_name,metal_detail,diamond_detail,gemstone_detail,finding_detail):
+def update_bom_detail(parent_doctype,parent_doctype_name,metal_detail,diamond_detail,gemstone_detail,finding_detail, other_detail):
 	parent = frappe.get_doc(parent_doctype, parent_doctype_name)
 
 	set_metal_detail(parent,metal_detail)
 	set_diamond_detail(parent,diamond_detail)
 	set_gemstone_detail(parent,gemstone_detail)
 	set_finding_detail(parent,finding_detail)
+	set_other_detail(parent, other_detail)
 
 	parent.reload()
 	parent.ignore_validate_update_after_submit = True
@@ -131,6 +132,11 @@ def set_finding_detail(parent,finding_detail):
 	finding_data = json.loads(finding_detail)
 	for d in finding_data:
 		update_table(parent, 'BOM Finding Detail', "finding_detail", d)
+
+def set_other_detail(parent, other_material):
+	other_material = json.loads(other_material)
+	for d in other_material:
+		update_table(parent, "BOM Other Detail", "other_detail", d)
 
 def update_table(parent, table, table_field, doc):
 	if not doc.get("docname"):

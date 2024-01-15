@@ -35,19 +35,21 @@ frappe.ui.form.on('Customer Approval', {
 	},
 	
 	refresh: function (frm) {
-		frm.add_custom_button(__("Return Receipt"), function(){
-			frappe.call({
-				method: 'jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.create_material_receipt_for_customer_approval',
-				args: {
-					source_name: frm.doc.stock_entry_reference,
-					cust_name:frm.doc.name
-				},
-				callback: function (response) {
-					frappe.set_route('Form', 'Stock Entry', response.message)
-				},
-			});
-		});
-
+		if (frm.doc.docstatus==1) {
+			frm.add_custom_button(__("Return Receipt"), function(){
+				frappe.call({
+					method: 'jewellery_erpnext.jewellery_erpnext.doc_events.stock_entry.create_material_receipt_for_customer_approval',
+					args: {
+						source_name: frm.doc.stock_entry_reference,
+						cust_name:frm.doc.name
+					},
+					callback: function (response) {
+						frappe.set_route('Form', 'Stock Entry', response.message)
+					},
+				});
+			});	
+		}
+		
 		stock_entry_reference_filter(frm)
 
 		frm.set_value('date', frappe.datetime.nowdate());	 
@@ -87,7 +89,7 @@ frappe.ui.form.on("Sales Order Item Child", {
 		frm.refresh_field('items');	
 
 		frappe.call({
-			method: "jewellery_erpnext.jewellery_erpnext.doctype.customer_approval.customer_approval.calculation",
+			method: "jewellery_erpnext.jewellery_erpnext.doctype.customer_approval.customer_approval.quantity_calculation",
 			args: {
 				stock_entry_reference : frm.doc.stock_entry_reference
 			},	
@@ -158,48 +160,48 @@ function stock_entry_reference_filter(frm) {
 
 function set_stock_entry_data(frm,reference){
 	frappe.call({
-	method: 'jewellery_erpnext.jewellery_erpnext.doctype.customer_approval.customer_approval.get_stock_entry_data',
-	args: {
-		stock_entry_reference: reference
-	},
-	callback: (response) => {
-		frm.clear_table('items');
-		frm.clear_table('sales_person_child');
-		if (response.message.supporting_staff.length >0){
-			for (let i = 0; i < response.message.supporting_staff.length; i++){
+		method: 'jewellery_erpnext.jewellery_erpnext.doctype.customer_approval.customer_approval.get_stock_entry_data',
+		args: {
+			stock_entry_reference: reference
+		},
+		callback: (response) => {
+			frm.clear_table('items');
+			frm.clear_table('sales_person_child');
+			if (response.message.supporting_staff.length >0){
+				for (let i = 0; i < response.message.supporting_staff.length; i++){
+					var child_row = frm.add_child('sales_person_child');
+					child_row.sales_person = response.message.supporting_staff[i].sales_person;
+				}
+			} else{
 				var child_row = frm.add_child('sales_person_child');
-				child_row.sales_person = response.message.supporting_staff[i].sales_person;
+				child_row.sales_person = frm.doc.sales_person
 			}
-		} else{
-			var child_row = frm.add_child('sales_person_child');
-			child_row.sales_person = frm.doc.sales_person
-		}
 
-		for (let i = 0; i < response.message.items.length; i++) {
-			if(response.message.items[i].qty > 0){
-				var child_row = frm.add_child('items');
+			for (let i = 0; i < response.message.items.length; i++) {
+				if(response.message.items[i].qty > 0){
+					var child_row = frm.add_child('items');
 
-				child_row.item_code = response.message.items[i].item_code;
-				child_row.item_name = response.message.items[i].item_name;
-				child_row.warehouse = response.message.items[i].t_warehouse	;
-				child_row.uom = response.message.items[i].uom;
-				child_row.description = response.message.items[i].description;
-				child_row.serial_no = response.message.items[i].serial_no;
-				child_row.batch_no = response.message.items[i].batch_no;
-				child_row.rate = response.message.items[i].basic_rate;
-				child_row.quantity = response.message.items[i].qty;
-				set_bom_and_weight(child_row)
-				child_row.amount = child_row.rate * child_row.quantity
-				child_row.uom_conversion_factor = response.message.items[i].conversion_factor
-				child_row.delivery_date = frm.doc.delivery_date
+					child_row.item_code = response.message.items[i].item_code;
+					child_row.item_name = response.message.items[i].item_name;
+					child_row.warehouse = response.message.items[i].t_warehouse	;
+					child_row.uom = response.message.items[i].uom;
+					child_row.description = response.message.items[i].description;
+					child_row.serial_no = response.message.items[i].serial_no;
+					child_row.batch_no = response.message.items[i].batch_no;
+					child_row.rate = response.message.items[i].basic_rate;
+					child_row.quantity = response.message.items[i].qty;
+					set_bom_and_weight(child_row)
+					child_row.amount = child_row.rate * child_row.quantity
+					child_row.uom_conversion_factor = response.message.items[i].conversion_factor
+					child_row.delivery_date = frm.doc.delivery_date
+				}
 			}
-		}
-		frm.doc.set_warehouse = response.message.items[0].t_warehouse
-		frm.refresh_field('set_warehouse');
-		frm.refresh_field('items');
-		frm.refresh_field('sales_person_child');
-	},
-})
+			frm.doc.set_warehouse = response.message.items[0].t_warehouse
+			frm.refresh_field('set_warehouse');
+			frm.refresh_field('items');
+			frm.refresh_field('sales_person_child');
+		},
+	})
 }
 
 function set_bom_and_weight(child_row){
