@@ -1,7 +1,6 @@
 // Copyright (c) 2023, Nirali and contributors
 // For license information, please see license.txt
 cur_frm.cscript.refresh = cur_frm.cscript.inspection_type;
-
 frappe.ui.form.on('QC', {
 	refresh: function(frm) {
 		// Ignore cancellation of reference doctype on cancel all.
@@ -45,4 +44,50 @@ frappe.ui.form.on('QC', {
 			});
 		}
 	},
+	received_gross_wt:function(frm){
+		var mwo = frm.doc.manufacturing_work_order
+		var mnf_opt = frm.doc.manufacturing_operation
+		var eir =frm.doc.employee_ir;
+		var g_wt = frm.doc.gross_wt;
+		var r_gwt = frm.doc.received_gross_wt
+		receive_gross_wt(frm,mwo,mnf_opt,eir,g_wt,r_gwt)
+	}
 });
+function receive_gross_wt(frm,mwo,mnf_opt,eir,g_wt,r_gwt){
+	frappe.call({
+		method: "jewellery_erpnext.jewellery_erpnext.doctype.qc.qc.receive_gross_wt_from_qc",
+		args: {
+			doc_name: frm.doc.name,
+			mwo:mwo,
+			mnf_opt:mnf_opt,
+			eir:eir,
+			g_wt:g_wt,
+			r_gwt:r_gwt
+		},
+		callback: function(r) {
+			if (r.message) {
+				console.log(r.message);
+				frm.clear_table("employee_loss_details");
+				var r_data = r.message
+				// for (var i = 0; i < r_data.length; i++) {
+                //     var child = frm.add_child("employee_loss_details");
+                //     child.item_code = r_data[i].item_code;
+                //     child.net_weight = r_data[i].qty;
+				// 	child.stock_uom = r_data[i].stock_uom;
+				// 	child.manufacturing_work_order = r_data[i].manufacturing_work_order;
+				// 	child.proportionally_loss = r_data[i].proportionally_loss;
+				// 	child.received_gross_weight = r_data[i].received_gross_weight;
+				// 	child.main_slip_consumption = r_data[i].main_slip_consumption;
+                // }
+				// frm.set_value("mop_loss_details_total",r.message[1])
+                frm.refresh_field("employee_loss_details");//,"mop_loss_details_total");
+				// frm.save()
+			}
+			else{
+				frm.clear_table("employee_loss_details");
+				frm.refresh_field("employee_loss_details");
+				// frm.save()
+			}
+		}
+	})
+}

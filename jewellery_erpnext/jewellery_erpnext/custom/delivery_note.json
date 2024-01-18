@@ -876,7 +876,7 @@
    "name": "Delivery Note-sales_type",
    "no_copy": 0,
    "non_negative": 0,
-   "options": "\nFG Sales\nMaterial Sales\nAsset Sales\nBranch Sales\nLabour Sales\nCertification Sales",
+   "options": "\nFG Sales\nMaterial Sales\nAsset Sales\nBranch Sales\nSub Contracting Sales",
    "owner": "Administrator",
    "parent": null,
    "parentfield": null,

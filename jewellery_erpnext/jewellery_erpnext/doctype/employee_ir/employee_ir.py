@@ -10,7 +10,7 @@ from frappe.model.document import Document
 from jewellery_erpnext.jewellery_erpnext.doctype.main_slip.main_slip import get_main_slip_item
 from jewellery_erpnext.jewellery_erpnext.doctype.department_ir.department_ir import update_stock_entry_dimensions, get_material_wt
 from jewellery_erpnext.utils import update_existing, get_item_from_attribute,get_item_from_attribute_full
-from jewellery_erpnext.jewellery_erpnext.doctype.qc.qc import create_qc_record
+# from jewellery_erpnext.jewellery_erpnext.doctype.qc.qc import create_qc_record
 from jewellery_erpnext.jewellery_erpnext.doctype.manufacturing_operation.manufacturing_operation import get_loss_details, get_previous_operation
 
 
@@ -119,7 +119,7 @@ class EmployeeIR(Document):
 			if action == "Warn":
 				frappe.msgprint(_(msg))
 			elif action == 'Stop':
-				frappe.throw(_(msg))		
+				frappe.msgprint(_(msg))		
 
 	def update_main_slip(self):
 		if not self.main_slip or not self.is_main_slip_required:
@@ -356,6 +356,26 @@ def convert_pure_metal(mwo, ms, qty, s_warehouse, t_warehouse, reverse = False):
 		ms.qty = qty*flt(mwo.get("metal_purity"))/100 
 		convert_metal_purity(ms, mwo, s_warehouse, t_warehouse)
 
+def create_qc_record(row, operation, employee_ir):
+	item = frappe.db.get_value("Manufacturing Operation", row.manufacturing_operation, "item_code")
+	category = frappe.db.get_value("Item", item, "item_category")
+	template_based_on_cat = frappe.db.get_all("Category MultiSelect", {"category": category}, pluck='parent')
+	templates = frappe.db.get_all("Operation MultiSelect", {"operation": operation, 'parent': ['in', template_based_on_cat], "parenttype": "Quality Inspection Template"}, pluck = "parent")
+	if not templates:
+		frappe.msgprint(f"No Templates found for given category and operation i.e. {category} and {operation}")
+	for template in templates:
+		if frappe.db.sql(f"""select name from `tabQC` where manufacturing_operation = '{row.manufacturing_operation}' and
+					quality_inspection_template = '{template}' and ((docstatus = 1 and status in ('Accepted', 'Force Approved')) or docstatus = 0)"""):
+			continue
+		doc = frappe.new_doc("QC")
+		doc.manufacturing_work_order = row.manufacturing_work_order
+		doc.manufacturing_operation = row.manufacturing_operation
+		doc.received_gross_wt = row.received_gross_wt
+		doc.employee_ir = employee_ir
+		doc.quality_inspection_template = template
+		doc.posting_date = frappe.utils.getdate()
+		doc.save(ignore_permissions=True)
+
 @frappe.whitelist()
 def book_metal_loss(doc_name,mwo,opt,gwt,r_gwt):
 	doc = frappe.get_doc("Employee IR",doc_name)
@@ -417,7 +437,7 @@ def book_metal_loss(doc_name,mwo,opt,gwt,r_gwt):
 									"received_gross_weight":0.0,
 								}
 		data = list(sum_qty.values())
-
+		# frappe.msgprint(f"{data}{flat_metal_item}{sum_qty}{unique}{stock_entries}")
 		# To Get total from manufacturing operation loss details table
 		mnf_opt_loss_total_qty = 0
 		if mnf_opt.loss_details:

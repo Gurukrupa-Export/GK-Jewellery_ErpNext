@@ -1,10 +1,13 @@
 frappe.ui.form.on('Delivery Note', {
     onload_post_render (frm) {
-        // filter_customer(frm)
+        filter_customer(frm)
     },
-    // sales_type (frm) {
-        // filter_customer(frm)
-    // },
+    sales_type (frm) {
+        filter_customer(frm)
+    },
+    customer (frm) {
+      get_sales_type(frm)
+    },
 })
 
 let filter_customer = (frm) => {
@@ -24,4 +27,22 @@ let filter_customer = (frm) => {
         return {}
       });
     }
+}
+
+
+let get_sales_type = (frm) => {
+  // get purchase type using customer
+  frm.set_value('sales_type', '')
+  if (frm.doc.customer){
+      frappe.call({
+          method: 'jewellery_erpnext.utils.get_type_of_party',
+          freeze: true,
+          args: {
+              doc: 'Sales Type', parent: frm.doc.customer, field: 'sales_type'
+          },
+          callback: function (r) {
+              frm.set_value('sales_type', r.message || '')
+          }
+      })
+  }
 }

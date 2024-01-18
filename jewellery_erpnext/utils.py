@@ -162,4 +162,57 @@ def get_sales_invoice_items(sales_invoices):
 	"""
 	if isinstance(sales_invoices, str):
 		sales_invoices = json.loads(sales_invoices)
-	return frappe.get_all('Sales Invoice Item', {'parent': ['in', sales_invoices]}, ['item_code', 'qty', 'rate', 'serial_no'])
+	return frappe.get_all('Sales Invoice Item', {'parent': ['in', sales_invoices]}, ['item_code', 'qty', 'rate', 'serial_no', 'bom'])
+
+# searches for suppliers with purchase Type
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def supplier_query(doctype, txt, searchfield, start, page_len, filters):
+	""" query to filter suppliers with purchase type """
+	query_filters = ""
+
+	if filters and filters['purchase_type']:
+		# adding filters of purchase type
+		query_filters = f"""
+        AND name IN 
+            (SELECT s.name FROM `tabSupplier` AS s, `tabPurchase Type` AS pt
+            WHERE pt.parent = s.name AND pt.purchase_type = "{filters['purchase_type']}")
+        """
+
+	query = """
+		SELECT
+			name, supplier_name, supplier_group
+		FROM
+			`tabSupplier`
+		WHERE
+			docstatus < 2
+			{query_filters}
+			AND ({key} LIKE %(txt)s
+			OR supplier_name LIKE %(txt)s
+			OR supplier_group LIKE %(txt)s)
+			{mcond}
+		ORDER BY
+			IF(LOCATE(%(_txt)s, name), LOCATE(%(_txt)s, name), 99999),
+			IF(LOCATE(%(_txt)s, supplier_name), LOCATE(%(_txt)s, supplier_name), 99999),
+			IF(LOCATE(%(_txt)s, supplier_group), LOCATE(%(_txt)s, supplier_group), 99999),
+			supplier_name, name
+		LIMIT %(start)s, %(page_len)s
+	"""
+
+	suppliers = frappe.db.sql(
+		query.format(**{
+			'key': searchfield,
+			'mcond':get_match_cond(doctype),
+			'query_filters': query_filters
+		}), {
+			'txt': "%{}%".format(txt),
+			'_txt': txt.replace("%", ""),
+			'start': start,
+			'page_len': page_len
+	})
+
+	return suppliers
+
+@frappe.whitelist()
+def get_type_of_party(doc, parent, field):
+	return frappe.db.get_value(doc, {'parent': parent}, field)

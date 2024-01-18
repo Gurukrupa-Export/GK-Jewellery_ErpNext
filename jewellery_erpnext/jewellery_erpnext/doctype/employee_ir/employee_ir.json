@@ -16,6 +16,7 @@
   "date_time",
   "section_break_5eq34",
   "type",
+  "emp_ir_id",
   "column_break_lqjl2",
   "subcontracting",
   "section_break_pk7m5",
@@ -283,6 +284,12 @@
    "fieldtype": "Float",
    "label": "MOP Loss Details Total",
    "read_only": 1
+  },
+  {
+   "fieldname": "emp_ir_id",
+   "fieldtype": "Data",
+   "label": "Emp IR ID",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -301,7 +308,7 @@
    "link_fieldname": "employee_ir"
   }
  ],
- "modified": "2024-01-11 19:58:06.476140",
+ "modified": "2024-01-12 22:05:48.208759",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Employee IR",

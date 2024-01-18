@@ -14,14 +14,14 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Sales Type",
-   "options": "\nFG Sales\nMaterial Sales\nAsset Sales\nBranch Sales",
+   "options": "\nFG Sales\nMaterial Sales\nAsset Sales\nBranch Sales\nSub Contracting Sales",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-12-29 16:58:58.873593",
+ "modified": "2024-01-15 12:14:08.225771",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Sales Type",

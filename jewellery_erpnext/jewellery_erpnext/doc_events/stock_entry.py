@@ -80,7 +80,7 @@ def validate_metal_properties(doc):
 			continue
 		attribute_det = frappe.db.get_values("Item Variant Attribute",{"parent": row.item_code, "attribute":["in",["Metal Type", "Metal Touch", "Metal Purity", "Metal Colour"]]}, ['attribute', 'attribute_value'], as_dict=1)
 		item_det = { row.attribute: row.attribute_value for row in attribute_det}
-		if mwo.multicolour == 0 and ms.multicolour == 0:
+		if mwo.multicolour == 0:
 			if main_slip:
 				if ms.get("for_subcontracting"):
 					continue
@@ -92,6 +92,8 @@ def validate_metal_properties(doc):
 						frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected Manufacturing Work Order")
 		
 		if mwo.multicolour == 1:
+			if not main_slip:
+				frappe.throw(f"Select Main Slip")
 			if ms.multicolour == 0:
 				frappe.throw(f"Select Multicolour Main Slip </br><b>Metal Properties are: (MT:{mwo.metal_type}, MTC:{mwo.metal_touch}, MP:{mwo.metal_purity}, MC:{mwo.allowed_colours})</b>")
 			allowed_colors = ''.join(sorted(map(str.upper, mwo.allowed_colours)))

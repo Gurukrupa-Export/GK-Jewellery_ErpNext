@@ -3,13 +3,13 @@ frappe.provide("erpnext.item");
 frappe.ui.form.on('Sales Invoice', {
 
   onload_post_render (frm) {
-    // filter_customer(frm)
+    filter_customer(frm)
     },
-    // sales_type (frm) {
-    //     filter_customer(frm)
-    // },
+    sales_type (frm) {
+        filter_customer(frm)
+    },
     customer (frm) {
-        // get_sales_type(frm)
+        get_sales_type(frm)
     },
     refresh (frm) {
         if (frm.doc.docstatus === 1) edit_bom_after_submit(frm)
@@ -804,22 +804,20 @@ let add_row = (serial_no, frm, row) => {
     });
 };
 
-let get_sales_type = (frm) =>{
-    if (frm.doc.customer) {
+let get_sales_type = (frm) => {
+    // get purchase type using customer
+    frm.set_value('sales_type', '')
+    if (frm.doc.customer){
         frappe.call({
-            method: 'jewellery_erpnext.utils.get_sales_type',
+            method: 'jewellery_erpnext.utils.get_type_of_party',
+            freeze: true,
             args: {
-                customer: frm.doc.customer
+                doc: 'Sales Type', parent: frm.doc.customer, field: 'sales_type'
             },
             callback: function (r) {
-                if (r.message) {
-                    console.log(r.message);
-                    frm.set_value('sales_type', r.message.sales_type)
-                }
+                frm.set_value('sales_type', r.message || '')
             }
         })
-    } else {
-        frm.set_value('sales_type', '')
     }
 }
 
