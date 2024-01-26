@@ -118,10 +118,10 @@
    "reqd": 1
   },
   {
-   "fetch_from": "diamond_sieve_size.weight_in_cts",
    "fieldname": "weight_per_pcs",
    "fieldtype": "Float",
    "label": "Weight per piece",
+   "precision": "4",
    "read_only": 1
   },
   {
@@ -194,7 +194,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-05-16 12:10:21.264594",
+ "modified": "2023-12-22 18:56:17.693395",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "BOM Diamond Detail",

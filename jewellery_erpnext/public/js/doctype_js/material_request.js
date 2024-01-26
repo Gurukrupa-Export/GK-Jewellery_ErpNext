@@ -15,18 +15,25 @@ frappe.ui.form.on('Material Request', {
 					fieldname: 'in_transit_warehouse',
 					fieldtype: 'Link',
 					options: 'Warehouse',
-					reqd: 1,
-					get_query: () => {
+					reqd: 1,	
+					get_query:() => {
+						// var warehouse = frm.doc.items[0].warehouse
+						// var in_trans_wh
+						// const result = await frappe.db.get_value('Warehouse', { name: warehouse }, 'default_in_transit_warehouse');
+						// var in_trans_wh = result.message.default_in_transit_warehouse;	
+						// console.log(in_trans_wh);
 						return{
-							filters: {
-								'company': frm.doc.company,
-								'is_group': 0,
-								'warehouse_type': 'Transit'
+								
+								filters: {
+									'company': frm.doc.company,
+									'is_group': 0,
+									'warehouse_type': 'Transit',
+									// 'name':in_trans_wh
+								}
 							}
-						}
 					}
 				}
-			],
+			],	
 			(values) => {
 				frappe.call({
 					method: "jewellery_erpnext.jewellery_erpnext.doc_events.material_request.make_in_transit_stock_entry",

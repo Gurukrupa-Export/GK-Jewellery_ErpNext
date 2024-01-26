@@ -16,6 +16,10 @@
   "gold_loss_item",
   "service_item",
   "column_break_9vro2",
+  "default_diamond_department",
+  "default_gemstone_department",
+  "default_finding_department",
+  "default_other_material_department",
   "default_department",
   "default_fg_department",
   "in_transit",
@@ -71,7 +75,7 @@
    "description": "For Manufacturing DocTypes",
    "fieldname": "default_department",
    "fieldtype": "Link",
-   "label": "Default Department",
+   "label": "Default Metal Department",
    "options": "Department"
   },
   {
@@ -224,11 +228,39 @@
    "fieldtype": "Table",
    "label": "CAM Weight Details Mapping",
    "options": "CAM Weight Details Mapping"
+  },
+  {
+   "fieldname": "default_gemstone_department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Gemstone Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_diamond_department",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default Diamond Department",
+   "options": "Department",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_finding_department",
+   "fieldtype": "Link",
+   "label": "Default Finding Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "default_other_material_department",
+   "fieldtype": "Link",
+   "label": "Default Other Material Department",
+   "options": "Department"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-12-14 14:56:09.625619",
+ "modified": "2024-01-11 17:21:35.911176",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Setting",

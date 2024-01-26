@@ -1,8 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-08-23 09:16:33.965225",
- "default_view": "List",
+ "creation": "2023-12-18 18:01:55.513475",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -10,14 +9,15 @@
   "diamond_shape",
   "diamond_quality",
   "from_weight",
-  "to_weight"
+  "to_weight",
+  "for_universal_value"
  ],
  "fields": [
   {
    "fieldname": "diamond_shape",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Diamond Shape",
+   "label": "Diamond shape",
    "options": "Attribute Value"
   },
   {
@@ -31,20 +31,26 @@
    "fieldname": "from_weight",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "From Weight",
-   "precision": "4"
+   "label": "From Weight"
   },
   {
    "fieldname": "to_weight",
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "To Weight"
+  },
+  {
+   "default": "0",
+   "fieldname": "for_universal_value",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "For Universal Value"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-08-23 09:16:36.312168",
+ "modified": "2023-12-19 19:45:18.266951",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Attribute Value Diamond Sieve Size",

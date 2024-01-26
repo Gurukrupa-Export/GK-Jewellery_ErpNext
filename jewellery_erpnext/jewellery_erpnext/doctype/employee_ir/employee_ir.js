@@ -70,7 +70,7 @@ frappe.ui.form.on('Employee IR', {
 	
 	type(frm) {
 		frm.clear_table("department_ir_operation")
-		frm.refresh_field("department_ir_operation")
+		frm.refresh_field("department_ir_operation")		
 	},
 	// scan_mop(frm) {
 	// 	if (frm.doc.scan_mop) {
@@ -251,4 +251,63 @@ function set_filters_on_parent_table_fields(frm, fields) {
 			};
 		});
 	});
+}
+frappe.ui.form.on('Employee IR Operation', {
+    received_gross_wt: function (frm, cdt, cdn) {
+        var child = locals[cdt][cdn];
+		// console.log(child.manufacturing_operation);
+		if (frm.doc.type == "Issue"){
+			frappe.throw("Transaction type must be a <b>Receive</b>")
+		}
+        if (child.received_gross_wt && frm.doc.type == "Receive") {
+			var mwo = child.manufacturing_work_order;
+			var gwt = child.gross_wt;
+			var opt = child.manufacturing_operation
+			var r_gwt = child.received_gross_wt;
+			frappe.db.get_value("Manufacturing Work Order", mwo, ['multicolour','allowed_colours'])
+				.then(r => {
+					console.log(r.message);
+					if (r.message.multicolour == 1){
+						book_loss_details(frm,mwo,opt,gwt,r_gwt);
+					}
+				})
+        }
+    }
+});
+
+function book_loss_details(frm,mwo,opt,gwt,r_gwt) {
+	if(gwt == r_gwt){
+		frm.clear_table("employee_loss_details");
+		frm.refresh_field("employee_loss_details");
+		frm.save()
+	}
+	frappe.call({
+		method: "jewellery_erpnext.jewellery_erpnext.doctype.employee_ir.employee_ir.book_metal_loss",
+		args: {
+			doc_name: frm.doc.name,
+			mwo:mwo,
+			mwo:mwo,
+			opt:opt,
+			gwt:gwt,
+			r_gwt:r_gwt
+		},
+		callback: function(r) {
+			if (r.message) {
+				frm.clear_table("employee_loss_details");
+				var r_data = r.message[0]
+				for (var i = 0; i < r_data.length; i++) {
+                    var child = frm.add_child("employee_loss_details");
+                    child.item_code = r_data[i].item_code;
+                    child.net_weight = r_data[i].qty;
+					child.stock_uom = r_data[i].stock_uom;
+					child.manufacturing_work_order = r_data[i].manufacturing_work_order;
+					child.proportionally_loss = r_data[i].proportionally_loss;
+					child.received_gross_weight = r_data[i].received_gross_weight;
+					child.main_slip_consumption = r_data[i].main_slip_consumption;
+                }
+				frm.set_value("mop_loss_details_total",r.message[1])
+                frm.refresh_field("employee_loss_details","mop_loss_details_total");
+			}
+		}
+	})
 }

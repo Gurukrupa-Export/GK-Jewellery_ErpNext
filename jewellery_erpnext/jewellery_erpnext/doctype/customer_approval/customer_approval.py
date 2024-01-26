@@ -5,13 +5,30 @@ import frappe
 from frappe.model.document import Document
 
 class CustomerApproval(Document):
-	pass
+    def before_save(self):
+        stock_entry_reference = self.stock_entry_reference
+        quantity = quantity_calculation(stock_entry_reference)
+        for item in self.items:
+            for qty in quantity:
+                if qty[0] == item.item_code:
+                    if qty[1] < item.quantity:
+                        frappe.throw('Error: Quantity cannot be greater than the remaining quantity.')
+        
+            serial_item = []
+            if item.serial_no:
+                serial_item.extend(item.serial_no.split('\n'))
+
+            if len(serial_item) > item.quantity:
+                frappe.throw("Error: Please remove serial no")
+
+            elif len(serial_item) < item.quantity:
+                frappe.throw("Error: There are less serial no. Please add")
 
 @frappe.whitelist()
 def get_stock_entry_data(stock_entry_reference):
     doc = frappe.get_doc("Stock Entry", stock_entry_reference)
     
-    quantities = dict(calculation(stock_entry_reference))
+    quantities = dict(quantity_calculation(stock_entry_reference))
     serial_numbers = serial_no_filter(stock_entry_reference)
 
     for item in doc.items:
@@ -29,11 +46,11 @@ def get_stock_entry_data(stock_entry_reference):
 @frappe.whitelist()
 def get_items_filter(doctype, txt, searchfield, start, page_len, filters):
     stock_entry_reference = filters['stock_entry_reference']
-    result = calculation(stock_entry_reference)
+    result = quantity_calculation(stock_entry_reference)
     return result
 
 @frappe.whitelist()
-def calculation(stock_entry_reference):
+def quantity_calculation(stock_entry_reference):
     issue_item = frappe.db.sql(f"""SELECT sed.item_code, sed.qty
                                 FROM `tabStock Entry Detail` as sed
                                 LEFT JOIN `tabStock Entry` as se
@@ -49,6 +66,7 @@ def calculation(stock_entry_reference):
                                     LEFT JOIN `tabStock Entry` as se
                                     ON sed.parent = se.name
                                     WHERE se.custom_material_return_receipt_number LIKE '{stock_entry_reference}'
+                                        AND se.custom_customer_approval_reference IS NULL
     """, as_dict=True)
     
     returned_item = [{'item_code': entry['item_code'], 

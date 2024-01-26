@@ -26,7 +26,8 @@
   "sales_person",
   "sales_person_child",
   "section_break_c4ldl",
-  "items"
+  "items",
+  "amended_from"
  ],
  "fields": [
   {
@@ -141,11 +142,22 @@
    "fieldname": "remark",
    "fieldtype": "Small Text",
    "label": "Remark"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Customer Approval",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-12-18 13:30:31.768825",
+ "modified": "2023-12-20 11:00:40.469990",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Customer Approval",

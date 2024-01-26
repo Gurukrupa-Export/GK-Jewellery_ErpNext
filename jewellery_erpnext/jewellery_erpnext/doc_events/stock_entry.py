@@ -6,6 +6,8 @@ from frappe import _
 from frappe.utils import flt,cint
 from jewellery_erpnext.utils import get_variant_of_item, update_existing, get_item_from_attribute
 from frappe.model.mapper import get_mapped_doc
+from erpnext.stock.doctype.batch.batch import get_batch_qty
+from datetime import datetime
 
 def validate(self, method):
 	"""
@@ -52,7 +54,8 @@ def validate(self, method):
 
 	if self.purpose == "Material Transfer":
 		validate_metal_properties(self)
-	validate_main_slip_warehouse(self)
+# main slip have validation error for repack and transfer so it was commented
+	# validate_main_slip_warehouse(self)
 
 def validate_main_slip_warehouse(doc):
 	for row in doc.items:
@@ -66,26 +69,45 @@ def validate_main_slip_warehouse(doc):
 def validate_metal_properties(doc):
 	mwo = frappe._dict()
 	if doc.manufacturing_work_order:
-		mwo = frappe.db.get_value("Manufacturing Work Order", doc.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_colour"], as_dict=1)
+		mwo = frappe.db.get_value("Manufacturing Work Order", doc.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_colour","multicolour","allowed_colours"], as_dict=1)
 	for row in doc.items:
 		item_template = frappe.db.get_value("Item",row.item_code, "variant_of")
 		main_slip = row.main_slip or row.to_main_slip
+		ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_colour", "check_color", "for_subcontracting","multicolour","allowed_colours"], as_dict=1)
 		if main_slip and item_template != 'M':
 			frappe.throw(_("Only metals are allowed in Main Slip."))
 		if item_template != "M" or not (main_slip or mwo):
 			continue
 		attribute_det = frappe.db.get_values("Item Variant Attribute",{"parent": row.item_code, "attribute":["in",["Metal Type", "Metal Touch", "Metal Purity", "Metal Colour"]]}, ['attribute', 'attribute_value'], as_dict=1)
 		item_det = { row.attribute: row.attribute_value for row in attribute_det}
-		if main_slip:
-			ms = frappe.db.get_value("Main Slip", main_slip, ["metal_type", "metal_touch", "metal_purity", "metal_colour", "check_color", "for_subcontracting"], as_dict=1)
-			if ms.get("for_subcontracting"):
-				continue
-			if ms.metal_touch != item_det.get("Metal Touch") or ms.metal_purity != item_det.get("Metal Purity") or (ms.metal_colour != item_det.get("Metal Colour") and ms.check_color):
-				frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected main slip")
-		if mwo:
-			# frappe.throw(str([mwo.metal_touch != item_det.get("Metal Touch"), mwo.metal_purity != item_det.get("Metal Purity"), (mwo.metal_colour != item_det.get("Metal Colour"))]))
-			if mwo.metal_touch != item_det.get("Metal Touch") or mwo.metal_purity != item_det.get("Metal Purity"):
-				frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected Manufacturing Work Order")
+		if mwo.multicolour == 0:
+			if main_slip:
+				if ms.get("for_subcontracting"):
+					continue
+				if ms.metal_touch != item_det.get("Metal Touch") or ms.metal_purity != item_det.get("Metal Purity") or (ms.metal_colour != item_det.get("Metal Colour") and ms.check_color):
+					frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected main slip")
+			if mwo:
+				# frappe.throw(str([mwo.metal_touch != item_det.get("Metal Touch"), mwo.metal_purity != item_det.get("Metal Purity"), (mwo.metal_colour != item_det.get("Metal Colour"))]))
+				if mwo.metal_touch != item_det.get("Metal Touch") or mwo.metal_purity != item_det.get("Metal Purity"):
+						frappe.throw(f"Row #{row.idx}: Metal properties do not match with the selected Manufacturing Work Order")
+		
+		if mwo.multicolour == 1:
+			if not main_slip:
+				frappe.throw(f"Select Main Slip")
+			if ms.multicolour == 0:
+				frappe.throw(f"Select Multicolour Main Slip </br><b>Metal Properties are: (MT:{mwo.metal_type}, MTC:{mwo.metal_touch}, MP:{mwo.metal_purity}, MC:{mwo.allowed_colours})</b>")
+			allowed_colors = ''.join(sorted(map(str.upper, mwo.allowed_colours)))
+			colour_code = {"P": "Pink", "Y": "Yellow", "W": "White"}
+			color_matched = False	 # Flag to check if at least one color matches
+			for char in allowed_colors:
+				if char not in colour_code:
+					frappe.throw(f"Invalid color code <b>{char}</b> in MWO: <b>{row.manufacturing_work_order}</b>")
+				if ms.check_color and colour_code[char] == item_det.get("Metal Colour"):
+					color_matched = True	# Set the flag to True if color matches and exit loop
+					break 
+			# Throw an error only if no color matches
+			if ms.check_color and not color_matched:
+				frappe.throw(f"<b>Row #{row.idx}</b></br>Metal properties in MWO: <b>{doc.manufacturing_work_order}</b> do not match the main slip. </br><b>Metal Properties are: (MT:{mwo.metal_type}, MTC:{mwo.metal_touch}, MP:{mwo.metal_purity}, MC:{allowed_colors})</b>")
 
 
 def on_cancel(self, method=None):
@@ -349,6 +371,7 @@ def make_stock_in_entry(source_name, target_doc=None):
 		if target.stock_entry_type == "Customer Goods Received":
 			target.stock_entry_type = "Customer Goods Issue"
 			target.purpose = "Material Issue"
+			target.custom_cg_issue_against = source.name
 		elif target.stock_entry_type == "Customer Goods Issue":
 			target.stock_entry_type = "Customer Goods Received"
 			target.purpose = "Material Receipt"
@@ -454,8 +477,15 @@ def make_mr_on_return(source_name, target_doc=None):
 				if wh.item_code == source_doc.item_code:
 					target_wh = wh.s_warehouse
 
+		timestamp_obj = datetime.strptime(str(source_doc.creation), '%Y-%m-%d %H:%M:%S.%f')
+
+		date = timestamp_obj.strftime('%Y-%m-%d')
+		time = timestamp_obj.strftime('%H:%M:%S.%f')
+
+		wh_qty = get_batch_qty(batch_no=source_doc.batch_no, warehouse=source_doc.t_warehouse, item_code=source_doc.item_code, posting_date=date, posting_time=time)
+		
 		target_doc.warehouse = target_wh
-		target_doc.qty = source_doc.qty
+		target_doc.qty = wh_qty
 	
 	doclist = get_mapped_doc(
 		"Stock Entry",
@@ -580,6 +610,7 @@ def create_material_receipt_for_customer_approval(source_name, cust_name):
 
     target_doc.stock_entry_type = "Material Receipt - Sales Person"
     target_doc.custom_material_return_receipt_number = source_name
+    target_doc.custom_customer_approval_reference = cust_name
 
     for item in target_doc.items:
         item.s_warehouse, item.t_warehouse = item.t_warehouse, item.s_warehouse
@@ -650,3 +681,10 @@ def validation_of_serial_item(issue_doc):
         if check_serial_no[0]['has_serial_no']==1:
             serial_item[item.item_code]=item.serial_no.split('\n')
     return serial_item
+
+@frappe.whitelist()
+def set_filter_for_main_slip(doctype, txt, searchfield, start, page_len, filters):
+	mnf = filters.get('mnf')
+	metal_purity = frappe.db.get_value('Manufacturing Work Order', { mnf }, 'metal_purity')
+	# frappe.throw(str(metal_purity))
+	return metal_purity

@@ -150,8 +150,8 @@ def calculate_metal_qty(self):
 
 def calculate_diamond_qty(self):
 	for row in self.diamond_detail:
-		if row.stone_shape == "Round" and row.pcs and row.weight_per_pcs:
-			row.quantity = flt(row.pcs * row.weight_per_pcs)
+		# if row.stone_shape == "Round" and row.pcs and row.weight_per_pcs:
+		# 	row.quantity = flt(row.pcs * row.weight_per_pcs)
 		row.weight_in_gms = flt(flt(row.quantity) / 5, 3)
 	for row in self.gemstone_detail:
 		row.weight_in_gms = flt(flt(row.quantity) / 5, 3)
@@ -227,3 +227,47 @@ def set_specifications_for_modified_bom(self, fields_list):
 				modified_specifications += f"{key} - {val} \n"
 	self.defualt_specifications = ''.join(f"{key} - {val} \n" for key, val in temp_bom_dict.items() if val != None)
 	self.modified_specifications = modified_specifications
+
+@frappe.whitelist()
+def check_diamond_sieve_size_tolerance_value_exist(filters):
+    result = frappe.get_all(
+        'Attribute Value Diamond Sieve Size',
+        fields=['diamond_quality', 'diamond_shape', 'from_weight', 'to_weight', 'for_universal_value'],
+        filters=filters
+    )
+    return result
+
+@frappe.whitelist()
+def get_weight_in_cts_from_attribute_value(filters):
+	result = frappe.get_all(
+        'Attribute Value',
+        fields=['weight_in_cts'],
+        filters=filters
+    )
+	return result
+
+@frappe.whitelist()
+def get_quality_diamond_sieve_size_tolerance_value(filters):
+    result = frappe.get_all(
+        'Attribute Value Diamond Sieve Size',
+        fields=['diamond_quality','diamond_shape','from_weight','to_weight','for_universal_value'],
+        filters=filters
+    )
+    return result
+
+@frappe.whitelist()
+def get_records_universal_attribute_value(filters):
+    result = frappe.get_all(
+        'Attribute Value Diamond Sieve Size',
+        fields=['diamond_quality','diamond_shape','from_weight','to_weight'],
+        filters=filters
+    )
+    return result
+
+@frappe.whitelist()
+def get_bom_details(serial_no, customer):
+	try:
+		return frappe.get_doc('BOM', {'tag_no': serial_no, 'is_active': 1, 'customer': customer})
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(e)

@@ -28,28 +28,139 @@ frappe.ui.form.on('BOM Metal Detail', {
 	}
 })
 frappe.ui.form.on('BOM Diamond Detail', {
-	stone_shape: function(frm, cdt, cdn){
+	diamond_sieve_size:function(frm,cdt,cdn){
 		let d = locals[cdt][cdn]
-		if(d.stone_shape == "Round" && d.pcs && d.weight_per_pcs){
-			frappe.model.set_value(d.doctype, d.name, 'quantity',flt(d.pcs * d.weight_per_pcs))
+		frappe.db.get_value('Attribute Value', d.diamond_sieve_size, "weight_in_cts")
+		.then(r => {
+			frappe.model.set_value(d.doctype, d.name, 'weight_per_pcs',r.message.weight_in_cts)
+		})
+		let filter_value = {
+			parent : d.diamond_sieve_size,
+			diamond_shape : d.stone_shape
+		};
+		frappe.call({
+		method: "jewellery_erpnext.jewellery_erpnext.doc_events.bom.check_diamond_sieve_size_tolerance_value_exist",
+		args:{
+			"filters" : filter_value
+		},
+		callback: function(r) {
+			console.log(r.message);
+			if(r.message.length == 0 && d.stone_shape == "Round"){
+				frappe.msgprint("Please Insert Diamond Sieve Size Tolerance at Attribute Value");
+				frappe.validated = false;
+			} 
+		}});
+	},
+	pcs:function(frm,cdt,cdn){
+		let d = locals[cdt][cdn]
+		if (d.quantity == 0.0) {
+			let filter_value = {
+				name: d.diamond_sieve_size
+			};
+			frappe.call({
+				method: "jewellery_erpnext.jewellery_erpnext.doc_events.bom.get_weight_in_cts_from_attribute_value",
+				args: {
+					"filters" : filter_value
+				},
+				callback: function(r) {
+					if (r.message) {
+						let weight_in_cts = r.message[0].weight_in_cts
+						console.log(weight_in_cts);
+						frappe.model.set_value(d.doctype, d.name, 'weight_per_pcs', weight_in_cts);
+						frappe.model.set_value(d.doctype, d.name, 'quantity', flt(d.pcs * weight_in_cts));
+					}
+				}
+			});
 		}
 	},
-	pcs: function(frm, cdt, cdn){
+	quantity: function(frm,cdt,cdn){
 		let d = locals[cdt][cdn]
-		if(d.stone_shape == "Round" && d.pcs && d.weight_per_pcs){
-			frappe.model.set_value(d.doctype, d.name, 'quantity',flt(d.pcs * d.weight_per_pcs))
+		if (d.pcs>0){
+			var cal_a = flt(d.quantity / d.pcs,4)
+			console.log(cal_a);
+		}else{
+			frappe.msgprint("Please set PCS value");
+			frappe.validated = false;
 		}
-		calculate_total(frm)
-	},
-	weight_per_pcs: function(frm, cdt, cdn){
-		let d = locals[cdt][cdn]
-		if(d.stone_shape == "Round" && d.pcs && d.weight_per_pcs){
-			frappe.model.set_value(d.doctype, d.name, 'quantity',flt(d.pcs * d.weight_per_pcs))
+		if (d.quantity > 0 && d.stone_shape == "Round" && d.quality ){
+			let filter_quality_value = {
+				parent: d.diamond_sieve_size,
+				diamond_shape:d.stone_shape,
+				diamond_quality: d.quality
+			};
+			frappe.call({
+				method: "jewellery_erpnext.jewellery_erpnext.doc_events.bom.get_quality_diamond_sieve_size_tolerance_value",
+				args:{
+					"filters" : filter_quality_value
+				},
+				callback: function(r) {
+					console.log(r.message);
+					let records = r.message
+					if(records){
+						for (let i = 0; i < records.length; i++) {
+							let fromWeight = flt(records[i].from_weight);
+							let toWeight = flt(records[i].to_weight);
+							if (cal_a >= fromWeight && cal_a <= toWeight) {
+								// The cal_a value is within the range, do nothing
+								frappe.model.set_value(d.doctype, d.name, 'weight_per_pcs',cal_a)
+								return;
+							}else{
+								frappe.msgprint(`Calculated value ${cal_a} is outside the allowed tolerance range ${fromWeight} to ${toWeight}`);
+								frappe.validated = false;	
+								frappe.model.set_value(d.doctype, d.name, 'quantity',null)
+								return
+							}
+						}
+					}else{
+						frappe.msgprint("Tolerance range record not found");
+						frappe.validated = false;
+						frappe.model.set_value(d.doctype, d.name, 'quantity',null)
+						return		
+					}
+					frappe.model.set_value(d.doctype, d.name, 'weight_per_pcs',cal_a)
+					
+				}});
+		}
+		if(d.quantity > 0 && d.stone_shape == "Round" && !d.quality){
+			let filter_universal_value = {
+				parent: d.diamond_sieve_size,
+				for_universal_value: 1,
+			};
+			// Get records Universal Attribute Value Diamond Sieve Size
+			frappe.call({
+				method: "jewellery_erpnext.jewellery_erpnext.doc_events.bom.get_records_universal_attribute_value",
+				args:{
+					"filters" : filter_universal_value
+				},
+				callback: function(r) {
+					console.log(r.message);
+					let records = r.message
+					if(records){
+						for (let i = 0; i < records.length; i++) {
+							let fromWeight = flt(records[i].from_weight);
+							let toWeight = flt(records[i].to_weight);
+							if (cal_a >= fromWeight && cal_a <= toWeight) {
+								// The cal_a value is within the range, do nothing
+								frappe.model.set_value(d.doctype, d.name, 'weight_per_pcs',cal_a)
+								return;
+							}else{
+								frappe.msgprint(`Calculated value ${cal_a} is outside the allowed tolerance range ${fromWeight} to ${toWeight}`);
+								frappe.validated = false;
+								frappe.model.set_value(d.doctype, d.name, 'quantity',null)
+								return
+							}
+						}
+					}else{
+						// If no range includes cal_a for both specific and universal Diamond Sieve Size, throw an error
+						frappe.msgprint("Tolerance range record not found");
+						frappe.validated = false;
+						frappe.model.set_value(d.doctype, d.name, 'quantity',null)
+						return
+					}
+					frappe.model.set_value(d.doctype, d.name, 'weight_per_pcs',cal_a)
+				}});
 		}
 	},
-	quantity: function(frm){
-		calculate_total(frm)
-	}
 })
 frappe.ui.form.on('BOM Gemstone Detail', {
 	quantity: function(frm){

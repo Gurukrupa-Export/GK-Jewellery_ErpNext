@@ -7,7 +7,7 @@ from frappe.utils.data import flt
 def make_stock_in_entry(source_name, target_doc=None):
 	def set_missing_values(source, target):
 		target.material_request_type = "Material Transfer"
-
+		target.customer = source._customer
 		target.set_missing_values()
 
 	def update_item(source_doc, target_doc, source_parent):
@@ -153,9 +153,12 @@ def make_stock_entry(source_name, target_doc=None):
 
 @frappe.whitelist()
 def make_in_transit_stock_entry(source_name, in_transit_warehouse):
+	to_department = frappe.db.get_value("Warehouse", {"default_in_transit_warehouse": in_transit_warehouse},"department")
 	ste_doc = make_stock_entry(source_name)
+	ste_doc.stock_entry_type = "Material Transfer to Department"
 	ste_doc.add_to_transit = 1
 	ste_doc.to_warehouse = in_transit_warehouse
+	ste_doc.to_department = to_department
 
 	for row in ste_doc.items:
 		row.t_warehouse = in_transit_warehouse
