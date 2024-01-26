@@ -18,7 +18,16 @@ frappe.ui.form.on('Manufacturing Setting', {
 		frm.set_query("in_transit", function(){
 			return {
 				filters: {
-					"company": frm.doc.company
+					"company": frm.doc.company,
+					"is_group":0
+				}
+			}
+		})
+		frm.set_query("default_fg_warehouse", function(){
+			return {
+				filters: {
+					"company": frm.doc.company,
+					"is_group":0
 				}
 			}
 		})

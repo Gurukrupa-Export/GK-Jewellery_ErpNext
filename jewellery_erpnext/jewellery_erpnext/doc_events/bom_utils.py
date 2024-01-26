@@ -78,8 +78,6 @@ def get_gold_rate(self):
 	# Return the total amount
 	return amount
 
-# 16.25
-# 
 
 def get_diamond_rate(self):
 	# Get the customer from the self object

@@ -6,9 +6,34 @@ frappe.ui.form.on('Manufacturing Operation', {
 		set_html(frm)
 		if (frm.doc.is_last_operation && frm.doc.for_fg && in_list(["Not Started", "WIP"],frm.doc.status)) {
 			frm.add_custom_button(__("Finish"), async ()=>{
-				await frm.call("create_fg")
-				frm.set_value("status", "Finished")
-				frm.save()
+				await frappe.call({ 
+					method: "get_linked_stock_entries_for_serial_number_creator",
+					doc: frm.doc,
+					args: { 
+						"docname": frm.doc.name,
+					}, 
+					callback: function (r) { 
+						frappe.call({
+							method:"jewellery_erpnext.jewellery_erpnext.doctype.serial_number_creator.serial_number_creator.get_operation_details",
+							// doc:doc.name,
+							args:{
+								"data":r.message,
+								"docname":frm.doc.name,
+								"mwo":frm.doc.manufacturing_work_order,
+								"pmo":frm.doc.manufacturing_order,
+								"company":frm.doc.company,
+								"mnf":frm.doc.manufacturer,
+								"dpt":frm.doc.department,
+								"for_fg":frm.doc.for_fg,
+								"design_id_bom":frm.doc.design_id_bom,
+							},
+						})
+					} 
+				})
+				
+				// await frm.call("create_fg")
+				// frm.set_value("status", "Finished")
+				// frm.save()
 			}).addClass("btn-primary")
 		}
 		if (!frm.doc.__islocal) {

@@ -133,7 +133,7 @@ fixtures = [
             "Stock Entry-custom_customer_approval_reference"
             ]],
             [
-                "module", "=", "Jewellery Erpnext"
+                "module", "in", ["Jewellery Erpnext", "Gurukrupa Exports"]
 			]
             ]
 	},
@@ -150,7 +150,7 @@ fixtures = [
 	{
 		"dt": "DocType",
         "filters": [[
-            "module", "=", "Gurukrupa Exports"], ["custom", "=", 1]]
+            "module", "in", ["Gurukrupa Exports", "Jewellery Erpnext"]], ["custom", "=", 1]]
 	},
 ]
 

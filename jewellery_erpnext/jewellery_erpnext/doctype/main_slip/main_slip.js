@@ -24,6 +24,20 @@ frappe.ui.form.on('Main Slip', {
             frappe.set_route("query-report", "Stock Ledger");
         }, __("View"));
     },
+    multicolour:function(frm){
+        if (frm.doc.multicolour == 1)
+        {
+            frm.set_value("metal_colour",null)
+            // frm.save()
+        }
+        if (frm.doc.multicolour == 0)
+        {  
+            frm.set_value("allowed_colours",null)
+            // frm.refresh("allowed_colours")
+            // frm.save()
+        }
+        // frappe.throw("hi")
+    },
     setup: function (frm) {
         frm.set_query("metal_touch", function (doc) {
             return {
@@ -50,6 +64,10 @@ frappe.ui.form.on('Main Slip', {
         }
         else {
             frm.set_value("naming_series", ".dep_abbr.-.type_abbr.-.metal_touch.-.metal_purity.-.#####")
+        }
+        if(frm.doc.multicolour == 1 && frm.doc.allowed_colours == null){
+            frappe.throw("Mandatory fields required in Main Slip: </br><b>Allowed Colours</b>")
+            
         }
     },
     powder_wt(frm) {

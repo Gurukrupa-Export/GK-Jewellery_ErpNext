@@ -222,7 +222,12 @@ def create_stock_entry(doc, row, difference_wt=0):
 		mwo = frappe.db.get_value("Manufacturing Work Order", row.manufacturing_work_order, ["metal_type", "metal_touch", "metal_purity", "metal_colour"], as_dict=1)
 		metal_item = get_item_from_attribute(mwo.metal_type, mwo.metal_touch, mwo.metal_purity, mwo.metal_colour)
 		if (metal_item not in existing_items) and difference_wt < 0:
-			frappe.throw(_(f"Stock Entry for metal not found. Unable to subtract weight difference({difference_wt})"))
+			# frappe.throw(_(f"Stock Entry for metal not found. Unable to subtract weight difference({difference_wt})"))
+			mop_doc = frappe.get_doc("Manufacturing Operation",row.manufacturing_operation)
+			if len(mop_doc.loss_details) <0:
+				frappe.throw(_(f"Please Book Loss Manually in MOP: {row.manufacturing_operation}"))
+		else:
+			frappe.msgprint(f"Loss Entrys")
 	loss = {}
 	if doc.type == "Receive":
 		loss = get_loss_details(row.manufacturing_operation)
@@ -299,7 +304,6 @@ def create_stock_entry(doc, row, difference_wt=0):
 			frappe.throw(_("Cannot add weight without Main Slip"))
 		if doc.subcontracting == "Yes":
 			convert_pure_metal(row.manufacturing_work_order, doc.main_slip, abs(difference_wt), employee_wh, employee_wh, reverse=(difference_wt < 0))
-
 		se_doc = frappe.new_doc("Stock Entry")
 		se_doc.stock_entry_type = "Material Transfer to Department"
 		se_doc.purpose = "Material Transfer"
@@ -392,16 +396,16 @@ def book_metal_loss(doc_name,mwo,opt,gwt,r_gwt):
 	if gwt != r_gwt:
 		wip_wh = frappe.get_value("Warehouse", {"custom_operation": doc.operation,"employee":doc.employee})
 		stock_entries = frappe.db.sql(f"""
-								select se.name 
-								from `tabStock Entry Detail` sed 
-								left join `tabStock Entry` se 
-								on sed.parent = se.name 
-								where se.docstatus=1 
-								and se.manufacturing_work_order = '{mwo}'
-								# and sed.t_warehouse = '{wip_wh}'
-								# and sed.to_main_slip = '{doc.main_slip}'
-								# and sed.to_department = '{doc.department}'
-								group by se.name order by se.creation""", as_dict=1, pluck=1)
+						select se.name 
+						from `tabStock Entry Detail` sed 
+						left join `tabStock Entry` se 
+						on sed.parent = se.name 
+						where se.docstatus=1 
+						and se.manufacturing_work_order = '{mwo}'
+						# and sed.t_warehouse = '{wip_wh}'
+						# and sed.to_main_slip = '{doc.main_slip}'
+						# and sed.to_department = '{doc.department}'
+						group by se.name order by se.creation""", as_dict=1, pluck=1)
 		
 		# Declaration & fetch required value
 		data=[] 		# for final data list

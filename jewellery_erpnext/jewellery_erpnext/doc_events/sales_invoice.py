@@ -4,7 +4,10 @@ from frappe.utils import get_last_day
 
 
 def before_validate(self, method):
-    pass
+
+    # copying Items Table to Invoice Item table
+    self.invoice_item = self.items
+    
     # update_si_data(self)
     # update_payment_terms(self)
 

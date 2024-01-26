@@ -285,6 +285,7 @@ def fetch_and_update(doc,row,manufacturing_operation):
 		frappe.msgprint(f"No entries received against MWO : {row.manufacturing_work_order} and Department{doc.current_department}")
 		return False
 	else:
+		
 		values = {
 			"manufacturing_operation": manufacturing_operation
 		}

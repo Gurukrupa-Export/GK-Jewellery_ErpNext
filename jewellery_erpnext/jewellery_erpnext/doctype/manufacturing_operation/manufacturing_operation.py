@@ -135,14 +135,36 @@ class ManufacturingOperation(Document):
 					   			ifnull(sum(if(sed.uom='cts',sed.qty*0.2, sed.qty)),0) as gross_wt
 			   				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
 							se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') and sed.t_warehouse = '{target_wh}' 
-							group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1)
-
+							group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1) 
 		total_qty = 0
 		for row in data:
 			total_qty += row.get('gross_wt', 0)
 		total_qty =  round(total_qty,4) #sum(item['qty'] for item in data)
 
 		return frappe.render_template("jewellery_erpnext/jewellery_erpnext/doctype/manufacturing_operation/stock_entry_details.html", {"data":data,"total_qty":total_qty})
+	
+	@frappe.whitelist()
+	def get_linked_stock_entries_for_serial_number_creator(self):
+		target_wh = frappe.db.get_value("Warehouse",{"department": self.department})
+		pmo = frappe.db.get_value("Manufacturing Work Order", self.manufacturing_work_order, "manufacturing_order")
+		se = frappe.new_doc("Stock Entry")
+		se.stock_entry_type = "Manufacture"
+		mwo = frappe.get_all("Manufacturing Work Order",
+					{"name": ["!=",self.manufacturing_work_order],"manufacturing_order": pmo, "docstatus":["!=",2], "department":["=",self.department]},
+					pluck="name")
+		data = frappe.db.sql(f"""select se.manufacturing_work_order, se.manufacturing_operation, sed.parent, sed.item_code,sed.item_name, sed.batch_no, sed.qty, sed.uom,
+					   			ifnull(sum(if(sed.uom='cts',sed.qty*0.2, sed.qty)),0) as gross_wt
+			   				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
+							se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') and sed.t_warehouse = '{target_wh}' 
+							group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1)
+
+		total_qty = 0
+		for row in data:
+			total_qty += row.get('gross_wt', 0)
+		total_qty =  round(total_qty,4) #sum(item['qty'] for item in data)
+		bom_id = self.fg_bom
+		mnf_qty = self.qty
+		return data,bom_id,mnf_qty,total_qty
 	
 	def set_wop_weight_details(doc):
 		get_wop_weight = frappe.db.get_value("Manufacturing Operation",{"manufacturing_work_order": doc.manufacturing_work_order, "status": ["!=", "Not Started"]},
@@ -227,8 +249,11 @@ class ManufacturingOperation(Document):
 					frappe.db.set_value('Gemstone Product Tolerance', row_doc.name, 'product_wt', get_mwo_weight[0].gemstone_wt)
 
 
-def create_manufacturing_entry(doc):
+def create_manufacturing_entry(doc,row_data):
 	target_wh = frappe.db.get_value("Warehouse",{"department": doc.department})
+	to_wh = frappe.db.get_value("Manufacturing Setting",{"company":doc.company},"default_fg_warehouse")
+	if not to_wh:
+		frappe.throw(f"<b>Manufacturing Setting</b> Default FG Warehouse Missing...!")
 	pmo = frappe.db.get_value("Manufacturing Work Order", doc.manufacturing_work_order, "manufacturing_order")
 	pmo_det = frappe.db.get_value("Parent Manufacturing Order", pmo, ["name","sales_order_item", "manufacturing_plan", "item_code", "qty"], as_dict=1)
 	if not pmo_det.qty:
@@ -244,46 +269,49 @@ def create_manufacturing_entry(doc):
 		"department": doc.department,
 		"to_department": doc.department,
 		"manufacturing_work_order": doc.manufacturing_work_order,
-		"manufacturing_operation": doc.name,
+		"manufacturing_operation": doc.manufacturing_operation,#name,
+		"custom_serial_number_creator":doc.name,
 		"inventory_type": "Regular Stock",
 		"auto_created":1
 		})
-	mwo = frappe.get_all("Manufacturing Work Order",
-				  {"name": ["!=",doc.manufacturing_work_order],"manufacturing_order": pmo, "docstatus":["!=",2], "department":["=",doc.department]},
-				  pluck="name")
-	data = frappe.db.sql(f"""select se.manufacturing_work_order, se.manufacturing_operation, sed.parent, sed.item_code,sed.item_name, sed.qty, sed.uom 
-			  				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
-							se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') and sed.t_warehouse = '{target_wh}' 
-							group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1)
-	frappe.throw(f"{data}")
-	for entry in data:
+	# mwo = frappe.get_all("Manufacturing Work Order",
+	# 			  {"name": ["!=",doc.manufacturing_work_order],"manufacturing_order": pmo, "docstatus":["!=",2], "department":["=",doc.department]},
+	# 			  pluck="name")
+	# data = frappe.db.sql(f"""select se.manufacturing_work_order, se.manufacturing_operation, sed.parent, sed.item_code,sed.item_name, sed.qty, sed.uom 
+	# 		  				from `tabStock Entry Detail` sed left join `tabStock Entry` se on sed.parent = se.name where
+	# 						se.docstatus = 1 and se.manufacturing_work_order in ('{"', '".join(mwo)}') and sed.t_warehouse = '{target_wh}' 
+	# 						group by sed.manufacturing_operation,  sed.item_code, sed.qty, sed.uom """, as_dict=1)
+	# for entry in data:
+	# frappe.throw(f"{row_data}")
+	for entry in row_data:
 		se.append("items",{
-			"item_code": entry.item_code,
-			"qty": entry.qty,
-			"uom": entry.uom,
-			"manufacturing_operation": doc.name,
+			"item_code": entry['item_code'],#.item_code,
+			"qty": entry['qty'],#.qty,
+			"uom": entry['uom'], #.uom,
+			"manufacturing_operation": doc.manufacturing_operation,#doc.name,
 			"department": doc.department,
 			"inventory_type": "Regular Stock",
 			"to_department": doc.department,
 			"s_warehouse": target_wh
 		})
 	sr_no = ""
-	compose_series = genrate_serial_no(doc)
-	serial_no=[]
-	for i in range(pmo_det.qty):
-		sr_no = make_autoname(compose_series)
-		serial_no.append(sr_no)
-	sr_no = "\n".join(serial_no)
-	new_bom_serial_no = serial_no[0]
-	doc.serial_no = sr_no
+	compose_series = genrate_serial_no(doc)#,mwo_no
+	# serial_no=[]
+	# for i in range(pmo_det.qty):
+	# 	sr_no = make_autoname(compose_series)
+	# 	serial_no.append(sr_no)
+	# sr_no = "\n".join(serial_no)
+	sr_no = make_autoname(compose_series)
+	new_bom_serial_no = sr_no #serial_no[0]
+	# doc.serial_no = sr_no
 	se.append("items",{
 		"item_code": pmo_det.item_code,
-		"qty": pmo_det.qty,
-		"t_warehouse": target_wh,
+		"qty": 1,#pmo_det.qty,
+		"t_warehouse": to_wh,#target_wh,
 		"department": doc.department,
 		"to_department": doc.department,
 		"inventory_type": "Regular Stock",
-		"manufacturing_operation": doc.name,
+		"manufacturing_operation": doc.manufacturing_operation,#doc.name,
 		"serial_no": sr_no,
 		"is_finished_item":1
 	})
@@ -291,13 +319,20 @@ def create_manufacturing_entry(doc):
 	se.submit()
 	update_produced_qty(pmo_det)
 	frappe.msgprint('Finished Good created successfully')
+	
 	if doc.for_fg:
-		doc.finish_good_serial_number = get_serial_no(new_bom_serial_no) #get_serial_no(se_name)
+		# doc.finish_good_serial_number = get_serial_no(new_bom_serial_no) #get_serial_no(se_name)
+		for row in doc.fg_details:
+			for entry in row_data:
+				if row.id == entry['id'] and row.row_material == entry['item_code']:
+					row.serial_no = get_serial_no(new_bom_serial_no)
+			
 	return new_bom_serial_no
 
-def genrate_serial_no(doc):
+def genrate_serial_no(doc):#,mwo_no
 	errors = []
-	mwo_no = frappe.db.get_value("Manufacturing Operation", doc.name, ['manufacturing_work_order'])
+	mwo_no = doc.manufacturing_work_order#mwo_no#frappe.db.get_value("Manufacturing Operation", doc.name, ['manufacturing_work_order'])
+	# frappe.throw(f"{doc.name}{mwo_no}")
 	if mwo_no:
 		series_start = frappe.db.get_value("Manufacturing Setting", doc.company, ['series_start'])
 		diamond_grade, manufacturer, posting_date= frappe.db.get_value("Manufacturing Work Order", mwo_no, ['diamond_grade','manufacturer','posting_date'])
@@ -315,7 +350,7 @@ def genrate_serial_no(doc):
 	if errors:
 		frappe.throw("<br>".join(errors))
         
-	compose_series = str(series_start + mnf_abbr + dg_abbr + final_date + "-.####")
+	compose_series = str(series_start + mnf_abbr + dg_abbr + final_date + ".####")
 	return compose_series
 
 def update_produced_qty(pmo_det, cancel=False):
@@ -391,6 +426,7 @@ def create_finished_goods_bom(self,se_name):
 		new_bom = frappe.copy_doc(frappe.get_doc("BOM",self.design_id_bom))
 		new_bom.bom_type = "Finish Goods"
 		new_bom.tag_no = get_serial_no(se_name)
+		new_bom.custom_serial_number_creator = self.name
 		new_bom.metal_detail = []
 		new_bom.finding_detail = []
 		new_bom.diamond_detail = []
@@ -479,7 +515,7 @@ def finish_other_tagging_operations(doc,pmo):
 				WHERE manufacturing_order = %(manufacturing_order)s
 				AND name != %(manufacturing_operation)s
 				AND status != 'Finished' AND department = %(department)s '''
-				,({'manufacturing_order':pmo,'department':doc.department,'manufacturing_operation':doc.name}),as_dict = 1)
+				,({'manufacturing_order':pmo,'department':doc.department,'manufacturing_operation':doc.manufacturing_operation}),as_dict = 1)#name
 	
 	for mop in mop_data:
 		frappe.db.set_value('Manufacturing Operation',mop.manufacturing_operation,'status','Finished')

@@ -576,9 +576,13 @@
   {
    "link_doctype": "QC",
    "link_fieldname": "manufacturing_operation"
+  },
+  {
+   "link_doctype": "Serial Number Creator",
+   "link_fieldname": "manufacturing_operation"
   }
  ],
- "modified": "2023-12-13 16:39:10.270351",
+ "modified": "2024-01-22 14:09:14.289125",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Manufacturing Operation",

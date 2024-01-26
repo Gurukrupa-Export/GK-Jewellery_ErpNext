@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-15 17:40:16.867311",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "default_bom_rm",
+  "bom_qty",
+  "bom_pcs",
+  "row_material",
+  "id",
+  "qty",
+  "pcs",
+  "uom",
+  "sub_setting_type",
+  "is_customer_item",
+  "serial_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "default_bom_rm",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Default BOM RM",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "row_material",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Row Material",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty"
+  },
+  {
+   "fieldname": "pcs",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Pcs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "uom",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sub_setting_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Sub Setting Type",
+   "options": "Attribute Value",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_customer_item",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Customer Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "id",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "id",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bom_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "BOM Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bom_pcs",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "BOM PCS",
+   "read_only": 1
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "label": "Serial No",
+   "options": "Serial No",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-01-18 19:11:29.731020",
+ "modified_by": "Administrator",
+ "module": "Jewellery Erpnext",
+ "name": "SNC FG Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

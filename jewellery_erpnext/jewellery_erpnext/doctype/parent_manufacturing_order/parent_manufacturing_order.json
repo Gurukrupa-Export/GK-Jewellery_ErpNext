@@ -45,6 +45,7 @@
   "manufacturer",
   "column_break_tfrsq",
   "diamond_grade",
+  "diamond_certificate_no",
   "qty",
   "gemstone_details_section",
   "gemstone_table",
@@ -664,6 +665,12 @@
    "fieldtype": "Link",
    "label": "Metal Department",
    "options": "Department"
+  },
+  {
+   "fieldname": "diamond_certificate_no",
+   "fieldtype": "Link",
+   "label": "Diamond Certificate No",
+   "options": "Attribute Value"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -682,7 +689,7 @@
    "link_fieldname": "manufacturing_order"
   }
  ],
- "modified": "2024-01-11 17:13:41.803537",
+ "modified": "2024-01-17 13:42:00.426661",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Parent Manufacturing Order",

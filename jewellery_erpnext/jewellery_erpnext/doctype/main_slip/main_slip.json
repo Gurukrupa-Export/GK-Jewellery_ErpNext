@@ -352,6 +352,7 @@
   },
   {
    "default": "0",
+   "depends_on": "eval:doc.check_color==1",
    "fieldname": "multicolour",
    "fieldtype": "Check",
    "label": " Multicolour"
@@ -377,7 +378,7 @@
    "link_fieldname": "main_slip"
   }
  ],
- "modified": "2024-01-08 12:25:27.386132",
+ "modified": "2024-01-23 13:04:41.732786",
  "modified_by": "Administrator",
  "module": "Jewellery Erpnext",
  "name": "Main Slip",
